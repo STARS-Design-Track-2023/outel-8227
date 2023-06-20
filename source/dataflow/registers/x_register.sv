@@ -1,17 +1,18 @@
 module XRegister
 #(
-  parameter defaultValue = 8'b0;
+  parameter defaultValue = 8'b0
 )
 (
   input logic nrst, clk,
-  input logic readStackBus, stackBusWriteEnable, stackBusInput,
-  output logic stackBusOutput
+  input logic stackBusReadEnable, stackBusWriteEnable,
+  input logic [7:0] stackBusInput,
+  output logic [7:0] stackBusOutput
 );
 
 logic [7:0] storedValue, nextStoredValue;
 
 always_comb begin : nextStateLogic
-  if(readStackBus)
+  if(stackBusReadEnable)
     nextStoredValue = stackBusInput;
   else
     nextStoredValue = storedValue;
@@ -26,9 +27,9 @@ end
 
 always_comb begin : outputSelection
   if(stackBusWriteEnable)
-    stackBusOutput = 1;
+    stackBusOutput = storedValue;
 else
-    stackBusOutput = z;
+    stackBusOutput = 8'bz;
 end
 
 endmodule
