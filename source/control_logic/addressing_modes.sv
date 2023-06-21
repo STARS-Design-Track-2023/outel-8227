@@ -311,7 +311,7 @@ always_comb begin
         flags[ALU_ADD] = 1;
 
         //////////////////////////////////////////
-        //DO LOGIC WITH carry_from_low_op HERE//
+         //DO LOGIC WITH carry_from_low_op HERE//
         //////////////////////////////////////////
     
     end else if(state == A2)begin
