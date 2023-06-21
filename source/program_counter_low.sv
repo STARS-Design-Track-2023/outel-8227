@@ -30,10 +30,16 @@ module programCL(
 
     //output logic
     always_comb begin
-        DB_out = 8'bzzzzzzzz;
+        DB_out = 8'bzzzzzzzz;     //output defaults to hi-Z
         ADL_out = 8'bzzzzzzzz;
         PCLC = 0;
 
-        if()
+        if(PCL_DB) DB_out = PCL_internal;
+        if(PCL_ADL) ADL_out = PCL_internal;
+
+        if(decrement && (PCL_internal == 8'b00000000))   //ines to handle carry for page shifts
+            PCLC = 1;
+        if(increment && (PCL_internal == 8'b11111111))
+            PCLC = 1;
     end
 endmodule
