@@ -267,3 +267,79 @@ always_comb begin
     end
 end
 endmodule
+
+module Indrect_Y(
+    input logic [3:0] state,
+    input logic [7:0] opCode,
+    input logic carry_to_high_op,
+    output logic [NUMFLAGS:0] flags,
+    output logic carry_from_low_op
+);
+
+always_comb begin
+    if(state == A0)begin
+        //Set Zero Page:00,Data0
+        flags[SET_ADH_LOW] = 1;
+        flags[LOAD_ABH] = 1;
+        
+        flags[SET_ADL_TO_DATA] = 1;
+        flags[LOAD_ABL] = 1;
+        //Increment position through ALU
+        flags[SET_DB_TO_DATA] = 1;
+        flags[SET_INPUT_B_TO_DB] = 1;
+
+        flags[SET_INPUT_A_TO_LOW] = 1;
+        flags[SET_ALU_CARRY_HIGH] = 1;
+
+        flags[ALU_ADD] = 1;
+        flags[LOAD_ALU] = 1;
+    end else if(state == A1)begin
+        //Set Zero Page:00,Data0+1
+        flags[SET_ADH_LOW] = 1;
+        flags[LOAD_ABH] = 1;
+        
+        flags[SET_ADL_TO_ALU] = 1;
+        flags[LOAD_ABL] = 1;
+        //Store data+Y in ALU
+        flags[SET_DB_TO_DATA] = 1;
+        flags[SET_INPUT_B_TO_DB] = 1;
+        
+        flags[SET_SB_TO_Y] = 1;
+        flags[SET_INPUT_A_TO_SB] = 1;
+        
+        flags[LOAD_ALU] = 1;
+        flags[ALU_ADD] = 1;
+
+        //////////////////////////////////////////
+        //DO LOGIC WITH carry_from_low_op HERE//
+        //////////////////////////////////////////
+    
+    end else if(state == A2)begin
+        //Set Zero Page:00,Data1+Y
+        flags[SET_ADH_LOW] = 1;
+        flags[LOAD_ABH] = 1;
+        flags[SET_ADL_TO_ALU] = 1;
+        flags[LOAD_ABL] = 1;
+        
+        //Add carry carry_to_high_op to current data(Data2)
+        flags[SET_DB_TO_DATA] = 1;
+        flags[SET_INPUT_B_TO_DB] = 1;
+        
+        flags[SET_INPUT_A_TO_LOW] = 1;
+        flags[SET_ALU_CARRY_HIGH] = carry_to_high_op;
+
+        flags[LOAD_ALU] = 1;
+        flags[ALU_ADD] = 1;
+        
+    end else if(state == A3)begin
+        //Load data values:Data2+C,Data1+Y
+        flags[SET_ADH_TO_DATA] = 1;
+        flags[LOAD_ABH] = 1;
+        flags[SET_ADL_TO_ALU] = 1;
+        flags[LOAD_ABL] = 1;
+
+    end else begin
+        flags = 0;
+    end
+end
+endmodule
