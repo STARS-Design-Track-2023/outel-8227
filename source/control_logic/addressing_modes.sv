@@ -208,3 +208,30 @@ always_comb begin
     end
 end
 endmodule
+
+module ZPG_Y
+(
+    input logic [3:0] state,
+    input logic [7:0] opCode,
+    output logic [NUMFLAGS:0] flags
+);
+
+always_comb begin
+    if(state == A0)begin
+        //Add data to X
+        flags[ALU_ADD] = 1;
+        flags[SET_DB_TO_DATA] = 1;
+        flags[SET_INPUT_B_TO_DB] = 1;
+        flags[SET_SB_TO_Y] = 1;
+        flags[SET_INPUT_A_TO_SB] = 1;
+    end else if(state == A1)begin
+        //Set Zero Page
+        flags[SET_ADH_LOW] = 1;
+        flags[SET_ADL_TO_ALU] = 1;
+        flags[LOAD_ABH] = 1;
+        flags[LOAD_ABL] = 1;
+    end else begin
+        flags = 0;
+    end
+end
+endmodule
