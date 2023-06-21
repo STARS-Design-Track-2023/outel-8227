@@ -19,7 +19,21 @@ module programCL(
         end
     end
 
+    //next state logic
     always_comb begin
+        PCL_internal_next = PCL_internal;
+
+        if(increment && PCL_PCL) PCL_internal_next = PCL_internal + 1;
+        if(decrement && PCL_PCL) PCL_internal_next = PCL_internal - 1;
+        if(ADL_PCL) PCL_internal_next = ADL_in;
+    end
+
+    //output logic
+    always_comb begin
+        DB_out = 8'bzzzzzzzz;
+        ADL_out = 8'bzzzzzzzz;
+        PCLC = 0;
+
         if()
     end
 endmodule
