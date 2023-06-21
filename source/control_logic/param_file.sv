@@ -1,3 +1,24 @@
+/*STANDARDS
+* ACC = Accumulator
+* ADL = Internal Address bus low
+* ADH = Internal Address bus high
+* ABL = External Address bus low register
+* ABH = External Address bus high register
+* PC  = Program Counter
+* PCL = Program Counter Low
+* PCH = Program Counter High
+* DB  = Internal Data Bus
+* DATA= External Data Bus
+* X   = Register X
+* Y   = Register Y
+* SB  = Stack Bus
+* Input_B and Input_A are ALU inputs
+* PC_INC and PC_DEC increment and decrement
+* A0-A3 are steps in the addressing states
+* SET_"NAME"_TO_"THING" means that bus "NAME" is being driven by "THING"
+* For example SET_ADL_TO_DATA means Internal Address bus low is set to External Data Bus
+* LOAD_"REG" means load registor(source does not need to specified).
+*/
 parameter NUMFLAGS = 40;
 parameter SET_ADH_LOW = 0;
 parameter SET_ADL_TO_DATA = 1;
@@ -18,10 +39,15 @@ parameter SET_SB_TO_Y = 15;
 parameter SET_SB_TO_ACC = 16;
 parameter SET_SB_TO_ALU = 17;
 parameter ALU_ADD = 18;
+parameter SET_INPUT_A_TO_LOW = 19;
+parameter SET_ALU_CARRY_HIGH = 20;
+parameter SET_ADH_TO_DATA = 21;
+parameter SET_ACC_TO_DB = 22;
+parameter LOAD_ALU = 23;
+parameter LOAD_X = 24;
+parameter LOAD_Y = 25;
 
 parameter A0 = 4'b000;
 parameter A1 = 4'b001;
 parameter A2 = 4'b010;
 parameter A3 = 4'b011;
-parameter A4 = 4'b100;
-parameter A5 = 4'b101;
