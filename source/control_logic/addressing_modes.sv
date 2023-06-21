@@ -231,13 +231,15 @@ always_comb begin
     end else if(state == A1)begin
         //Set Zero Page
         flags[SET_ADH_LOW] = 1;
-        flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABH] = 1;
+        flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
         //Increment position through ALU
+          //bring ALU output to B
         flags[SET_SB_TO_ALU] = 1;
-        flags[SET_SB_TO_DB] = 1;
+        flags[SET_DB_TO_SB] = 1;
         flags[SET_INPUT_B_TO_DB] = 1;
+          //Add B to 1
         flags[SET_INPUT_A_TO_LOW] = 1;
         flags[SET_ALU_CARRY_HIGH] = 1;
         flags[ALU_ADD] = 1;
