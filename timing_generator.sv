@@ -1,6 +1,6 @@
 module timingGenerator (
     input logic start, clk,
-    input logic [2:0] addressTimingCode, opTimingCode
+    input logic [2:0] addressTimingCode, opTimingCode,
     output logic [2:0] TimeOut
 );
 logic [2:0] nextTime;
