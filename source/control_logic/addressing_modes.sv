@@ -6,9 +6,7 @@ module Imediate
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
-
 assign flags = 0;
-
 endmodule
 
 module Implied
@@ -17,9 +15,7 @@ module Implied
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
-
 assign flags = 0;
-
 endmodule
 
 module ZPG
