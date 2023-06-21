@@ -48,6 +48,11 @@ parameter LOAD_X = 24;
 parameter LOAD_Y = 25;
 parameter SET_DB_TO_SB = 26;
 parameter SET_ACC_TO_SB = 27;
+parameter ALU_ROT = 28;
+parameter ALU_XOR = 29;
+parameter ALU_OR = 30;
+parameter ALU_AND = 31;
+
 
 parameter A0 = 4'b000;
 parameter A1 = 4'b001;
