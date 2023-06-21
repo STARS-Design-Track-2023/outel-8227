@@ -1,4 +1,4 @@
-module StackPointerRegister
+module stackPointerRegister
 #(
   parameter defaultValue = 8'b0
 )

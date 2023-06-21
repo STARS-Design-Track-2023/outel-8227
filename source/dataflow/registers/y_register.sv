@@ -1,4 +1,4 @@
-module YRegister
+module yRegister
 #(
   parameter defaultValue = 8'b0
 )

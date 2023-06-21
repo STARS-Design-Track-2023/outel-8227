@@ -1,4 +1,4 @@
-module XRegister
+module xRegister
 #(
   parameter defaultValue = 8'b0
 )

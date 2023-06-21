@@ -1,4 +1,4 @@
-module AccumulatorRegister
+module accumulatorRegister
 #(
   parameter defaultValue = 8'b0
 )

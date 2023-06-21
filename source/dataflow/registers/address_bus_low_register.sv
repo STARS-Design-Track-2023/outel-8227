@@ -1,4 +1,4 @@
-module AddressBusLowRegister
+module addressBusLowRegister
 #(
   parameter defaultValue = 8'b0
 )

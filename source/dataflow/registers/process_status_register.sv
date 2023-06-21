@@ -1,4 +1,4 @@
-module ProcessStatusRegister
+module processStatusRegister
 #(
   parameter defaultValue = 8'b0
 )

@@ -1,4 +1,4 @@
-module DataBusOutputRegister
+module dataBusOutputRegister
 #(
   parameter defaultValue = 8'b0
 )
