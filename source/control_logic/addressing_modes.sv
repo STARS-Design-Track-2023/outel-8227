@@ -95,7 +95,7 @@ end
 endmodule
 
 module Absolute_X(
-    input logic state[3:0],
+    input logic [3:0] state,
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
