@@ -52,6 +52,8 @@ parameter ALU_ROT = 28;
 parameter ALU_XOR = 29;
 parameter ALU_OR = 30;
 parameter ALU_AND = 31;
+parameter SET_DB_HIGH = 32;
+parameter SET_DB_TO_ACC = 33;
 
 
 parameter A0 = 4'b000;
