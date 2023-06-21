@@ -190,18 +190,6 @@ module ZPG_X
 );
 
 always_comb begin
-    if(state == 4'b0001)begin
-        //go to zero page
-        flags[SET_ADH_LOW] = 1;
-        flags[SET_ADL_TO_DATA] = 1;
-        flags[LOAD_ABH] = 1;
-        flags[LOAD_ABL] = 1;
-    end else begin
-        flags = 0;
-    end
-end
-
-always_comb begin
     if(state == A0)begin
         //Add data to X
         flags[ALU_ADD] = 1;
