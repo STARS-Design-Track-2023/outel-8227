@@ -47,6 +47,7 @@ parameter LOAD_ALU = 23;
 parameter LOAD_X = 24;
 parameter LOAD_Y = 25;
 parameter SET_DB_TO_SB = 26;
+parameter SET_ACC_TO_SB = 27;
 
 parameter A0 = 4'b000;
 parameter A1 = 4'b001;

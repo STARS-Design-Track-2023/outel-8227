@@ -26,14 +26,13 @@ module ZPG
 );
 
 always_comb begin
+    flags = 0;
     if(state == A0)begin
         //go to zero page
         flags[SET_ADH_LOW] = 1;
         flags[SET_ADL_TO_DATA] = 1;
         flags[LOAD_ABH] = 1;
         flags[LOAD_ABL] = 1;
-    end else begin
-        flags = 0;
     end
 end
 endmodule
@@ -45,6 +44,7 @@ module Absolute(
 );
 
 always_comb begin
+    flags = 0;
     if(state == A0)begin
         //update address 
         flags[PC_INC] = 1;
@@ -64,8 +64,7 @@ always_comb begin
         flags[SET_SB_TO_DB] = 1;
         flags[SET_ADH_TO_SB] = 1;
         flags[LOAD_ABH] = 1;
-    end else 
-        flags = 0;
+    end
 end
 endmodule
 
@@ -76,6 +75,7 @@ module Absolute_X(
 );
 
 always_comb begin
+    flags = 0;
     if(state == A0)begin
         //Increment position
         flags[PC_INC] = 1;
@@ -106,9 +106,7 @@ always_comb begin
         flags[SET_SB_TO_ALU] = 1;
         flags[SET_ADH_TO_SB] = 1;
         flags[LOAD_ABH] = 1;
-    end else begin
-        flags = 0;
-    end
+    end 
 end
 endmodule
 
@@ -119,6 +117,7 @@ module Absolute_Y(
 );
 
 always_comb begin
+    flags = 0;
     if(state == A0)begin
         //Increment position
         flags[PC_INC] = 1;
@@ -149,8 +148,6 @@ always_comb begin
         flags[SET_SB_TO_ALU] = 1;
         flags[SET_ADH_TO_SB] = 1;
         flags[LOAD_ABH] = 1;
-    end else begin
-        flags = 0;
     end
 end
 endmodule
@@ -163,6 +160,7 @@ module ZPG_X
 );
 
 always_comb begin
+    flags = 0;
     if(state == A0)begin
         //Add data to X
         flags[LOAD_ALU] = 1;
@@ -177,8 +175,6 @@ always_comb begin
         flags[LOAD_ABH] = 1;
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
-    end else begin
-        flags = 0;
     end
 end
 endmodule
@@ -191,6 +187,7 @@ module ZPG_Y
 );
 
 always_comb begin
+    flags = 0;
     if(state == A0)begin
         //Add data to Y
         flags[LOAD_ALU] = 1;
@@ -205,9 +202,7 @@ always_comb begin
         flags[LOAD_ABH] = 1;
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
-    end else begin
-        flags = 0;
-    end
+    end 
 end
 endmodule
 
@@ -218,6 +213,7 @@ module Indrect_X(
 );
 
 always_comb begin
+    flags = 0;
     if(state == A0)begin
         //Increment PC
         flags[PC_INC] = 1;
@@ -262,8 +258,6 @@ always_comb begin
         flags[LOAD_ABH] = 1;
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
-    end else begin
-        flags = 0;
     end
 end
 endmodule
@@ -277,6 +271,7 @@ module Indrect_Y(
 );
 
 always_comb begin
+    flags = 0;
     if(state == A0)begin
         //Set Zero Page:00,Data0
         flags[SET_ADH_LOW] = 1;
@@ -337,9 +332,6 @@ always_comb begin
         flags[LOAD_ABH] = 1;
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
-
-    end else begin
-        flags = 0;
     end
 end
 endmodule
