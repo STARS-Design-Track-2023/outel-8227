@@ -1,8 +1,9 @@
 module decoder (
     input logic [7:0] opcode,
     output logic [2:0] addressTimingCode, opTimingCode,
-    output logic [???:0] CMD,
-    output logic [???:0] ADDRESS
+    output logic [56:0] CMD,
+    
+    output logic [26:0] ADDRESS
 );
 
     always_comb begin : comb_decoder
@@ -20,7 +21,7 @@ module decoder (
                 3'b000:
                     case(a)
                         3'b000: begin
-                             CMD=BRK;
+                             CMD[BRK]=1'b1;
                              ADDRESS=impl;
                         end
                         3'b001: begin
@@ -28,7 +29,7 @@ module decoder (
                              ADDRESS=abs;
                         end
                         3'b010: begin
-                             CMD=RTI;
+                             CMD[RTI]=1'b1;
                              ADDRESS=impl;
                         end
                         3'b011: begin
@@ -44,7 +45,7 @@ module decoder (
                              ADDRESS=?;
                         end
                         3'b111: begin
-                             CMD=CPX;
+                             CMD[CPX]=1'b1;
                              ADDRESS=?;
                         end
                     endcase
@@ -52,181 +53,181 @@ module decoder (
                 3'b001:
                     ADDRESS=zpg
                     casez(a)
-                        3'b00?: CMD=BIT;
-                        3'b100: CMD=STY;
-                        3'b101: CMD=LDY;
-                        3'b110: CMD=CPY;
-                        3'b111: CMD=CPX;
+                        3'b00?: CMD[BIT]=1'b1;
+                        3'b100: CMD[STY]=1'b1;
+                        3'b101: CMD[LDY]=1'b1;
+                        3'b110: CMD[CPY]=1'b1;
+                        3'b111: CMD[CPX]=1'b1;
 
                 3'b010: begin
                     ADDRESS=impl
                     case(a)
-                        3'b000: CMD=PHP;
-                        3'b001: CMD=PLP;
-                        3'b010: CMD=PHA;
-                        3'b011: CMD=PLA;
-                        3'b100: CMD=DEY;
-                        3'b101: CMD=TAY;
-                        3'b110: CMD=INY;
-                        3'b111: CMD=INX;
+                        3'b000: CMD[PHP]=1'b1;
+                        3'b001: CMD[PLP]=1'b1;
+                        3'b010: CMD[PHA]=1'b1;
+                        3'b011: CMD[PLA]=1'b1;
+                        3'b100: CMD[DEY]=1'b1;
+                        3'b101: CMD[TAY]=1'b1;
+                        3'b110: CMD[INY]=1'b1;
+                        3'b111: CMD[INX]=1'b1;
                     endcase
                 end
                 3'b011: begin
                     ADDRESS=abs
                     case(a)
-                        3'b001: CMD=BIT;
-                        3'b010: CMD=JMP;
+                        3'b001: CMD[BIT]=1'b1;
+                        3'b010: CMD[JMP]=1'b1;
                         3'b011: begin
-                             CMD=JMP;
+                             CMD[JMP]=1'b1;
                              ADDRESS=ind; // only one with a different address
                         end
-                        3'b100: CMD=STY;
-                        3'b101: CMD=LDY;
-                        3'b110: CMD=CPY;
-                        3'b111: CMD=CPX;
+                        3'b100: CMD[STY]=1'b1;
+                        3'b101: CMD[LDY]=1'b1;
+                        3'b110: CMD[CPY]=1'b1;
+                        3'b111: CMD[CPX]=1'b1;
                 end
                 3'b100: begin
-                    ADDRESS=rel
+                    ADDRESS[rel]=1'b1
                     case(a)
-                        3'b000: CMD=BPL;
-                        3'b001: CMD=BMI;
-                        3'b010: CMD=BVC;
-                        3'b011: CMD=BVS;
-                        3'b100: CMD=BCC;
-                        3'b101: CMD=BCS;
-                        3'b110: CMD=BNE;
-                        3'b111: CMD=BEQ;
+                        3'b000: CMD[BPL]=1'b1;
+                        3'b001: CMD[BMI]=1'b1;
+                        3'b010: CMD[BVC]=1'b1;
+                        3'b011: CMD[BVS]=1'b1;
+                        3'b100: CMD[BCC]=1'b1;
+                        3'b101: CMD[BCS]=1'b1;
+                        3'b110: CMD[BNE]=1'b1;
+                        3'b111: CMD[BEQ]=1'b1;
                 end
                 3'b101: begin
                     ADDRESS=zpg,X;
                     case(a)
-                        3'b100: CMD=STY;
-                        3'b101: CMD=LDY;
+                        3'b100: CMD[STY]=1'b1;
+                        3'b101: CMD[LDY]=1'b1;
                 3'b110: begin
                     ADDRESS=impl
                     case(a)
-                        3'b000: CMD=CLC;
-                        3'b001: CMD=SEC;
-                        3'b010: CMD=CLI;
-                        3'b011: CMD=SEI;
-                        3'b100: CMD=TYA;
-                        3'b101: CMD=CLV;
-                        3'b110: CMD=CLD;
-                        3'b111: CMD=SED;
+                        3'b000: CMD[CLC]=1'b1;
+                        3'b001: CMD[SEC]=1'b1;
+                        3'b010: CMD[CLI]=1'b1;
+                        3'b011: CMD[SEI]=1'b1;
+                        3'b100: CMD[TYA]=1'b1;
+                        3'b101: CMD[CLV]=1'b1;
+                        3'b110: CMD[CLD]=1'b1;
+                        3'b111: CMD[SED]=1'b1;
                 3'b111: begin
                     ADDRESS=abs,X;
                     CMD=LDY;
                 
         2'b01:  begin
             case(b)
-                3'b000: ADDRESS=IND;
-                3'b001: ADDRESS=ZPG;
-                3'b010: ADDRESS=?;
-                3'b011: ADDRESS=abs;
-                3'b100: ADDRESS=ind;
-                3'b101: ADDRESS=zpg,X;
-                3'b110: ADDRESS=abs,Y;
-                3'b111: ADDRESS=abs,X;
+                3'b000: ADDRESS[IND]=1'b1;
+                3'b001: ADDRESS[ZPG]=1'b1;
+                3'b010: ADDRESS[?]=1'b1;
+                3'b011: ADDRESS[abs]=1'b1;
+                3'b100: ADDRESS[ind]=1'b1;
+                3'b101: ADDRESS[zpgX;]=1'b1
+                3'b110: ADDRESS[absY;]=1'b1
+                3'b111: ADDRESS[absX;]=1'b1
             case(c)
-                3'b000: CMD=ORA;
-                3'b001: CMD=AND;
-                3'b010: CMD=EOR;
-                3'b011: CMD=ADC;
-                3'b100: CMD=STA;
-                3'b101: CMD=LDA;
-                3'b110: CMD=CMP;
-                3'b111: CMD=SBC;
+                3'b000: CMD[ORA]=1'b1;
+                3'b001: CMD[AND]=1'b1;
+                3'b010: CMD[EOR]=1'b1;
+                3'b011: CMD[ADC]=1'b1;
+                3'b100: CMD[STA]=1'b1;
+                3'b101: CMD[LDA]=1'b1;
+                3'b110: CMD[CMP]=1'b1;
+                3'b111: CMD[SBC]=1'b1;
  
         2'b10: begin
             case(b)
                 3'b000: begin
                              ADDRESS=?;
-                             CMD=LDX;
+                             CMD[LDX]=1'b1;
                         end
                 3'b001: begin
                 ADDRESS=zpg
                     case(c)
-                        3'b000: CMD=ASL;
-                        3'b001: CMD=ROL;
-                        3'b010: CMD=LSR;
-                        3'b011: CMD=ROR;
-                        3'b100: CMD=STX;
-                        3'b101: CMD=LDX;
-                        3'b110: CMD=DEC;
-                        3'b111: CMD=INC;
+                        3'b000: CMD[ASL]=1'b1;
+                        3'b001: CMD[ROL]=1'b1;
+                        3'b010: CMD[LSR]=1'b1;
+                        3'b011: CMD[ROR]=1'b1;
+                        3'b100: CMD[STX]=1'b1;
+                        3'b101: CMD[LDX]=1'b1;
+                        3'b110: CMD[DEC]=1'b1;
+                        3'b111: CMD[INC]=1'b1;
                 3'b010: begin
                     case(c)
-                        3'b000: CMD=ASL;
-                        3'b001: CMD=ROL;
-                        3'b010: CMD=LSR;
-                        3'b011: CMD=ROR;
-                        3'b100: CMD=TXA;
-                        3'b101: CMD=TAX;
-                        3'b110: CMD=DEX;
-                        3'b111: CMD=NOP;
+                        3'b000: CMD[ASL]=1'b1;
+                        3'b001: CMD[ROL]=1'b1;
+                        3'b010: CMD[LSR]=1'b1;
+                        3'b011: CMD[ROR]=1'b1;
+                        3'b100: CMD[TXA]=1'b1;
+                        3'b101: CMD[TAX]=1'b1;
+                        3'b110: CMD[DEX]=1'b1;
+                        3'b111: CMD[NOP]=1'b1;
                 3'b011: begin
                 ADDRESS=abs
                     case(c)
-                        3'b000: CMD=ASL;
-                        3'b001: CMD=ROL;
-                        3'b010: CMD=LSR;
-                        3'b011: CMD=ROR;
-                        3'b100: CMD=STX;
-                        3'b101: CMD=LDX;
-                        3'b110: CMD=DEC;
-                        3'b111: CMD=INC;
+                        3'b000: CMD[ASL]=1'b1;
+                        3'b001: CMD[ROL]=1'b1;
+                        3'b010: CMD[LSR]=1'b1;
+                        3'b011: CMD[ROR]=1'b1;
+                        3'b100: CMD[STX]=1'b1;
+                        3'b101: CMD[LDX]=1'b1;
+                        3'b110: CMD[DEC]=1'b1;
+                        3'b111: CMD[INC]=1'b1;
                 3'b101: begin
                     case(c)
                         3'b000: begin
                              CMD=ASL;
-                             ADDRESS=zpg,X;
+                             ADDRESS=zpgX;
                         end
                         3'b001: begin
-                             CMD=ROL;
-                             ADDRESS=zpg,X
+                             CMD[ROL]=1'b1;
+                             ADDRESS=zpgX
                         end
                         3'b010: begin
-                             CMD=LSR;
-                             ADDRESS=zpg,X
+                             CMD[LSR]=1'b1;
+                             ADDRESS=zpgX
                         end
                         3'b011: begin
-                             CMD=ROR;
-                             ADDRESS=zpg,X
+                             CMD[ROR]=1'b1;
+                             ADDRESS=zpgX
                         end
                         3'b100: begin
-                             CMD=STX;
-                             ADDRESS=zpg,Y
+                             CMD[STX]=1'b1;
+                             ADDRESS=zpgY
                         end
                         3'b101: begin
-                             CMD=LDX;
-                             ADDRESS=zpg,Y
+                             CMD[LDX]=1'b1;
+                             ADDRESS=zpgY
                         end
                         3'b110: begin
-                             CMD=DEC;
-                             ADDRESS=zpg,X
+                             CMD[DEC]=1'b1;
+                             ADDRESS=zpgX
                         end
                         3'b111: begin
-                             CMD=INC;
-                             ADDRESS=zpg,X
+                             CMD[INC]=1'b1;
+                             ADDRESS=zpgX
                         end
                     endcase
                 end
                 3'b110: begin
                     ADDRESS=impl
                     case(c)
-                        3'b100: CMD=TXS;
-                        3'b101: CMD=TSX;
+                        3'b100: CMD[TXS]=1'b1;
+                        3'b101: CMD[TSX]=1'b1;
                     endcase
                 3'b111: begin 
                     ABS,X
                     case(c)
-                        3'b000: CMD=ASL;
-                        3'b001: CMD=ROL;
-                        3'b010: CMD=LSR;
-                        3'b011: CMD=ROR;
-                        3'b101: CMD=LDX;
-                        3'b110: CMD=DEC;
-                        3'b111: CMD=INC;
+                        3'b000: CMD[ASL]=1'b1;
+                        3'b001: CMD[ROL]=1'b1;
+                        3'b010: CMD[LSR]=1'b1;
+                        3'b011: CMD[ROR]=1'b1;
+                        3'b101: CMD[LDX]=1'b1;
+                        3'b110: CMD[DEC]=1'b1;
+                        3'b111: CMD[INC]=1'b1;
                     endcase
     end
 
