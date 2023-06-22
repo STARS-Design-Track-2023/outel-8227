@@ -6,7 +6,6 @@ module Imediate
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
-assign flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
 endmodule
 
 module Implied
@@ -15,13 +14,13 @@ module Implied
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
-assign flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
 endmodule
 
 module ZPG
 (
     input logic [1:0] state,
     input logic [7:0] opCode,
+    input logic IS_STORE_ACC_INSTRUCT, IS_STORE_X_INSTRUCT, IS_STORE_Y_INSTRUCT,
     output logic [NUMFLAGS:0] flags
 );
 
@@ -47,6 +46,7 @@ endmodule
 module Absolute(
     input logic [1:0] state,
     input logic [7:0] opCode,
+    input logic IS_STORE_ACC_INSTRUCT, IS_STORE_X_INSTRUCT, IS_STORE_Y_INSTRUCT,
     output logic [NUMFLAGS:0] flags
 );
 
@@ -82,6 +82,7 @@ endmodule
 module Absolute_X(
     input logic [1:0] state,
     input logic [7:0] opCode,
+    input logic IS_STORE_ACC_INSTRUCT, IS_STORE_X_INSTRUCT, IS_STORE_Y_INSTRUCT,
     output logic [NUMFLAGS:0] flags
 );
 
@@ -127,6 +128,7 @@ endmodule
 module Absolute_Y(
     input logic [1:0] state,
     input logic [7:0] opCode,
+    input logic IS_STORE_ACC_INSTRUCT, IS_STORE_X_INSTRUCT, IS_STORE_Y_INSTRUCT,
     output logic [NUMFLAGS:0] flags
 );
 
@@ -173,6 +175,7 @@ module ZPG_X
 (
     input logic [1:0] state,
     input logic [7:0] opCode,
+    input logic IS_STORE_ACC_INSTRUCT, IS_STORE_X_INSTRUCT, IS_STORE_Y_INSTRUCT,
     output logic [NUMFLAGS:0] flags
 );
 
@@ -206,6 +209,7 @@ module ZPG_Y
 (
     input logic [1:0] state,
     input logic [7:0] opCode,
+    input logic IS_STORE_ACC_INSTRUCT, IS_STORE_X_INSTRUCT, IS_STORE_Y_INSTRUCT,
     output logic [NUMFLAGS:0] flags
 );
 
@@ -238,6 +242,7 @@ endmodule
 module Indrect_X(
     input logic [1:0] state,
     input logic [7:0] opCode,
+    input logic IS_STORE_ACC_INSTRUCT, IS_STORE_X_INSTRUCT, IS_STORE_Y_INSTRUCT,
     output logic [NUMFLAGS:0] flags
 );
 
@@ -298,6 +303,7 @@ module Indrect_Y(
     input logic [1:0] state,
     input logic [7:0] opCode,
     input logic carry_to_high_op,
+    input logic IS_STORE_ACC_INSTRUCT, IS_STORE_X_INSTRUCT, IS_STORE_Y_INSTRUCT,
     output logic [NUMFLAGS:0] flags,
     output logic carry_from_low_op
 );
