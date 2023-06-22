@@ -3,7 +3,7 @@
 /*
 * Finished Modules:
 * 1. Single byte instructions: ALL, BUT THE FLAGS ARE NOT DONE!!!!!!!!!!!!!!!!!!!!!!!!
-* 2. Internal Execution on Memory Data: ADC, AND
+* 2. Internal Execution on Memory Data: ALL
 * 3. Store Operations: ALL
 * 4. Read Modify Write: none
 * 5. Misc.: none
@@ -1278,4 +1278,134 @@ always_comb begin
     endcase
 end
 
+endmodule
+
+module LDA(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0:  begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Get Data to ACC
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_SB_TO_DB] = 1;
+            flags[LOAD_ACC] = 1;
+
+            //Set PSR FLAGS
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
+
+        end
+        T1: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+endmodule
+
+module LDX(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0:  begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Get Data to ACC
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_SB_TO_DB] = 1;
+            flags[LOAD_X] = 1;
+
+            //Set PSR FLAGS
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
+
+        end
+        T1: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+endmodule
+
+
+module LDY(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0:  begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Get Data to ACC
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_SB_TO_DB] = 1;
+            flags[LOAD_Y] = 1;
+
+            //Set PSR FLAGS
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
+
+        end
+        T1: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
 endmodule
