@@ -1,6 +1,7 @@
 module internalDataflow(
     input logic nrst, clk,
     input logic flags[100:0],
+    input logic [7:0] externalDBRead,
     output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput
 );
     //outputs from registers
@@ -21,45 +22,50 @@ module internalDataflow(
                 dorRegToExternalDB, //DOR Register Outputs
                 pcIncrementerToPchReg, pcIncrementerToPclReg;//PCIncrementer Outputs
                 adlADHIncrementerToPchReg, adlADHIncrementerToPclReg,//PCIncrementer Outputs from the ADH,ADL lines
-                aluOutput, aluCarryOut, aluOverflowOut; //Output line from ALU
+                aluOutput, aluCarryOut, aluOverflowOut, //Output line from ALU
+                psrRegToLogicController, psrRegToDB,//Output from Process Status Register
+                dbPresetOutput, sbPresetOutput, adlPresetOutput, adhPresetOutput,//Preset Outputs
+                sbToADH, adhToSB,//SB/ADH Bridge Outputs
+                sbToDB, dbToSB,//SB/DB Bridge Outputs
+                dataToDB, dataToADL, dataToADH;//External DB Interface Outputs
 
     
     //current bus lines to be used as inputs to registers and other modules
     logic [7:0] dataBus, addressLowBus, addressHighBus, stackBus;
     
     internalBus #(
-        .INPUT_COUNT(3)
+        .INPUT_COUNT(5)
     ) dataBusModule (
         .nrst(nrst),
         .clk(clk),
-        .busInputs({pchRegToDB, pclRegToDB, accRegToDB}),
+        .busInputs({dbPresetOutput, psrRegToDB, pchRegToDB, pclRegToDB, accRegToDB}),
         .busOutput(dataBus)
     );
 
     internalBus #(
-        .INPUT_COUNT(3)
+        .INPUT_COUNT(4)
     ) addressLowBusModule (
         .nrst(nrst),
         .clk(clk),
-        .busInputs({stackPointerRegToADL, aluRegToADL, pclRegToADL}),
+        .busInputs({adlPresetOutput, stackPointerRegToADL, aluRegToADL, pclRegToADL}),
         .busOutput(addressLowBus)
     );
 
     internalBus #(
-        .INPUT_COUNT(1)
+        .INPUT_COUNT(2)
     ) addressHighBusModule (
         .nrst(nrst),
         .clk(clk),
-        .busInputs({pchRegToADH}),
+        .busInputs({adhPresetOutput, pchRegToADH}),
         .busOutput(addressHighBus)
     );
 
     internalBus #(
-        .INPUT_COUNT(5)
+        .INPUT_COUNT(6)
     ) stackBus (
         .nrst(nrst),
         .clk(clk),
-        .busInputs({xRegToSB, yRegToSB, stackPointerRegToSB, aluRegToSB, accRegToSB}),
+        .busInputs({sbPresetOutput, xRegToSB, yRegToSB, stackPointerRegToSB, aluRegToSB, accRegToSB}),
         .busOutput(stackBus)
     );
 
@@ -245,8 +251,125 @@ module internalDataflow(
         .alu_out(aluOutput)
     );
 
+    // Process Status Register
+    processStatusRegisterWrapper psr(
+        .clk(clk),
+        .nrst(nrst),
+        .DB_in(dataBus),
+        .manual_set(flags[PSR_DATA_TO_LOAD]),
+        .carry(aluCarryOut),
+        .overflow(aluOverflowOut),
+        .DB0_C(flags[SET_PSR_C_TO_DB0]),
+        .DB1_Z(flags[SET_PSR_Z_TO_DB1]),
+        .DB2_I(flags[SET_PSR_I_TO_DB2]),
+        .DB3_D(flags[SET_PSR_D_TO_DB3]),
+        .DB6_V(flags[SET_PSR_V_TO_DB6]),
+        .DB7_N(flags[SET_PSR_N_TO_DB7]),
+        .manual_C(flags[LOAD_CARRY_PSR_FLAG]),
+        .manual_I(flags[LOAD_INTERUPT_PSR_FLAG]),
+        .manual_D(flags[LOAD_DECIMAL_PSR_FLAG]),
+        .carry_C(flags[SET_PSR_CARRY_TO_ALU_CARRY]),
+        .DBall_Z(flags[WRITE_ZERO_FLAG]),//NOR databus (equivalent to databus=0)
+        .overflow_V(flags[SET_PSR_OVERFLOW_TO_ALU_OVERFLOW]),//Flag to tell PSR to grab overflow from ALU
+        .rcl_V(flags[LOAD_OVERFLOW_PSR_FLAG]),//Flag to tell PSR to set overflow high
+        .break_set(SET_PSR_OUTPUT_BRK_HIGH),
+        .PSR_RCL(psrRegToLogicController),
+        .PSR_DB(psrRegToDB),
+        .enableDBWrite(flags[SET_DB_TO_PSR])
+    );
+
     //SB/ADH Bridge
+    bridge sbAdhBridge(
+        .input1(stackBus),
+        .input2(addressHighBus),
+        .output1(sbToADH),
+        .output2(adhToSB),
+        .setSide1ToSide2(1'b0),
+        .setSide2ToSide1(flags[SET_ADH_TO_SB])
+    );
 
     //SB/DB Bridge
+    bridge sbDbBridge(
+        .input1(stackBus),
+        .input2(dataBus),
+        .output1(sbToDB),
+        .output2(dbToSB),
+        .setSide1ToSide2(flags[SET_SB_TO_DB]), 
+        .setSide2ToSide1(flags[SET_DB_TO_SB])
+    );
+
+    //Data Bus Preset
+    busPreset dbPreset(
+        .set_FF(flags[SET_DB_HIGH]),
+        .set_FE(1'b0),
+        .set_FD(1'b0),
+        .set_FC(1'b0),
+        .set_FB(1'b0),
+        .set_FA(1'b0),
+        .set_00(1'b0),
+        .set_01(1'b0),
+        .bus_out(dbPresetOutput)
+    );
+
+    //Stack Bus Preset
+    busPreset sbPreset(
+        .set_FF(flags[SET_SB_HIGH]),
+        .set_FE(1'b0),
+        .set_FD(1'b0),
+        .set_FC(1'b0),
+        .set_FB(1'b0),
+        .set_FA(1'b0),
+        .set_00(1'b0),
+        .set_01(1'b0),
+        .bus_out(sbPresetOutput)
+    );
+
+    //ADL Preset
+    busPreset adlPreset(
+        .set_FF(flags[SET_ADL_FF]),
+        .set_FE(flags[SET_ADL_FE]),
+        .set_FD(flags[SET_ADL_FD]),
+        .set_FC(flags[SET_ADL_FC]),
+        .set_FB(flags[SET_ADL_FB]),
+        .set_FA(flags[SET_ADL_FA]),
+        .set_00(flags[SET_ADL_00]),
+        .set_01(1'b0),
+        .bus_out(adlPresetOutput)
+    );
+
+    //ADH Preset
+    busPreset adhPreset(
+        .set_FF(flags[SET_ADH_FF]),
+        .set_FE(1'b0),
+        .set_FD(1'b0),
+        .set_FC(1'b0),
+        .set_FB(1'b0),
+        .set_FA(1'b0),
+        .set_00(flags[SET_ADH_00]),
+        .set_01(flags[SET_ADL_01]),
+        .bus_out(adhPresetOutput)
+    );
+
+    //Input Latch to DB
+    busInterface externalDBToDB(
+        .interfaceInput(externalDBRead),
+        .enable(flags[SET_DB_TO_DATA]),
+        .interfaceOutput(dataToDB)
+    );
+
+    //Input Latch to ADL
+    busInterface externalDBToADL(
+        .interfaceInput(externalDBRead),
+        .enable(flags[SET_ADL_TO_DATA]),
+        .interfaceOutput(dataToADL)
+    );
+
+    //Input Latch to ADH
+    busInterface externalDBToADH(
+        .interfaceInput(externalDBRead),
+        .enable(flags[SET_ADH_TO_DATA]),
+        .interfaceOutput(dataToADH)
+    );
+
 
 endmodule
