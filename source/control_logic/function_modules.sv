@@ -1813,3 +1813,69 @@ always_comb begin
 end
     
 endmodule
+
+module PHP(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Decrement PC
+            flags[PC_DEC] = 1;
+
+            //Go to Stack
+            flags[SET_ADH_TO_ONE] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_SP] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Load PSR to DOR
+            flags[SET_DB_TO_PSR] = 1;
+        end
+        T1: begin
+            //write modified data
+            flags[SET_WRITE_FLAG] = 1;
+            
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Set input A to SP
+            flags[SET_SB_TO_SP] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+
+            //Set input B to FF
+            flags[SET_DB_HIGH] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+
+            //Add SP+FF = SP-1
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T2: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Set SP to SP-1
+            flags[SET_SB_TO_ALU] = 1;
+            flags[SET_SP_TO_SB] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule

@@ -78,6 +78,9 @@ parameter SET_BREAK_LOW = 53;
 parameter SET_BREAK_HIGH = 54;
 parameter SET_NEGATIVE_FLAG_LOW = 55;
 parameter SET_SB_TO_ADH = 56;
+parameter SET_ADH_TO_ONE = 57;
+parameter SET_DB_TO_PSR = 58;
+parameter SET_SP_TO_SB = 59;
 
 parameter A0 = 2'b00;
 parameter A1 = 2'b01;
