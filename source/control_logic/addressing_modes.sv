@@ -25,7 +25,7 @@ module ZPG
 );
 
 always_comb begin
-    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
+    flags = 0;
     if(state == A0)begin
         //go to zero page
         flags[SET_ADH_LOW] = 1;
@@ -34,11 +34,11 @@ always_comb begin
         flags[LOAD_ABL] = 1;
 
         //funky store stuff
-        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
-        flags[SET_DB_TO_SB] = flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
-        flags[SET_SB_TO_X] = flags[IS_STORE_X_INSTRUCT];
-        flags[SET_SB_TO_Y] = flags[IS_STORE_Y_INSTRUCT];
-        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT] | flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
+        flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
+        flags[SET_DB_TO_SB] = IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+        flags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
+        flags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
+        flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
     end
 end
 endmodule
@@ -51,7 +51,7 @@ module Absolute(
 );
 
 always_comb begin
-    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
+    flags = 0;
     if(state == A0)begin
         //update address 
         flags[PC_INC] = 1;
@@ -70,11 +70,11 @@ always_comb begin
         flags[SET_ADH_TO_DATA] = 1;
         flags[LOAD_ABH] = 1;
         //funky store stuff
-        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
-        flags[SET_DB_TO_SB] = flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
-        flags[SET_SB_TO_X] = flags[IS_STORE_X_INSTRUCT];
-        flags[SET_SB_TO_Y] = flags[IS_STORE_Y_INSTRUCT];
-        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT] | flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
+        flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
+        flags[SET_DB_TO_SB] = IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+        flags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
+        flags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
+        flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
     end
 end
 endmodule
@@ -87,7 +87,7 @@ module Absolute_X(
 );
 
 always_comb begin
-    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
+    flags = 0;
     if(state == A0)begin
         //Increment position
         flags[PC_INC] = 1;
@@ -119,8 +119,8 @@ always_comb begin
         flags[SET_ADH_TO_SB] = 1;
         flags[LOAD_ABH] = 1;
         //funky store stuff
-        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
-        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
+        flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
     end 
 end
 endmodule
@@ -133,7 +133,7 @@ module Absolute_Y(
 );
 
 always_comb begin
-    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
+    flags = 0;
     if(state == A0)begin
         //Increment position
         flags[PC_INC] = 1;
@@ -165,8 +165,8 @@ always_comb begin
         flags[SET_ADH_TO_SB] = 1;
         flags[LOAD_ABH] = 1;
         //funky store stuff
-        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
-        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
+        flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
     end
 end
 endmodule
@@ -180,7 +180,7 @@ module ZPG_X
 );
 
 always_comb begin
-    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
+    flags = 0;
     if(state == A0)begin
         //Add data to X
         flags[LOAD_ALU] = 1;
@@ -196,11 +196,11 @@ always_comb begin
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
         //funky store stuff
-        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
-        flags[SET_DB_TO_SB] = flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
-        flags[SET_SB_TO_X] = flags[IS_STORE_X_INSTRUCT];
-        flags[SET_SB_TO_Y] = flags[IS_STORE_Y_INSTRUCT];
-        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT] | flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
+        flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
+        flags[SET_DB_TO_SB] = IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+        flags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
+        flags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
+        flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
     end
 end
 endmodule
@@ -214,7 +214,7 @@ module ZPG_Y
 );
 
 always_comb begin
-    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
+    flags = 0;
     if(state == A0)begin
         //Add data to Y
         flags[LOAD_ALU] = 1;
@@ -230,11 +230,11 @@ always_comb begin
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
         //funky store stuff
-        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
-        flags[SET_DB_TO_SB] = flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
-        flags[SET_SB_TO_X] = flags[IS_STORE_X_INSTRUCT];
-        flags[SET_SB_TO_Y] = flags[IS_STORE_Y_INSTRUCT];
-        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT] | flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
+        flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
+        flags[SET_DB_TO_SB] = IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+        flags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
+        flags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
+        flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
     end 
 end
 endmodule
@@ -247,7 +247,7 @@ module Indrect_X(
 );
 
 always_comb begin
-    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
+    flags = 0;
     if(state == A0)begin
         //Increment PC
         flags[PC_INC] = 1;
@@ -293,8 +293,8 @@ always_comb begin
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
         //funky store stuff
-        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
-        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
+        flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
     end
 end
 endmodule
@@ -309,7 +309,7 @@ module Indrect_Y(
 );
 
 always_comb begin
-    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
+    flags = 0;
     if(state == A0)begin
         //Set Zero Page:00,Data0
         flags[SET_ADH_LOW] = 1;
@@ -368,8 +368,8 @@ always_comb begin
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
         //funky store stuff
-        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
-        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
+        flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
     end
     carry_from_low_op = 0;
 end
