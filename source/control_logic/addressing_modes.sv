@@ -33,6 +33,7 @@ always_comb begin
         flags[SET_ADL_TO_DATA] = 1;
         flags[LOAD_ABH] = 1;
         flags[LOAD_ABL] = 1;
+        flags[FINAL_ADDRESSING] = 1;
     end
 end
 endmodule
@@ -60,10 +61,9 @@ always_comb begin
         flags[LOAD_ABL] = 1;
         flags[SET_ADL_TO_ALU] = 1;
         //set high address
-        flags[SET_DB_TO_DATA] = 1;
-        flags[SET_SB_TO_DB] = 1;
-        flags[SET_ADH_TO_SB] = 1;
+        flags[SET_ADH_TO_DATA] = 1;
         flags[LOAD_ABH] = 1;
+        flags[FINAL_ADDRESSING] = 1;
     end
 end
 endmodule
