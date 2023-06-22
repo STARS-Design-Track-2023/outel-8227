@@ -17,21 +17,78 @@ module top (
   input  logic txready, rxready
 );
 
+  logic nrst;
+  assign nrst = ~pb[19];
+  logic [7:0] reg1Output;
+  logic [7:0] testBusValue;
+  
+  internalBus #(
+    .INPUT_COUNT(2'b1)
+  ) testBus (
+    .nrst(nrst),
+    .clk(hz100),
+    .busInputs(reg1Output),
+    .busOutput(testBusValue)
+  );
+  
   register #(
-    .INPUT_COUNT(2'd2), 
+    .INPUT_COUNT(2'd1), 
     .OUTPUT_COUNT(2'd1),
-    .DEFAULT_VALUE(8'b11111111)
-  ) testRegister(
-    .nrst(~pb[19]), .clk(hz100), 
-    .busInputs(pb[15:0]), 
+    .DEFAULT_VALUE(8'b10101010)
+  ) reg2 (
+    .nrst(nrst),
+    .clk(hz100), 
+    .busInputs(testBusValue), 
     .busOutputs(right), 
-    .busReadEnable(pb[18:17]), 
-    .busWriteEnable(pb[16]),
-    .debug(red)
+    .busReadEnable(pb[16]), 
+    .busWriteEnable(1'b1)
+  );
+  
+  register #(
+    .INPUT_COUNT(2'd1), 
+    .OUTPUT_COUNT(2'd2),
+    .DEFAULT_VALUE(8'b10101010)
+  ) reg1 (
+    .nrst(nrst),
+    .clk(hz100), 
+    .busInputs(pb[7:0]), 
+    .busOutputs({left,reg1Output}), 
+    .busReadEnable(pb[18]), 
+    .busWriteEnable({1'b1,pb[17]})
   );
 
 endmodule
 
+//If no input is high, then bus will default to zeroes
+module internalBus
+#(
+  parameter INPUT_COUNT = 0,
+  parameter INPUT_BIT_COUNT = 8*INPUT_COUNT
+)
+(
+  input logic nrst, clk,
+  input logic [INPUT_BIT_COUNT-1:0] busInputs, //Create 'input_count' bytes for input
+  output logic [7:0] busOutput //Create 'output_count' bytes for output
+);
+
+  //To join the inputs together generally, the following array will contain {[a0, a1, ... a7], [a0+b0..., a1+b1..., ... a7+b7...], [a0+b0+c0..., a1+b1+c1..., ... a7+b7+c7...]}
+  logic [INPUT_BIT_COUNT-1:0] accumulatedBytes;
+
+  //Set accumulatedBytes;
+  assign accumulatedBytes[7:0] = busInputs[7:0];//Initial condition/base case [a0,a1,a2,...,a7]
+  generate
+    //Recursive Step to fill readBytes
+    for(genvar i = 1; i < INPUT_COUNT; i++)
+    begin
+      //assign the i'th byte of accumulatedBytes to be the previous byte of accumulatedBytes ORed with the i'th byte of the filtered inputs
+      assign accumulatedBytes[8*(i+1)-1:8*i] = accumulatedBytes[8*(i)-1:8*(i-1)] | busInputs[8*(i+1)-1:8*i];
+    end
+  endgenerate
+
+  //Set muxOutput to be the final byte of accumulatedBytes (if no input is high, then bus is all zeroes)
+  assign busOutput = accumulatedBytes[8*(INPUT_COUNT)-1:8*(INPUT_COUNT)-8];
+  
+endmodule
 
 module busInterface(
   input logic [7:0] interfaceInput,
@@ -42,11 +99,11 @@ module busInterface(
     if(enable)
       interfaceOutput = interfaceInput;
     else
-      interfaceOutput = 8'bzzzzzzzz;
+      interfaceOutput = 8'b0;//These will be 'OR'd together and only assigned if one of the flags is writing
   end
 endmodule
 
-
+//If multiple read signals are high, then the output should be the bitwise OR of the two input buses
 module register
 #(
   parameter INPUT_COUNT = 0,
@@ -60,13 +117,19 @@ module register
   input logic [INPUT_BIT_COUNT-1:0] busInputs, //Create 'input_count' bytes for input
   output logic [OUTPUT_BIT_COUNT-1:0] busOutputs, //Create 'output_count' bytes for output
   input logic [INPUT_COUNT-1:0] busReadEnable, //create enable signals for each input
-  input logic [OUTPUT_COUNT-1:0] busWriteEnable, //create enable signals for each output
-  output logic debug
+  input logic [OUTPUT_COUNT-1:0] busWriteEnable //create enable signals for each output
 );
 
   logic [7:0] currentState, nextState;
-  logic [7:0] readByte;//This is the byte that every bus interface is reading to. (It kind of acts like one of the internal buses in dataflow)
+  
+  //This stores the bits that are supposed to write to the register (everything else is zero)
+  logic [INPUT_BIT_COUNT-1:0] filteredBytes;//[a0,a1,a2,...a7,b0,b1,b2,...b7,...] where a is one input, b is another,...
 
+  //To join the inputs together generally, the following array will contain {[a0, a1, ... a7], [a0+b0..., a1+b1..., ... a7+b7...], [a0+b0+c0..., a1+b1+c1..., ... a7+b7+c7...]}
+  logic [INPUT_BIT_COUNT-1:0] accumulatedBytes;
+  
+  logic [7:0] muxOutput;
+  
   //Generate the input busInterfaces
   generate
     for(genvar i = 0; i < INPUT_COUNT; i++)
@@ -75,9 +138,24 @@ module register
       //i=1 -> second 8 bits
       //...
       //One for each input signal
-      busInterface busInterface(.interfaceInput(busInputs[8*(i+1)-1:8*i]), .enable(busReadEnable[i]), .interfaceOutput(readByte));
+      busInterface busInterface(.interfaceInput(busInputs[8*(i+1)-1:8*i]), .enable(busReadEnable[i]), .interfaceOutput(filteredBytes[8*(i+1)-1:8*i]));
     end
   endgenerate
+
+
+  //Set accumulatedBytes;
+  assign accumulatedBytes[7:0] = filteredBytes[7:0];//Initial condition/base case [a0,a1,a2,...,a7]
+  generate
+    //Recursive Step to fill readBytes
+    for(genvar i = 1; i < INPUT_COUNT; i++)
+    begin
+      //assign the i'th byte of accumulatedBytes to be the previous byte of accumulatedBytes ORed with the i'th byte of the filtered inputs
+      assign accumulatedBytes[8*(i+1)-1:8*i] = accumulatedBytes[8*(i)-1:8*(i-1)] | filteredBytes[8*(i+1)-1:8*i];
+    end
+  endgenerate
+
+  //Set muxOutput to be the final byte of accumulatedBytes
+  assign muxOutput = accumulatedBytes[8*(INPUT_COUNT)-1:8*(INPUT_COUNT)-8];
 
   //Update the current state on the clock edge or the reset signal
   always_ff @(posedge clk, negedge nrst) begin
@@ -94,7 +172,7 @@ module register
   //if the bus is supposed to read a signal, then input the signal
   always_comb begin
     if(|busReadEnable)
-      nextState = readByte;
+      nextState = muxOutput;
     else
       nextState = currentState;
   end
