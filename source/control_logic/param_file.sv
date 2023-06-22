@@ -79,8 +79,9 @@ parameter SET_BREAK_HIGH = 54;
 parameter SET_NEGATIVE_FLAG_LOW = 55;
 parameter SET_SB_TO_ADH = 56;
 parameter SET_ADH_TO_ONE = 57;
-parameter SET_DB_TO_PSR = 58;
+parameter SET_DB_TO_PSR = 58; //NOTE: Break and bit 5 of the PSR when pushed are 1
 parameter SET_SP_TO_SB = 59;
+parameter SET_PSR_TO_DB = 60;
 
 parameter A0 = 2'b00;
 parameter A1 = 2'b01;

@@ -1834,6 +1834,7 @@ always_comb begin
 
             //Load PSR to DOR
             flags[SET_DB_TO_PSR] = 1;
+            flags[LOAD_DOR] = 1;
         end
         T1: begin
             //write modified data
@@ -1873,6 +1874,74 @@ always_comb begin
             //Set SP to SP-1
             flags[SET_SB_TO_ALU] = 1;
             flags[SET_SP_TO_SB] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module PLP(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Decrement PC
+            flags[PC_DEC] = 1;
+
+            //Set input B to SP
+            flags[SET_SB_TO_SP] = 1;
+            flags[SET_DB_TO_SB] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+
+            //Set A to 0
+            flags[SET_INPUT_A_TO_LOW] = 1;
+
+            //Add 1 to SP
+            flags[SET_ALU_CARRY_HIGH] = 1;
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T1: begin
+            //ALU to SP
+            flags[SET_SB_TO_ALU] = 1;
+            flags[SET_SP_TO_SB] = 1;
+
+            //ALU to ABL
+            flags[SET_ADL_TO_ALU] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //01 to ADH
+            flags[SET_ADH_TO_ONE] = 1;
+            flags[LOAD_ABH] = 1;
+        end
+        T2: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Set PSR
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_PSR_TO_DB] = 1;
+        end
+        T3: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
         end
         default: flags = 0;
     endcase
