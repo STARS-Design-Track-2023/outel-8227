@@ -27,8 +27,9 @@ module ALU(
         if(lda_zero) a = 8'b00000000;
     end
                                     
-    logic [8:0] sum;
-    logic [7:0] rot_buffer;                                    
+    logic [8:0] sum;                                    //buffer to hold sum and cout       
+    logic [7:0] rot_buffer;                             //buffer to hold shifted part of rotate
+
     always_comb begin                                   //NOTE: ALU is only directly responsible for outputting carry and overflow 
         alu_out = 0;                                    //default to 0
         carry_out = 0;
@@ -52,7 +53,7 @@ module ALU(
         if(e_shiftr) begin
             carry_out = a[0];
             rot_buffer = a >> 1;
-            alu_out = {carry_in, rot_buffer[6:0]}
+            alu_out = {carry_in, rot_buffer[6:0]};
         end
 
         if(enable_dec) begin
