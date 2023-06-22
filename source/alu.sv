@@ -29,6 +29,10 @@ module ALU(
                                     
     logic [8:0] sum;                                    //buffer to hold sum and cout       
     logic [7:0] rot_buffer;                             //buffer to hold shifted part of rotate
+   
+    logic [3:0] lo_nib, hi_nib;                         //for bcd ops
+    logic half_carry;
+    logic [7:0] bcd_buffer;
 
     always_comb begin                                   //NOTE: ALU is only directly responsible for outputting carry and overflow 
         alu_out = 0;                                    //default to 0
@@ -56,8 +60,57 @@ module ALU(
             alu_out = {carry_in, rot_buffer[6:0]};
         end
 
-        if(enable_dec) begin
+        if(enable_dec) begin                            //handle add/subtract in bcd
+            if(carry_in) begin
+                if(e_sum) begin
+                    bcd_buffer = a - b;
+                    lo_nib = bcd_buffer[3:0];
+                    hi_nib = bcd_buffer[7:4];
+                    if(lo_nib > 4'b1001) begin
+                        lo_nib = lo_nib + 4'b1010;
+                    end
+                    if(hi_nib > 4'b1001) begin
+                        hi_nib = hi_nib + 4'b1010;
+                        carry_out = 1;
+                    end
 
+                    alu_out = {hi_nib, lo_nib};
+                end
+
+            end else begin
+                if(e_sum) begin
+                    bcd_buffer = a + b;
+                    lo_nib = bcd_buffer[3:0];
+                    hi_nib = bcd_buffer[7:4];
+                    if(lo_nib > 4'b1001) begin
+                        lo_nib = lo_nib + 4'b0110;
+                    end
+                    if(hi_nib > 4'b1001) begin
+                        hi_nib = hi_nib + 4'b0110;
+                        carry_out = 1;
+                    end
+
+                    alu_out = {hi_nib, lo_nib};
+                end
+            end
         end
     end
 endmodule
+
+/*
+if(e_sum) begin
+                    lo_nib = a[3:0] + b[3:0];
+                    half_carry = 0;
+                    if(lo_nib > 4'b1001) begin
+                        lo_nib = lo_nib + 4'b0110;
+                        half_carry = 1;
+                    end
+
+                    hi_nib = a[7:4] + b[7:4] + {3'b000, half_carry};
+                    if(hi_nib > 4'b1001) begin
+                        hi_nib = hi_nib + 4'b0110;
+                        carry_out = 1;
+                    end
+
+                    alu_out = {hi_nib, lo_nib};
+*/
