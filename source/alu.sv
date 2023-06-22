@@ -26,11 +26,37 @@ module ALU(
         if(lda_sb) a = SB_input;
         if(lda_zero) a = 8'b00000000;
     end
+                                    
+    logic [8:0] sum;
+    logic [7:0] rot_buffer;                                    
+    always_comb begin                                   //NOTE: ALU is only directly responsible for outputting carry and overflow 
+        alu_out = 0;                                    //default to 0
+        carry_out = 0;
+        overflow = 0;
 
-    always_comb begin
-        if(e_sum) begin
-            alu_out = a + b + {7'b0000000, carry_in};
-            carry_out 
+        if(e_sum) begin                                 //handle addition with carry and overflow
+            sum = a + b + {7'b0000000, carry_in};
+            alu_out = sum[7:0];
+            carry_out = sum[8];
+            if(sum[8] ^ sum[7]) overflow = 1;
+        end
+        if(e_and) begin                                 //other ops are simple
+            alu_out = a & b;
+        end
+        if(e_eor) begin
+            alu_out = a ^ b;
+        end
+        if(e_or) begin
+            alu_out = a | b;
+        end
+        if(e_shiftr) begin
+            carry_out = a[0];
+            rot_buffer = a >> 1;
+            alu_out = {carry_in, rot_buffer[6:0]}
+        end
+
+        if(enable_dec) begin
+
         end
     end
 endmodule
