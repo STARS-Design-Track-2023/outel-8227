@@ -19,6 +19,9 @@ module ALU(
 
     logic [7:0] a, b;
     always_comb begin //comb to determine inputs
+        a = 0;
+        b = 0;
+
         if(ldb_inv_db) b = ~DB_input;
         if(ldb_db) b = DB_input;
         if(ldb_adl) b = ADL_input;
@@ -31,13 +34,17 @@ module ALU(
     logic [7:0] rot_buffer;                             //buffer to hold shifted part of rotate
    
     logic [3:0] lo_nib, hi_nib;                         //for bcd ops
-    logic half_carry;
     logic [7:0] bcd_buffer;
 
     always_comb begin                                   //NOTE: ALU is only directly responsible for outputting carry and overflow 
         alu_out = 0;                                    //default to 0
         carry_out = 0;
         overflow = 0;
+        sum = 0;
+        rot_buffer = 0;
+        lo_nib = 0;
+        hi_nib = 0;
+        bcd_buffer = 0;
 
         if(e_sum) begin                                 //handle addition with carry and overflow
             sum = a + b + {7'b0000000, carry_in};
@@ -96,21 +103,3 @@ module ALU(
         end
     end
 endmodule
-
-/*
-if(e_sum) begin
-                    lo_nib = a[3:0] + b[3:0];
-                    half_carry = 0;
-                    if(lo_nib > 4'b1001) begin
-                        lo_nib = lo_nib + 4'b0110;
-                        half_carry = 1;
-                    end
-
-                    hi_nib = a[7:4] + b[7:4] + {3'b000, half_carry};
-                    if(hi_nib > 4'b1001) begin
-                        hi_nib = hi_nib + 4'b0110;
-                        carry_out = 1;
-                    end
-
-                    alu_out = {hi_nib, lo_nib};
-*/
