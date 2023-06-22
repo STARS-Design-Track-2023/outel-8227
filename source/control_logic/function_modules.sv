@@ -17,7 +17,7 @@ module ASL_A(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000:  begin
+        T0:  begin
             //Set B and A to input data
             flags[SET_DB_TO_ACC] = 1;
             flags[SET_SB_TO_ACC] = 1;
@@ -28,7 +28,7 @@ always_comb begin
             flags[ALU_ADD] = 1;
             flags[LOAD_ALU] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -54,7 +54,7 @@ module ROL_A(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set B and A to input data
             flags[SET_DB_TO_ACC] = 1;
             flags[SET_SB_TO_ACC] = 1;
@@ -66,7 +66,7 @@ always_comb begin
             flags[ALU_ADD] = 1;
             flags[LOAD_ALU] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -92,7 +92,7 @@ module ROR_A(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set A to ACC
             flags[SET_SB_TO_ACC] = 1;
             flags[SET_INPUT_A_TO_SB] = 1;
@@ -102,7 +102,7 @@ always_comb begin
             flags[ALU_ROT] = 1;
             flags[LOAD_ALU] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -128,7 +128,7 @@ module LSR_A(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set A to ACC
             flags[SET_SB_TO_ACC] = 1;
             flags[SET_INPUT_A_TO_SB] = 1;
@@ -137,7 +137,7 @@ always_comb begin
             flags[ALU_ROT] = 1;
             flags[LOAD_ALU] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -163,7 +163,7 @@ module DEX(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set B and A to be FF and Y
             flags[SET_DB_HIGH] = 1;
             flags[SET_SB_TO_X] = 1;
@@ -174,7 +174,7 @@ always_comb begin
             flags[ALU_ADD] = 1;
             flags[LOAD_ALU] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -199,7 +199,7 @@ module DEY(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set B and A to be FF and Y
             flags[SET_DB_HIGH] = 1;
             flags[SET_SB_TO_Y] = 1;
@@ -210,7 +210,7 @@ always_comb begin
             flags[ALU_ADD] = 1;
             flags[LOAD_ALU] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -235,7 +235,7 @@ module INY(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set C B and A to be 1 Y and 0
             flags[SET_SB_TO_Y] = 1;
             flags[SET_DB_TO_SB] = 1;
@@ -247,7 +247,7 @@ always_comb begin
             flags[ALU_ADD] = 1;
             flags[LOAD_ALU] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -272,7 +272,7 @@ module INX(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set B and A to input data
             flags[SET_SB_TO_X] = 1;
             flags[SET_DB_TO_SB] = 1;
@@ -284,7 +284,7 @@ always_comb begin
             flags[ALU_ADD] = 1;
             flags[LOAD_ALU] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -309,10 +309,10 @@ module NOP(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -336,14 +336,14 @@ module TAX(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set signal on the stack bus
             flags[SET_SB_TO_ACC] = 1;
             
             //update registar
             flags[LOAD_X] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -366,14 +366,14 @@ module TAY(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set signal on the stack bus
             flags[SET_SB_TO_ACC] = 1;
             
             //update registar
             flags[LOAD_Y] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -396,14 +396,14 @@ module TSX(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set signal on the stack bus
             flags[SET_SB_TO_SP] = 1;
             
             //update registar
             flags[LOAD_X] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -426,14 +426,14 @@ module TXA(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set signal on the stack bus
             flags[SET_SB_TO_X] = 1;
             
             //update registar
             flags[LOAD_ACC] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -456,14 +456,14 @@ module TXS(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set signal on the stack bus
             flags[SET_SB_TO_X] = 1;
             
             //update registar
             flags[LOAD_SP] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -486,14 +486,14 @@ module TYA(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set signal on the stack bus
             flags[SET_SB_TO_Y] = 1;
             
             //update registar
             flags[LOAD_ACC] = 1;
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -516,13 +516,13 @@ module SEC(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set FLAG
             flags[PSR_DATA_TO_LOAD] = 1;
             flags[LOAD_CARRY_PSR_FLAG] = 1;
         
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -545,13 +545,13 @@ module SED(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set FLAG
             flags[PSR_DATA_TO_LOAD] = 1;
             flags[LOAD_DECIMAL_PSR_FLAG] = 1;
         
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -574,13 +574,13 @@ module SEI(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set FLAG
             flags[PSR_DATA_TO_LOAD] = 1;
             flags[LOAD_INTERUPT_PSR_FLAG] = 1;
         
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -603,13 +603,13 @@ module CLC(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set FLAG
             flags[PSR_DATA_TO_LOAD] = 1;
             flags[LOAD_CARRY_PSR_FLAG] = 0;
         
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -632,13 +632,13 @@ module CLD(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set FLAG
             flags[PSR_DATA_TO_LOAD] = 1;
             flags[LOAD_DECIMAL_PSR_FLAG] = 0;
         
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -661,13 +661,13 @@ module CLI(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set FLAG
             flags[PSR_DATA_TO_LOAD] = 1;
             flags[LOAD_INTERUPT_PSR_FLAG] = 0;
         
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -689,13 +689,13 @@ module CLV(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set FLAG
             flags[PSR_DATA_TO_LOAD] = 1;
             flags[LOAD_OVERFLOW_PSR_FLAG] = 0;
         
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;
@@ -717,12 +717,12 @@ module STO(
 always_comb begin
     flags = 0;
     case (state)
-        3'b000: begin
+        T0: begin
             //Set FLAG
             flags[SET_WRITE_FLAG] = 1;
         
         end
-        3'b001: begin
+        T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
             flags[SET_ADH_TO_PCH] = 1;

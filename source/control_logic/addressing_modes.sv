@@ -33,6 +33,8 @@ always_comb begin
         flags[SET_ADL_TO_DATA] = 1;
         flags[LOAD_ABH] = 1;
         flags[LOAD_ABL] = 1;
+
+        //funky store stuff
         flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
         flags[SET_DB_TO_SB] = flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
         flags[SET_SB_TO_X] = flags[IS_STORE_X_INSTRUCT];
@@ -67,7 +69,12 @@ always_comb begin
         //set high address
         flags[SET_ADH_TO_DATA] = 1;
         flags[LOAD_ABH] = 1;
-        
+        //funky store stuff
+        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[SET_DB_TO_SB] = flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
+        flags[SET_SB_TO_X] = flags[IS_STORE_X_INSTRUCT];
+        flags[SET_SB_TO_Y] = flags[IS_STORE_Y_INSTRUCT];
+        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT] | flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
     end
 end
 endmodule
@@ -110,7 +117,9 @@ always_comb begin
         flags[SET_SB_TO_ALU] = 1;
         flags[SET_ADH_TO_SB] = 1;
         flags[LOAD_ABH] = 1;
-        
+        //funky store stuff
+        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT];
     end 
 end
 endmodule
@@ -153,6 +162,9 @@ always_comb begin
         flags[SET_SB_TO_ALU] = 1;
         flags[SET_ADH_TO_SB] = 1;
         flags[LOAD_ABH] = 1;
+        //funky store stuff
+        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT];
     end
 end
 endmodule
@@ -180,6 +192,12 @@ always_comb begin
         flags[LOAD_ABH] = 1;
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
+        //funky store stuff
+        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[SET_DB_TO_SB] = flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
+        flags[SET_SB_TO_X] = flags[IS_STORE_X_INSTRUCT];
+        flags[SET_SB_TO_Y] = flags[IS_STORE_Y_INSTRUCT];
+        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT] | flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
     end
 end
 endmodule
@@ -207,6 +225,12 @@ always_comb begin
         flags[LOAD_ABH] = 1;
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
+        //funky store stuff
+        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[SET_DB_TO_SB] = flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
+        flags[SET_SB_TO_X] = flags[IS_STORE_X_INSTRUCT];
+        flags[SET_SB_TO_Y] = flags[IS_STORE_Y_INSTRUCT];
+        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT] | flags[IS_STORE_X_INSTRUCT] | flags[IS_STORE_Y_INSTRUCT];
     end 
 end
 endmodule
@@ -263,6 +287,9 @@ always_comb begin
         flags[LOAD_ABH] = 1;
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
+        //funky store stuff
+        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT];
     end
 end
 endmodule
@@ -337,6 +364,9 @@ always_comb begin
         flags[LOAD_ABH] = 1;
         flags[SET_ADL_TO_ALU] = 1;
         flags[LOAD_ABL] = 1;
+        //funky store stuff
+        flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
+        flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT];
     end
 end
 endmodule
