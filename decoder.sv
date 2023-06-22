@@ -88,9 +88,15 @@ module decoder (
     logic [2:0] b = opcode[4:2];
     logic [1:0] c = opcode[1:0];
 
+    logic storeA;
+    logic storeX;
+    logic storeY;
+    
     CMD = 6'b0;
     ADDRESS = 5'b0;
-
+    addressTimingCode = 3'b000;
+    opTimingCode = 3'b000;
+    
     casez(c)
         2'b00: begin
             case(b)
@@ -120,7 +126,7 @@ module decoder (
                              CMD=CPY;
                              ADDRESS=IMMEDIATE;
                         end
-                        3'b111: begin
+                        default: begin // ACTUAL 3'b111
                              CMD=CPX;
                              ADDRESS=IMMEDIATE;
                         end
@@ -133,7 +139,7 @@ module decoder (
                         3'b100: CMD=STY;
                         3'b101: CMD=LDY;
                         3'b110: CMD=CPY;
-                        3'b111: CMD=CPX;
+                        default: CMD=CPX; // ACTUAL 3'b111 
                     endcase
                 end
                 3'b010: begin
@@ -146,7 +152,7 @@ module decoder (
                         3'b100: CMD=DEY;
                         3'b101: CMD=TAY;
                         3'b110: CMD=INY;
-                        3'b111: CMD=INX;
+                        default: CMD=INX; // ACTUAL 3'b111
                     endcase
                 end
                 3'b011: begin
@@ -162,7 +168,7 @@ module decoder (
                         3'b100: CMD=STY;
                         3'b101: CMD=LDY;
                         3'b110: CMD=CPY;
-                        3'b111: CMD=CPX;
+                        default: CMD=CPX; // ACTUAL 3'b111
                     endcase
                 end
                 3'b100: begin
@@ -175,14 +181,14 @@ module decoder (
                         3'b100: CMD=BCC;
                         3'b101: CMD=BCS;
                         3'b110: CMD=BNE;
-                        3'b111: CMD=BEQ;
+                        default: CMD=BEQ; // ACTUAL 3'b111
                     endcase
                 end
                 3'b101: begin
                     ADDRESS=zpgX;
                     case(a)
                         3'b100: CMD=STY;
-                        3'b101: CMD=LDY;
+                        default: CMD=LDY; // ACTUAL 3'b101
                     endcase
                 end
                 3'b110: begin
@@ -195,10 +201,10 @@ module decoder (
                         3'b100: CMD=TYA;
                         3'b101: CMD=CLV;
                         3'b110: CMD=CLD;
-                        3'b111: CMD=SED;
+                        default: CMD=SED; // ACTUAL 3'b111
                     endcase
                 end
-                3'b111: begin
+                default: begin // ACTUAL 3'b111
                     ADDRESS=absX;
                     CMD=LDY;
                 end
@@ -214,7 +220,7 @@ module decoder (
                 3'b100: ADDRESS=indY;
                 3'b101: ADDRESS=zpgX;
                 3'b110: ADDRESS=absY;
-                3'b111: ADDRESS=absX;
+                default: ADDRESS=absX; // ACTUAL 3'b111
             endcase // end of b addressing
             case(a)
                 3'b000: CMD=ORA;
@@ -224,11 +230,11 @@ module decoder (
                 3'b100: CMD=STA;
                 3'b101: CMD=LDA;
                 3'b110: CMD=CMP;
-                3'b111: CMD=SBC; // end of c addressing
+                default: CMD=SBC; // end of c addressing
             endcase
         end
  
-        2'b10: begin // start of block c 2
+        default: begin // start of block c 2
             case(b)
                 3'b000: begin
                              ADDRESS=IMMEDIATE;
@@ -265,7 +271,7 @@ module decoder (
                              CMD=DEC;
                              ADDRESS=impl;
                         end
-                        3'b111: begin
+                        default: begin // ACTUAL 3'b111
                              CMD=INC;
                              ADDRESS=impl;
                         end
@@ -280,7 +286,7 @@ module decoder (
                         3'b100: CMD=TXA;
                         3'b101: CMD=TAX;
                         3'b110: CMD=DEX;
-                        3'b111: CMD=NOP;
+                        default: CMD=NOP; // ACTUAL 3'b111
                     endcase
                 end
                 3'b011: begin
@@ -293,7 +299,7 @@ module decoder (
                         3'b100: CMD=STX;
                         3'b101: CMD=LDX;
                         3'b110: CMD=DEC;
-                        3'b111: CMD=INC;
+                        default: CMD=INC; // ACTUAL 3'b111
                     endcase
                 end
                 3'b101: begin
@@ -326,7 +332,7 @@ module decoder (
                              CMD=DEC;
                              ADDRESS=zpgX;
                         end
-                        3'b111: begin
+                        default: begin // ACTUAL 3'b111
                              CMD=INC;
                              ADDRESS=zpgX;
                         end
@@ -336,10 +342,10 @@ module decoder (
                     ADDRESS=impl;
                     case(a)
                         3'b100: CMD=TXS;
-                        3'b101: CMD=TSX;
+                        default: CMD=TSX; // ACTUAL 3'b101
                     endcase
                 end
-                3'b111: begin 
+                default: begin // ACTUAL 3'b101
                     ADDRESS=absX;
                     case(a)
                         3'b000: CMD=ASL;
@@ -348,7 +354,7 @@ module decoder (
                         3'b011: CMD=ROR;
                         3'b101: CMD=LDX;
                         3'b110: CMD=DEC;
-                        3'b111: CMD=INC;
+                        default: CMD=INC; // ACTUAL 3'b101
                     endcase
                 end
             endcase
