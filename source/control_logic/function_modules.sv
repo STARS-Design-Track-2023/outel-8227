@@ -290,3 +290,255 @@ end
     
 endmodule
 
+module NOP(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        3'b000: begin
+            
+        end
+        3'b001: begin
+            //Increment PC and set ABH and ABL to PC
+            flags[PC_INC] = 1;
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+            //Move ALU to ACC
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_X] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+
+module TAX(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        3'b000: begin
+            //Set signal on the stack bus
+            flags[SET_SB_TO_ACC] = 1;
+            
+            //update registar
+            flags[LOAD_X] = 1;
+        end
+        3'b001: begin
+            //Increment PC and set ABH and ABL to PC
+            flags[PC_INC] = 1;
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+            //Move ALU to ACC
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_X] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module TAY(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        3'b000: begin
+            //Set signal on the stack bus
+            flags[SET_SB_TO_ACC] = 1;
+            
+            //update registar
+            flags[LOAD_Y] = 1;
+        end
+        3'b001: begin
+            //Increment PC and set ABH and ABL to PC
+            flags[PC_INC] = 1;
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+            //Move ALU to ACC
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_X] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module TSX(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        3'b000: begin
+            //Set signal on the stack bus
+            flags[SET_SB_TO_SP] = 1;
+            
+            //update registar
+            flags[LOAD_X] = 1;
+        end
+        3'b001: begin
+            //Increment PC and set ABH and ABL to PC
+            flags[PC_INC] = 1;
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+            //Move ALU to ACC
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_X] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module TXA(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        3'b000: begin
+            //Set signal on the stack bus
+            flags[SET_SB_TO_X] = 1;
+            
+            //update registar
+            flags[LOAD_ACC] = 1;
+        end
+        3'b001: begin
+            //Increment PC and set ABH and ABL to PC
+            flags[PC_INC] = 1;
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+            //Move ALU to ACC
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_X] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module TSX(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        3'b000: begin
+            //Set signal on the stack bus
+            flags[SET_SB_TO_SP] = 1;
+            
+            //update registar
+            flags[LOAD_X] = 1;
+        end
+        3'b001: begin
+            //Increment PC and set ABH and ABL to PC
+            flags[PC_INC] = 1;
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+            //Move ALU to ACC
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_X] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module TXS(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        3'b000: begin
+            //Set signal on the stack bus
+            flags[SET_SB_TO_X] = 1;
+            
+            //update registar
+            flags[LOAD_SP] = 1;
+        end
+        3'b001: begin
+            //Increment PC and set ABH and ABL to PC
+            flags[PC_INC] = 1;
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+            //Move ALU to ACC
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_X] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module TYA(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        3'b000: begin
+            //Set signal on the stack bus
+            flags[SET_SB_TO_Y] = 1;
+            
+            //update registar
+            flags[LOAD_ACC] = 1;
+        end
+        3'b001: begin
+            //Increment PC and set ABH and ABL to PC
+            flags[PC_INC] = 1;
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+            //Move ALU to ACC
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_X] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+    
+endmodule

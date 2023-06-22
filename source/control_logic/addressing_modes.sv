@@ -20,7 +20,7 @@ endmodule
 
 module ZPG
 (
-    input logic [3:0] state,
+    input logic [1:0] state,
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
@@ -38,7 +38,7 @@ end
 endmodule
 
 module Absolute(
-    input logic [3:0] state,
+    input logic [1:0] state,
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
@@ -69,7 +69,7 @@ end
 endmodule
 
 module Absolute_X(
-    input logic [3:0] state,
+    input logic [1:0] state,
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
@@ -111,7 +111,7 @@ end
 endmodule
 
 module Absolute_Y(
-    input logic [3:0] state,
+    input logic [1:0] state,
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
@@ -154,7 +154,7 @@ endmodule
 
 module ZPG_X
 (
-    input logic [3:0] state,
+    input logic [1:0] state,
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
@@ -181,7 +181,7 @@ endmodule
 
 module ZPG_Y
 (
-    input logic [3:0] state,
+    input logic [1:0] state,
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
@@ -207,7 +207,7 @@ end
 endmodule
 
 module Indrect_X(
-    input logic [3:0] state,
+    input logic [1:0] state,
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
@@ -263,7 +263,7 @@ end
 endmodule
 
 module Indrect_Y(
-    input logic [3:0] state,
+    input logic [1:0] state,
     input logic [7:0] opCode,
     input logic carry_to_high_op,
     output logic [NUMFLAGS:0] flags,
@@ -335,3 +335,4 @@ always_comb begin
     end
 end
 endmodule
+

@@ -54,6 +54,9 @@ parameter ALU_OR = 30;
 parameter ALU_AND = 31;
 parameter SET_DB_HIGH = 32;
 parameter SET_DB_TO_ACC = 33;
+parameter SET_SB_TO_SP = 34;
+parameter LOAD_ACC = 35;
+parameter LOAD_SP = 35;
 
 
 parameter A0 = 4'b000;
