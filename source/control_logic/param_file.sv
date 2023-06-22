@@ -12,6 +12,7 @@
 * X   = Register X
 * Y   = Register Y
 * SB  = Stack Bus
+* PSR = Processor Status Register
 * Input_B and Input_A are ALU inputs
 * PC_INC and PC_DEC increment and decrement
 * A0-A3 are steps in the addressing states
@@ -19,7 +20,7 @@
 * For example SET_ADL_TO_DATA means Internal Address bus low is set to External Data Bus
 * LOAD_"REG" means load registor(source does not need to specified).
 */
-parameter NUMFLAGS = 40;
+parameter NUMFLAGS = 64;
 parameter SET_ADH_LOW = 0;
 parameter SET_ADL_TO_DATA = 1;
 parameter LOAD_ABL = 2;
@@ -56,7 +57,12 @@ parameter SET_DB_HIGH = 32;
 parameter SET_DB_TO_ACC = 33;
 parameter SET_SB_TO_SP = 34;
 parameter LOAD_ACC = 35;
-parameter LOAD_SP = 35;
+parameter LOAD_SP = 36;
+parameter LOAD_CARRY_PSR_FLAG = 37;
+parameter LOAD_INTERUPT_PSR_FLAG = 38;
+parameter LOAD_DECIMAL_PSR_FLAG = 39;
+parameter LOAD_OVERFLOW_PSR_FLAG = 40;
+parameter PSR_DATA_TO_LOAD = 41;
 
 
 parameter A0 = 4'b000;
