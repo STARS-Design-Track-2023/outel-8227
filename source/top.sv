@@ -1,4 +1,7 @@
 `default_nettype none
+`include "source/dataflow/bus_interface.sv"
+`include "source/dataflow/internal_bus.sv"
+`include "source/dataflow/register.sv"
 
 module top 
 (
@@ -15,6 +18,5 @@ module top
   output logic txclk, rxclk,
   input  logic txready, rxready
 );
-
 
 endmodule
