@@ -1,8 +1,8 @@
 # STARS 2023 Design Final Project
 
 ## Outel
-* Aiden
-* Aidrian
+* Aidan
+* Adrian
 * Andrew
 * Thomas
 * Spencer
