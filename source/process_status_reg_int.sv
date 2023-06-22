@@ -18,9 +18,9 @@ module processStatusReg(
     input logic overflow_V,     //enble read from alu
     input logic rcl_V,          //directly set V to 1 from rcl
     input logic break_set,      //break comes from control unit, direct control
-    input logic break_clear
+    input logic break_clear,
     output logic [7:0] PSR_RCL, //status register to control unit
-    output logic [7:0] PSR_DB,  //status register to db
+    output logic [7:0] PSR_DB  //status register to db
 );
 
     logic [7:0] status_buffer, stat_buf_nxt;            //reg to hold status flags
@@ -46,7 +46,7 @@ module processStatusReg(
         if(manual_I) stat_buf_nxt[2] = manual_set;
 
         if(carry_C) stat_buf_nxt[0] = carry;            //misc cases and direct sets and clears
-        if(DBall_Z) stat_buf_nxt[1] = ~(|DB_in);
+        if(DBall_Z) stat_buf_nxt[1] = ~(DB_in != 0);
         if(overflow_V) stat_buf_nxt[6] = overflow;
         if(rcl_V) stat_buf_nxt[6] = 1'b1;
         if(break_set) stat_buf_nxt[4] = 1'b1;
