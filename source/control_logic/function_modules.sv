@@ -4,9 +4,9 @@
 * Finished Modules
 * 1. Single byte instructions: ALL
 * 2. Internal Execution on Memory Data: none
-* 3. Store Operations: none
+* 3. Store Operations: ALL
 * 4. Read Modify Write: none
-* 5. Misc.:
+* 5. Misc.: none
 */
 
 module ASL_A(
@@ -709,6 +709,7 @@ end
 
 endmodule
 
+//All store opperations are the same
 module STO(
     input logic [2:0] state,
     output logic [NUMFLAGS-1:0] flags
@@ -725,6 +726,58 @@ always_comb begin
         T1: begin
             //Increment PC and set ABH and ABL to PC
             flags[PC_INC] = 1;
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end  
+        default: flags = 0;
+    endcase
+end
+
+endmodule
+
+
+//START INTERNAL EXECUTION MEMORY OPS
+module ADC(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Set input b
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+
+            //set carry
+            flags[SET_ALU_CARRY_TO_PSR_CARRY] = 1;
+            
+            //set input a
+            flags[SET_SB_TO_ACC] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+
+            //add ACC+C+DATA
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        
+        end
+        T1: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
             flags[SET_ADH_TO_PCH] = 1;
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;

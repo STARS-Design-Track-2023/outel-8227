@@ -6,7 +6,7 @@ module Imediate
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
-assign flags = 0;
+assign flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
 endmodule
 
 module Implied
@@ -15,7 +15,7 @@ module Implied
     input logic [7:0] opCode,
     output logic [NUMFLAGS:0] flags
 );
-assign flags = 0;
+assign flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
 endmodule
 
 module ZPG
@@ -26,7 +26,7 @@ module ZPG
 );
 
 always_comb begin
-    flags = 0;
+    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
     if(state == A0)begin
         //go to zero page
         flags[SET_ADH_LOW] = 1;
@@ -51,7 +51,7 @@ module Absolute(
 );
 
 always_comb begin
-    flags = 0;
+    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
     if(state == A0)begin
         //update address 
         flags[PC_INC] = 1;
@@ -86,7 +86,7 @@ module Absolute_X(
 );
 
 always_comb begin
-    flags = 0;
+    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
     if(state == A0)begin
         //Increment position
         flags[PC_INC] = 1;
@@ -131,7 +131,7 @@ module Absolute_Y(
 );
 
 always_comb begin
-    flags = 0;
+    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
     if(state == A0)begin
         //Increment position
         flags[PC_INC] = 1;
@@ -177,7 +177,7 @@ module ZPG_X
 );
 
 always_comb begin
-    flags = 0;
+    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
     if(state == A0)begin
         //Add data to X
         flags[LOAD_ALU] = 1;
@@ -210,7 +210,7 @@ module ZPG_Y
 );
 
 always_comb begin
-    flags = 0;
+    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
     if(state == A0)begin
         //Add data to Y
         flags[LOAD_ALU] = 1;
@@ -242,7 +242,7 @@ module Indrect_X(
 );
 
 always_comb begin
-    flags = 0;
+    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
     if(state == A0)begin
         //Increment PC
         flags[PC_INC] = 1;
@@ -303,7 +303,7 @@ module Indrect_Y(
 );
 
 always_comb begin
-    flags = 0;
+    flags[IS_STORE_ACC_INSTRUCT-1:0] = 0;
     if(state == A0)begin
         //Set Zero Page:00,Data0
         flags[SET_ADH_LOW] = 1;
@@ -336,10 +336,7 @@ always_comb begin
         
         flags[LOAD_ALU] = 1;
         flags[ALU_ADD] = 1;
-
-        //////////////////////////////////////////
-         //DO LOGIC WITH carry_from_low_op HERE//
-        //////////////////////////////////////////
+        flags[SET_ALU_CARRY_HIGH] = carry_to_high_op;
     
     end else if(state == A2)begin
         //Set Zero Page:00,Data1+Y
@@ -368,6 +365,7 @@ always_comb begin
         flags[SET_DB_TO_ACC] = flags[IS_STORE_ACC_INSTRUCT];
         flags[LOAD_DOR] = flags[IS_STORE_ACC_INSTRUCT];
     end
+    carry_from_low_op = 0;
 end
 endmodule
 
