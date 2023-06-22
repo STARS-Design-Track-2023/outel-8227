@@ -1,21 +1,5 @@
 `include "param_file.sv"
 
-module Imediate
-(
-    input logic [4:0] state,
-    input logic [7:0] opCode,
-    output logic [NUMFLAGS:0] flags
-);
-endmodule
-
-module Implied
-(
-    input logic [4:0] state,
-    input logic [7:0] opCode,
-    output logic [NUMFLAGS:0] flags
-);
-endmodule
-
 module ZPG
 (
     input logic [1:0] state,

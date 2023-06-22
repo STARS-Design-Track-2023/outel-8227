@@ -3,7 +3,7 @@
 /*
 * Finished Modules:
 * 1. Single byte instructions: ALL, BUT THE FLAGS ARE NOT DONE!!!!!!!!!!!!!!!!!!!!!!!!
-* 2. Internal Execution on Memory Data: ALL
+* 2. Internal Execution on Memory Data: ALL, besides BIT
 * 3. Store Operations: ALL
 * 4. Read Modify Write: none
 * 5. Misc.: none
@@ -27,6 +27,7 @@ always_comb begin
             //Add them together
             flags[ALU_ADD] = 1;
             flags[LOAD_ALU] = 1;
+            
             //SET FLAGS
             flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
         end
@@ -37,9 +38,15 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
+            
             //Move ALU to ACC
             flags[SET_SB_TO_ALU] = 1;
             flags[LOAD_ACC] = 1;
+
+            //Set PSR FLAGS
+            flags[SET_DB_TO_SB] = 1;
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
         end  
         default: flags = 0;
     endcase
@@ -76,9 +83,15 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
+
             //Move ALU to ACC
             flags[SET_SB_TO_ALU] = 1;
             flags[LOAD_ACC] = 1;
+
+            //Set PSR FLAGS
+            flags[SET_DB_TO_SB] = 1;
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
         end  
         default: flags = 0;
     endcase
@@ -114,9 +127,15 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
+            
             //Move ALU to ACC
             flags[SET_SB_TO_ALU] = 1;
             flags[LOAD_ACC] = 1;
+            
+            //Set PSR FLAGS
+            flags[SET_DB_TO_SB] = 1;
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
         end  
         default: flags = 0;
     endcase
@@ -151,10 +170,16 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
+            
             //Move ALU to ACC
             flags[SET_SB_TO_ALU] = 1;
             flags[LOAD_ACC] = 1;
-        end  
+
+            //Set PSR FLAGS
+            flags[SET_DB_TO_SB] = 1;
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
+            end  
         default: flags = 0;
     endcase
 end
@@ -716,6 +741,7 @@ end
 endmodule
 
 //All store opperations are the same
+
 module STO(
     input logic [2:0] state,
     output logic [NUMFLAGS-1:0] flags
@@ -743,8 +769,8 @@ end
 
 endmodule
 
-
 //START INTERNAL EXECUTION MEMORY OPS
+
 module ADC(
     input logic [2:0] state,
     output logic [NUMFLAGS-1:0] flags
@@ -1408,4 +1434,382 @@ always_comb begin
         default: flags = 0;
     endcase
 end
+endmodule
+
+module ASL(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0:  begin
+            //Set B and A to input data
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_SB_TO_DB] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+            
+            //Add them together
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+            
+            //SET FLAGS
+            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+        end
+        T1: begin
+            //Move ALU to DOR
+            flags[SET_SB_TO_ALU] = 1;
+            flags[SET_DB_TO_SB] = 1;
+            flags[LOAD_DOR] = 1;
+
+            //Set PSR FLAGS
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
+
+            //Get ready to write
+            flags[SET_WRITE_FLAG] = 1;
+        end
+        T2: begin
+            //write modified data
+            flags[SET_WRITE_FLAG] = 1;
+
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        T3: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module ROL(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Set B and A to input data
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_SB_TO_DB] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+            flags[SET_ALU_CARRY_TO_PSR_CARRY] = 1;
+            
+            //Add them together
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+            //SET FLAGS
+            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+        end
+        T1: begin
+            //Move ALU to DOR
+            flags[SET_SB_TO_ALU] = 1;
+            flags[SET_DB_TO_SB] = 1;
+            flags[LOAD_DOR] = 1;
+
+            //Set PSR FLAGS
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
+
+            //Get ready to write
+            flags[SET_WRITE_FLAG] = 1;
+        end
+        T2: begin
+            //write modified data
+            flags[SET_WRITE_FLAG] = 1;
+
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        T3: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module ROR (
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Set A to DATA
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_SB_TO_DB] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+            flags[SET_ALU_CARRY_TO_PSR_CARRY] = 1;
+            
+            //Rotate
+            flags[ALU_R_SHIFT] = 1;
+            flags[LOAD_ALU] = 1;
+            
+            //SET FLAGS
+            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+        end
+        T1: begin
+            //Move ALU to DOR
+            flags[SET_SB_TO_ALU] = 1;
+            flags[SET_DB_TO_SB] = 1;
+            flags[LOAD_DOR] = 1;
+
+            //Set PSR FLAGS
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
+
+            //Get ready to write
+            flags[SET_WRITE_FLAG] = 1;
+        end
+        T2: begin
+            //write modified data
+            flags[SET_WRITE_FLAG] = 1;
+
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        T3: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module LSR(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Set A to DATA
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_SB_TO_DB] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+            
+            //Shift
+            flags[ALU_R_SHIFT] = 1;
+            flags[LOAD_ALU] = 1;
+            
+            //SET FLAGS
+            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+        end
+        T1: begin
+            //Move ALU to DOR
+            flags[SET_SB_TO_ALU] = 1;
+            flags[SET_DB_TO_SB] = 1;
+            flags[LOAD_DOR] = 1;
+
+            //Set PSR FLAGS
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
+
+            //Get ready to write
+            flags[SET_WRITE_FLAG] = 1;
+        end
+        T2: begin
+            //write modified data
+            flags[SET_WRITE_FLAG] = 1;
+
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        T3: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module DEC(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Set B and A to be FF and Data
+            flags[SET_DB_HIGH] = 1;
+            flags[SET_ADH_TO_DATA] = 1;
+            flags[SET_SB_TO_ADH] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+            
+            //Add them together
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T1: begin
+            //Move ALU to DOR
+            flags[SET_SB_TO_ALU] = 1;
+            flags[SET_DB_TO_SB] = 1;
+            flags[LOAD_DOR] = 1;
+
+            //Set PSR FLAGS
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
+
+            //Get ready to write
+            flags[SET_WRITE_FLAG] = 1;
+        end
+        T2: begin
+            //write modified data
+            flags[SET_WRITE_FLAG] = 1;
+
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        T3: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module INC(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Set C B and A to be 1 Data and 0
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+            flags[SET_ALU_CARRY_HIGH] = 1;
+            flags[SET_INPUT_A_TO_LOW] = 1;
+            
+            //Add them together
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T1: begin
+            //Move ALU to DOR
+            flags[SET_SB_TO_ALU] = 1;
+            flags[SET_DB_TO_SB] = 1;
+            flags[LOAD_DOR] = 1;
+
+            //Set PSR FLAGS
+            flags[WRITE_ZERO_FLAG] = 1;
+            flags[WRITE_NEGATIVE_FLAG] = 1;
+
+            //Get ready to write
+            flags[SET_WRITE_FLAG] = 1;
+        end
+        T2: begin
+            //write modified data
+            flags[SET_WRITE_FLAG] = 1;
+
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        T3: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
 endmodule

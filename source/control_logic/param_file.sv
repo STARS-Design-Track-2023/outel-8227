@@ -74,6 +74,10 @@ parameter WRITE_ZERO_FLAG = 49;
 parameter SET_ALU_DEC_TO_PSR_DEC = 50;
 parameter SET_INPUT_B_TO_NOT_DB = 51;
 parameter SET_INPUT_B_TO_ADL = 52;
+parameter SET_BREAK_LOW = 53;
+parameter SET_BREAK_HIGH = 54;
+parameter SET_NEGATIVE_FLAG_LOW = 55;
+parameter SET_SB_TO_ADH = 56;
 
 parameter A0 = 2'b00;
 parameter A1 = 2'b01;
