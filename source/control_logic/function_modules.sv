@@ -1944,6 +1944,286 @@ end
     
 endmodule
 
+module PHA(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Decrement PC
+            flags[PC_DEC] = 1;
+
+            //Go to Stack
+            flags[SET_ADH_TO_ONE] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_SP] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Load PSR to DOR
+            flags[SET_DB_TO_ACC] = 1;
+            flags[SET_PSR_OUTPUT_BRK_HIGH] = 1;
+            flags[LOAD_DOR] = 1;
+        end
+        T1: begin
+            //write modified data
+            flags[SET_WRITE_FLAG] = 1;
+            
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Set input A to SP
+            flags[SET_SB_TO_SP] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+
+            //Set input B to FF
+            flags[SET_DB_HIGH] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+
+            //Add SP+FF = SP-1
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T2: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Set SP to SP-1
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_SP] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module PLA(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Decrement PC
+            flags[PC_DEC] = 1;
+
+            //Set input B to SP
+            flags[SET_SB_TO_SP] = 1;
+            flags[SET_DB_TO_SB] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+
+            //Set A to 0
+            flags[SET_INPUT_A_TO_LOW] = 1;
+
+            //Add 1 to SP
+            flags[SET_ALU_CARRY_HIGH] = 1;
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T1: begin
+            //ALU to SP
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_SP] = 1;
+
+            //ALU to ABL
+            flags[SET_ADL_TO_ALU] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //01 to ADH
+            flags[SET_ADH_TO_ONE] = 1;
+            flags[LOAD_ABH] = 1;
+        end
+        T2: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Set ACC
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_SB_TO_DB] = 1;
+            flags[LOAD_ACC] = 1;
+        end
+        T3: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module BRK(
+    input logic [2:0] state,
+    input logic NMI, IRQ, RESET,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Go to Stack
+            flags[SET_ADH_TO_ONE] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_SP] = 1;
+            flags[LOAD_ABL] = 1;
+            
+            //Set input A to FF
+            flags[SET_SB_HIGH] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+
+            //Set input B to SP
+            flags[SET_INPUT_B_TO_ADL] = 1;
+
+            //Add SP+FF = SP-1
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+
+            //Get PCH to DOR
+            flags[SET_DB_TO_PCH] = 1;
+            flags[LOAD_DOR] = 1;
+            
+        end
+        T1: begin
+            //Write DOR
+            flags[SET_WRITE_FLAG] = ~RESET;
+
+            //Go to next Stack
+            flags[SET_ADL_TO_ALU] = 1;
+            flags[LOAD_ABL] = 1;
+            
+            //Set input A to FF
+            flags[SET_SB_HIGH] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+
+            //Set input B to SP
+            flags[SET_INPUT_B_TO_ADL] = 1;
+
+            //Add SP+FF = SP-1
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+
+            //Get PCL to DOR
+            flags[SET_DB_TO_PCL] = 1;
+            flags[LOAD_DOR] = 1;
+            
+        end
+        T2: begin
+            //Write DOR
+            flags[SET_WRITE_FLAG] = ~RESET;
+
+            //Go to next Stack
+            flags[SET_ADL_TO_ALU] = 1;
+            flags[LOAD_ABL] = 1;
+            
+            //Set input A to FF
+            flags[SET_SB_HIGH] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+
+            //Set input B to SP
+            flags[SET_INPUT_B_TO_ADL] = 1;
+
+            //Add SP+FF = SP-1
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+
+            //Get PSR to DOR
+            flags[SET_DB_TO_PSR] = 1;
+            flags[SET_PSR_OUTPUT_BRK_HIGH] = ~(NMI|IRQ|RESET);
+            flags[LOAD_DOR] = 1;
+        end
+        T3: begin
+            //Write DOR
+            flags[SET_WRITE_FLAG] = ~RESET;
+
+            //set ABH and ABL to presets
+            flags[SET_ADH_FF] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_FA] = NMI;
+            flags[SET_ADL_FC] = RESET;
+            flags[SET_ADL_FE] = ~(NMI|RESET);
+            flags[LOAD_ABL] = 1;
+
+            //Get ALU ouput to SP Reg
+            flags[SET_SB_TO_ALU] = 1;    
+            flags[LOAD_SP] = 1;    
+        end
+        T4: begin
+            //set ABH and ABL to presets
+            flags[SET_ADH_FF] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_FA] = NMI;
+            flags[SET_ADL_FC] = RESET;
+            flags[SET_ADL_FE] = ~(NMI|RESET);
+            flags[LOAD_ABL] = 1;
+
+            //set B to Data
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+
+            //add data + 0
+            flags[SET_INPUT_A_TO_LOW] = 1;
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T5: begin
+            //Update ABL
+            flags[SET_ADL_TO_ALU] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Update ABH
+            flags[SET_ADH_TO_DATA] = 1;
+            flags[LOAD_ABH] = 1;
+
+            //Update PC
+            flags[LOAD_PC] = 1;
+            flags[PC_INC] = 1;
+        end
+        T6:  begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
 module JSR(
     input logic [2:0] state,
     output logic [NUMFLAGS-1:0] flags
@@ -2056,4 +2336,3 @@ always_comb begin
 end
     
 endmodule
-

@@ -20,7 +20,7 @@
 * For example SET_ADL_TO_DATA means Internal Address bus low is set to External Data Bus
 * LOAD_"REG" means load registor(source does not need to specified).
 */
-parameter NUMFLAGS = 64;
+parameter NUMFLAGS = 128;
 parameter SET_ADH_LOW = 0;
 parameter SET_ADL_TO_DATA = 1;
 parameter LOAD_ABL = 2;
@@ -74,14 +74,32 @@ parameter WRITE_ZERO_FLAG = 49;
 parameter SET_ALU_DEC_TO_PSR_DEC = 50;
 parameter SET_INPUT_B_TO_NOT_DB = 51;
 parameter SET_INPUT_B_TO_ADL = 52;
-parameter SET_BREAK_LOW = 53;
-parameter SET_BREAK_HIGH = 54;
-parameter SET_NEGATIVE_FLAG_LOW = 55;
-parameter SET_SB_TO_ADH = 56;
-parameter SET_ADH_TO_ONE = 57;
-parameter SET_DB_TO_PSR = 58; //NOTE: Break and bit 5 of the PSR when pushed are 1
-parameter SET_SP_TO_SB = 59;
-parameter SET_PSR_TO_DB = 60;
+parameter SET_PSR_TO_DB = 53;
+parameter SET_PSR_C_TO_DB0 = 54; //Pushes the 0th bit on DB to the PSR's Carry Flag (ex: used in RTI)
+parameter SET_PSR_Z_TO_DB1 = 55; //Pushes the 1st bit on DB to the PSR's Zero Flag (ex: used in RTI)
+parameter SET_PSR_I_TO_DB2 = 56; //Pushes the 2nd bit on DB to the PSR's Interrupt Flag (ex: used in RTI)
+parameter SET_PSR_D_TO_DB3 = 57; //Pushes the 3rd bit on DB to the PSR's Decimal Flag (ex: used in RTI)
+parameter SET_PSR_V_TO_DB6 = 58; //Pushes the 4th bit on DB to the PSR's Overflow Flag (ex: used in RTI)
+parameter SET_PSR_N_TO_DB7 = 59; //Pushes the 5th bit on DB to the PSR's Negative Flag (ex: used in RTI)
+parameter SET_PSR_OUTPUT_BRK_HIGH = 60;
+//Will set the BRK flag high on the output (both to DB and the control logic) for the current clock cycle
+parameter SET_SB_HIGH = 61;
+parameter SET_ADL_FF = 62;
+parameter SET_ADL_FE = 63;
+parameter SET_ADL_FD = 64;
+parameter SET_ADL_FC = 65;
+parameter SET_ADL_FB = 66;
+parameter SET_ADL_FA = 67;
+parameter SET_ADL_00 = 68;
+parameter SET_ADH_FF = 69;
+parameter SET_DB_TO_PCH = 70;
+parameter SET_DB_TO_PSR = 71;
+parameter SET_BREAK_LOW = 72;
+parameter SET_DB_TO_PCL = 73;
+parameter SET_BREAK_HIGH = 74;
+parameter SET_NEGATIVE_FLAG_LOW = 75;
+parameter SET_SB_TO_ADH = 76;
+parameter SET_ADH_TO_ONE = 77;
 
 parameter A0 = 2'b00;
 parameter A1 = 2'b01;
