@@ -18,7 +18,7 @@ module processStatusReg(
     input logic overflow_V,     //enble read from alu
     input logic rcl_V,          //directly set V to 1 from rcl (random control logic)
     input logic break_set,      //Sets break high for interrupt / break control
-    output logic [7:0] PSR_Output, //status register to control unit
+    output logic [7:0] PSR_Output //status register to control unit
 );
 
     logic [7:0] status_buffer, stat_buf_nxt;            //reg to hold status flags
@@ -47,12 +47,14 @@ module processStatusReg(
         if(DBall_Z) stat_buf_nxt[1] = ~(DB_in != 0);
         if(overflow_V) stat_buf_nxt[6] = overflow;
         if(rcl_V) stat_buf_nxt[6] = 1'b1;
+        if(break_set) 
+        begin
+            stat_buf_nxt[4] = 1'b1; //If the break flag is set, set it high before writing
+            stat_buf_nxt[5] = 1'b1; //If the break flag is set, set it high before writing
+        end
     end
 
     // Set Final outputs
-    always_comb begin : output
-        PSR_Output = status_buffer;
-        if(break_set) PSR_Output = 1; //If the break flag is set, set it high before writing
-    end
+    assign PSR_Output = status_buffer;
 
 endmodule

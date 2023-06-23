@@ -19,7 +19,6 @@ module processStatusRegisterWrapper(
     input logic overflow_V,     //enble read from alu
     input logic rcl_V,          //directly set V to 1 from rcl
     input logic break_set,
-    input logic break_clear,
     output logic [7:0] PSR_RCL,
     output logic [7:0] PSR_DB,
     input logic enableDBWrite
@@ -50,11 +49,12 @@ processStatusReg processStatusReg(
     .DBall_Z(DBall_Z),
     .overflow_V(overflow_V),
     .rcl_V(rcl_V),
-    .PSR_Output(internalFFOutput)
+    .PSR_Output(internalFFOutput),
+    .break_set(break_set)
 );
 
 //Output Logic:  PSR_RCL always has the signal.  PSR_DB can be disabled (but will write to the internal data bus when enabled)
 assign PSR_RCL = internalFFOutput;
-busInterface outputInterface(.interfaceInput(internalFFOutput), .enable(enableDBWrite)), .interfaceOutput(PSR_DB));
+busInterface outputInterface(.interfaceInput(internalFFOutput), .enable(enableDBWrite), .interfaceOutput(PSR_DB));
 
 endmodule

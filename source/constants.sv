@@ -93,8 +93,10 @@ parameter SET_ADL_FB = 66;
 parameter SET_ADL_FA = 67;
 parameter SET_ADL_00 = 68;
 parameter SET_ADH_FF = 69;
-parameter SET_ADH_00 = 70;
-parameter SET_ADH_01 = 71;
+parameter SET_ADH_TO_ONE = 71;
+parameter SET_SB_TO_ADH = 72;
+parameter SET_DB_TO_PCH = 73;
+parameter SET_DB_TO_PCL = 73;
 
 
 

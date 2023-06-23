@@ -4,7 +4,7 @@ module bridge(
     input logic setSide1ToSide2, setSide2ToSide1
 );
 
-    busInterface busInterface(.interfaceInput(input1), .enable(setSide2ToSide1), .interfaceOutput(output2));
-    busInterface busInterface(.interfaceInput(input2), .enable(setSide1ToSide2), .interfaceOutput(output1));
+    busInterface busInterface1(.interfaceInput(input1), .enable(setSide2ToSide1), .interfaceOutput(output2));
+    busInterface busInterface2(.interfaceInput(input2), .enable(setSide1ToSide2), .interfaceOutput(output1));
 
 endmodule

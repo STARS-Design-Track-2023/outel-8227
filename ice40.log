@@ -22,7 +22,7 @@
  Yosys 0.27 (git sha1 5f88c218b, gcc 11.3.0-1ubuntu1~22.04 -fPIC -O3)
 
 
--- Running command `read_verilog -sv -noblackbox ice40/ice40hx8k.sv source/top.sv  ice40/uart/uart.v ice40/uart/uart_tx.v ice40/uart/uart_rx.v; synth_ice40 -top ice40hx8k -json ./ice40/build/ice40.json' --
+-- Running command `read_verilog -sv -noblackbox ice40/ice40hx8k.sv source/top.sv source/dataflow/internal_bus.sv ice40/uart/uart.v ice40/uart/uart_tx.v ice40/uart/uart_rx.v; synth_ice40 -top ice40hx8k -json ./ice40/build/ice40.json' --
 
 1. Executing Verilog-2005 frontend: ice40/ice40hx8k.sv
 Parsing SystemVerilog input from `ice40/ice40hx8k.sv' to AST representation.
@@ -32,42 +32,33 @@ Successfully finished Verilog frontend.
 
 2. Executing Verilog-2005 frontend: source/top.sv
 Parsing SystemVerilog input from `source/top.sv' to AST representation.
-Generating RTLIL representation for module `\busInterface'.
-Generating RTLIL representation for module `\internalBus'.
-source/dataflow/internal_bus.sv:17: Warning: Range [7:0] select out of bounds on signal `\accumulatedBytes': Setting 7 LSB bits to undef.
-source/dataflow/internal_bus.sv:17: Warning: Range [7:0] select out of bounds on signal `\busInputs': Setting 7 LSB bits to undef.
-source/dataflow/internal_bus.sv:17: Warning: Ignoring assignment to constant bits:
-    old assignment: { \accumulatedBytes [0] 7'x } = { \busInputs [0] 7'x }
-    new assignment: \accumulatedBytes [0] = \busInputs [0].
-source/dataflow/internal_bus.sv:28: Warning: Range [-1:-8] select out of bounds on signal `\accumulatedBytes': Setting 7 MSB bits to undef.
-Generating RTLIL representation for module `\register'.
-source/dataflow/register.sv:42: Warning: Range [7:0] select out of bounds on signal `\accumulatedBytes': Setting 7 LSB bits to undef.
-source/dataflow/register.sv:42: Warning: Range [7:0] select out of bounds on signal `\filteredBytes': Setting 7 LSB bits to undef.
-source/dataflow/register.sv:42: Warning: Ignoring assignment to constant bits:
-    old assignment: { \accumulatedBytes [0] 7'x } = { \filteredBytes [0] 7'x }
-    new assignment: \accumulatedBytes [0] = \filteredBytes [0].
-source/dataflow/register.sv:53: Warning: Range [-1:-8] select out of bounds on signal `\accumulatedBytes': Setting 7 MSB bits to undef.
 Generating RTLIL representation for module `\top'.
 Successfully finished Verilog frontend.
 
-3. Executing Verilog-2005 frontend: ice40/uart/uart.v
+3. Executing Verilog-2005 frontend: source/dataflow/internal_bus.sv
+Parsing SystemVerilog input from `source/dataflow/internal_bus.sv' to AST representation.
+Generating RTLIL representation for module `\internalBus'.
+Warning: Replacing memory \bus_outputs_unpacked with list of registers. See source/dataflow/internal_bus.sv:46
+Successfully finished Verilog frontend.
+
+4. Executing Verilog-2005 frontend: ice40/uart/uart.v
 Parsing SystemVerilog input from `ice40/uart/uart.v' to AST representation.
 Generating RTLIL representation for module `\uart'.
 Successfully finished Verilog frontend.
 
-4. Executing Verilog-2005 frontend: ice40/uart/uart_tx.v
+5. Executing Verilog-2005 frontend: ice40/uart/uart_tx.v
 Parsing SystemVerilog input from `ice40/uart/uart_tx.v' to AST representation.
 Generating RTLIL representation for module `\uart_tx'.
 Successfully finished Verilog frontend.
 
-5. Executing Verilog-2005 frontend: ice40/uart/uart_rx.v
+6. Executing Verilog-2005 frontend: ice40/uart/uart_rx.v
 Parsing SystemVerilog input from `ice40/uart/uart_rx.v' to AST representation.
 Generating RTLIL representation for module `\uart_rx'.
 Successfully finished Verilog frontend.
 
-6. Executing SYNTH_ICE40 pass.
+7. Executing SYNTH_ICE40 pass.
 
-6.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v
+7.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v
 Parsing Verilog input from `/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v' to AST representation.
 Generating RTLIL representation for module `\SB_IO'.
 Generating RTLIL representation for module `\SB_GB_IO'.
@@ -121,193 +112,167 @@ Generating RTLIL representation for module `\SB_MAC16'.
 Generating RTLIL representation for module `\ICESTORM_RAM'.
 Successfully finished Verilog frontend.
 
-6.2. Executing HIERARCHY pass (managing design hierarchy).
+7.2. Executing HIERARCHY pass (managing design hierarchy).
 
-6.2.1. Analyzing design hierarchy..
+7.2.1. Analyzing design hierarchy..
 Top module:  \ice40hx8k
 Used module:     \top
-Used module:         \register
 Used module:         \internalBus
 Used module:     \reset_on_start
 Used module:     \uart
 Used module:         \uart_rx
 Used module:         \uart_tx
-Parameter \INPUT_COUNT = 2'01
-Parameter \OUTPUT_COUNT = 2'10
-Parameter \DEFAULT_VALUE = 8'10101010
+Parameter 1 (\MODULES) = 4
+Parameter 2 (\WIDTH) = 2
 
-6.2.2. Executing AST frontend in derive mode using pre-parsed AST for module `\register'.
-Parameter \INPUT_COUNT = 2'01
-Parameter \OUTPUT_COUNT = 2'10
-Parameter \DEFAULT_VALUE = 8'10101010
-Generating RTLIL representation for module `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010'.
-Parameter \INPUT_COUNT = 2'01
-Parameter \OUTPUT_COUNT = 2'01
-Parameter \DEFAULT_VALUE = 8'10101010
-
-6.2.3. Executing AST frontend in derive mode using pre-parsed AST for module `\register'.
-Parameter \INPUT_COUNT = 2'01
-Parameter \OUTPUT_COUNT = 2'01
-Parameter \DEFAULT_VALUE = 8'10101010
-Generating RTLIL representation for module `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010'.
-Parameter \INPUT_COUNT = 2'01
-
-6.2.4. Executing AST frontend in derive mode using pre-parsed AST for module `\internalBus'.
-Parameter \INPUT_COUNT = 2'01
-Generating RTLIL representation for module `$paramod\internalBus\INPUT_COUNT=2'01'.
+7.2.2. Executing AST frontend in derive mode using pre-parsed AST for module `\internalBus'.
+Parameter 1 (\MODULES) = 4
+Parameter 2 (\WIDTH) = 2
+Generating RTLIL representation for module `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus'.
+Warning: Replacing memory \bus_outputs_unpacked with list of registers. See source/dataflow/internal_bus.sv:46
 Parameter \DATA_WIDTH = 8
 
-6.2.5. Executing AST frontend in derive mode using pre-parsed AST for module `\uart_rx'.
+7.2.3. Executing AST frontend in derive mode using pre-parsed AST for module `\uart_rx'.
 Parameter \DATA_WIDTH = 8
 Generating RTLIL representation for module `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000'.
 Parameter \DATA_WIDTH = 8
 
-6.2.6. Executing AST frontend in derive mode using pre-parsed AST for module `\uart_tx'.
+7.2.4. Executing AST frontend in derive mode using pre-parsed AST for module `\uart_tx'.
 Parameter \DATA_WIDTH = 8
 Generating RTLIL representation for module `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000'.
 
-6.2.7. Analyzing design hierarchy..
+7.2.5. Analyzing design hierarchy..
 Top module:  \ice40hx8k
 Used module:     \top
-Used module:         $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010
-Used module:             \busInterface
-Used module:         $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010
-Used module:         $paramod\internalBus\INPUT_COUNT=2'01
+Used module:         $paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus
 Used module:     \reset_on_start
 Used module:     \uart
 Used module:         $paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000
 Used module:         $paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000
 
-6.2.8. Analyzing design hierarchy..
+7.2.6. Analyzing design hierarchy..
 Top module:  \ice40hx8k
 Used module:     \top
-Used module:         $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010
-Used module:             \busInterface
-Used module:         $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010
-Used module:         $paramod\internalBus\INPUT_COUNT=2'01
+Used module:         $paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus
 Used module:     \reset_on_start
 Used module:     \uart
 Used module:         $paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000
 Used module:         $paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000
 Removing unused module `\uart_rx'.
 Removing unused module `\uart_tx'.
-Removing unused module `\register'.
 Removing unused module `\internalBus'.
-Removed 4 unused modules.
+Removed 3 unused modules.
 Mapping positional arguments of cell ice40hx8k.top_inst (top).
 Mapping positional arguments of cell ice40hx8k.ros (reset_on_start).
 Warning: Resizing cell port ice40hx8k.uart_inst.prescale from 32 bits to 16 bits.
 Warning: Resizing cell port ice40hx8k.uart_inst.rst from 32 bits to 1 bits.
 
-6.3. Executing PROC pass (convert processes to netlists).
+7.3. Executing PROC pass (convert processes to netlists).
 
-6.3.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+7.3.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
 Cleaned up 0 empty switches.
 
-6.3.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
-Marked 1 switch rules as full_case in process $proc$source/dataflow/register.sv:0$464 in module $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.
-Marked 1 switch rules as full_case in process $proc$source/dataflow/register.sv:56$462 in module $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$322 in module SB_DFFNES.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1353$315 in module SB_DFFNESS.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$311 in module SB_DFFNER.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1212$304 in module SB_DFFNESR.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1138$301 in module SB_DFFNS.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1088$298 in module SB_DFFNSS.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1017$295 in module SB_DFFNR.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:967$292 in module SB_DFFNSR.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$284 in module SB_DFFES.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:742$277 in module SB_DFFESS.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$273 in module SB_DFFER.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:601$266 in module SB_DFFESR.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:527$263 in module SB_DFFS.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:477$260 in module SB_DFFSS.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:406$257 in module SB_DFFR.
-Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:356$254 in module SB_DFFSR.
-Marked 4 switch rules as full_case in process $proc$ice40/uart/uart_tx.v:78$498 in module $paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.
-Marked 7 switch rules as full_case in process $proc$ice40/uart/uart_rx.v:86$470 in module $paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.
-Marked 1 switch rules as full_case in process $proc$source/dataflow/register.sv:0$468 in module $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.
-Marked 1 switch rules as full_case in process $proc$source/dataflow/register.sv:56$466 in module $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.
-Marked 1 switch rules as full_case in process $proc$source/dataflow/bus_interface.sv:0$28 in module busInterface.
+7.3.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$317 in module SB_DFFNES.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1353$310 in module SB_DFFNESS.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$306 in module SB_DFFNER.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1212$299 in module SB_DFFNESR.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1138$296 in module SB_DFFNS.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1088$293 in module SB_DFFNSS.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1017$290 in module SB_DFFNR.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:967$287 in module SB_DFFNSR.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$279 in module SB_DFFES.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:742$272 in module SB_DFFESS.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$268 in module SB_DFFER.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:601$261 in module SB_DFFESR.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:527$258 in module SB_DFFS.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:477$255 in module SB_DFFSS.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:406$252 in module SB_DFFR.
+Marked 1 switch rules as full_case in process $proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:356$249 in module SB_DFFSR.
+Marked 4 switch rules as full_case in process $proc$ice40/uart/uart_tx.v:78$490 in module $paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.
+Marked 7 switch rules as full_case in process $proc$ice40/uart/uart_rx.v:86$462 in module $paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.
+Removed 1 dead cases from process $proc$source/dataflow/internal_bus.sv:0$458 in module $paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.
+Marked 1 switch rules as full_case in process $proc$source/dataflow/internal_bus.sv:0$458 in module $paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.
 Marked 5 switch rules as full_case in process $proc$ice40/ice40hx8k.sv:131$16 in module reset_on_start.
 Marked 1 switch rules as full_case in process $proc$ice40/ice40hx8k.sv:104$9 in module ice40hx8k.
 Marked 1 switch rules as full_case in process $proc$ice40/ice40hx8k.sv:98$7 in module ice40hx8k.
 Marked 1 switch rules as full_case in process $proc$ice40/ice40hx8k.sv:14$1 in module ice40hx8k.
-Removed a total of 0 dead cases.
+Removed a total of 1 dead cases.
 
-6.3.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+7.3.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
 Removed 14 redundant assignments.
 Promoted 45 assignments to connections.
 
-6.3.4. Executing PROC_INIT pass (extract init attributes).
-Found init rule in `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$325'.
+7.3.4. Executing PROC_INIT pass (extract init attributes).
+Found init rule in `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$320'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$321'.
+Found init rule in `\SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$316'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$314'.
+Found init rule in `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$309'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$310'.
+Found init rule in `\SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$305'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$303'.
+Found init rule in `\SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$298'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$300'.
+Found init rule in `\SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$295'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$297'.
+Found init rule in `\SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$292'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$294'.
+Found init rule in `\SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$289'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$291'.
+Found init rule in `\SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$286'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$289'.
+Found init rule in `\SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$284'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$287'.
+Found init rule in `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$282'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$283'.
+Found init rule in `\SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$278'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$276'.
+Found init rule in `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$271'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$272'.
+Found init rule in `\SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$267'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$265'.
+Found init rule in `\SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$260'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$262'.
+Found init rule in `\SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$257'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$259'.
+Found init rule in `\SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$254'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$256'.
+Found init rule in `\SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$251'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$253'.
+Found init rule in `\SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$248'.
   Set init value: \Q = 1'0
-Found init rule in `\SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$251'.
+Found init rule in `\SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$246'.
   Set init value: \Q = 1'0
-Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:71$517'.
+Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:71$509'.
   Set init value: \bit_cnt = 4'0000
-Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:70$516'.
+Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:70$508'.
   Set init value: \prescale_reg = 19'0000000000000000000
-Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:69$515'.
+Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:69$507'.
   Set init value: \data_reg = 9'000000000
-Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:67$514'.
+Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:67$506'.
   Set init value: \busy_reg = 1'0
-Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:65$513'.
+Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:65$505'.
   Set init value: \txd_reg = 1'1
-Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:63$512'.
+Found init rule in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:63$504'.
   Set init value: \input_axis_tready_reg = 1'0
-Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:77$497'.
+Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:77$489'.
   Set init value: \bit_cnt = 4'0000
-Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:76$496'.
+Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:76$488'.
   Set init value: \prescale_reg = 19'0000000000000000000
-Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:75$495'.
+Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:75$487'.
   Set init value: \data_reg = 8'00000000
-Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:73$494'.
+Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:73$486'.
   Set init value: \frame_error_reg = 1'0
-Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:72$493'.
+Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:72$485'.
   Set init value: \overrun_error_reg = 1'0
-Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:71$492'.
+Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:71$484'.
   Set init value: \busy_reg = 1'0
-Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:69$491'.
+Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:69$483'.
   Set init value: \rxd_reg = 1'1
-Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:67$490'.
+Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:67$482'.
   Set init value: \output_axis_tvalid_reg = 1'0
-Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:66$489'.
+Found init rule in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:66$481'.
   Set init value: \output_axis_tdata_reg = 8'00000000
 Found init rule in `\reset_on_start.$proc$ice40/ice40hx8k.sv:129$23'.
   Set init value: \startup = 3'000
@@ -316,111 +281,105 @@ Found init rule in `\ice40hx8k.$proc$ice40/ice40hx8k.sv:13$14'.
 Found init rule in `\ice40hx8k.$proc$ice40/ice40hx8k.sv:12$13'.
   Set init value: \ctr = 16'0000000000000000
 
-6.3.5. Executing PROC_ARST pass (detect async resets in processes).
-Found async reset \nrst in `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:56$462'.
-Found async reset \S in `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$322'.
-Found async reset \R in `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$311'.
-Found async reset \S in `\SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1138$301'.
-Found async reset \R in `\SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1017$295'.
-Found async reset \S in `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$284'.
-Found async reset \R in `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$273'.
-Found async reset \S in `\SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:527$263'.
-Found async reset \R in `\SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:406$257'.
-Found async reset \nrst in `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:56$466'.
+7.3.5. Executing PROC_ARST pass (detect async resets in processes).
+Found async reset \S in `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$317'.
+Found async reset \R in `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$306'.
+Found async reset \S in `\SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1138$296'.
+Found async reset \R in `\SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1017$290'.
+Found async reset \S in `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$279'.
+Found async reset \R in `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$268'.
+Found async reset \S in `\SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:527$258'.
+Found async reset \R in `\SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:406$252'.
 Found async reset \manual in `\reset_on_start.$proc$ice40/ice40hx8k.sv:131$16'.
 Found async reset \rxready in `\ice40hx8k.$proc$ice40/ice40hx8k.sv:104$9'.
 Found async reset \txready in `\ice40hx8k.$proc$ice40/ice40hx8k.sv:98$7'.
 
-6.3.6. Executing PROC_ROM pass (convert switches to ROMs).
+7.3.6. Executing PROC_ROM pass (convert switches to ROMs).
 Converted 0 switches.
-<suppressed ~43 debug messages>
+<suppressed ~41 debug messages>
 
-6.3.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
-Creating decoders for process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:0$464'.
-     1/1: $1\nextState[7:0]
-Creating decoders for process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:56$462'.
-     1/1: $1\currentState[7:0]
-Creating decoders for process `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$325'.
-Creating decoders for process `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$322'.
+7.3.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$320'.
+Creating decoders for process `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$317'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$321'.
-Creating decoders for process `\SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1353$315'.
+Creating decoders for process `\SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$316'.
+Creating decoders for process `\SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1353$310'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$314'.
-Creating decoders for process `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$311'.
+Creating decoders for process `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$309'.
+Creating decoders for process `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$306'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$310'.
-Creating decoders for process `\SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1212$304'.
+Creating decoders for process `\SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$305'.
+Creating decoders for process `\SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1212$299'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$303'.
-Creating decoders for process `\SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1138$301'.
+Creating decoders for process `\SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$298'.
+Creating decoders for process `\SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1138$296'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$300'.
-Creating decoders for process `\SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1088$298'.
+Creating decoders for process `\SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$295'.
+Creating decoders for process `\SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1088$293'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$297'.
-Creating decoders for process `\SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1017$295'.
+Creating decoders for process `\SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$292'.
+Creating decoders for process `\SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1017$290'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$294'.
-Creating decoders for process `\SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:967$292'.
+Creating decoders for process `\SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$289'.
+Creating decoders for process `\SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:967$287'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$291'.
-Creating decoders for process `\SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:922$290'.
+Creating decoders for process `\SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$286'.
+Creating decoders for process `\SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:922$285'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$289'.
-Creating decoders for process `\SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:882$288'.
-Creating decoders for process `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$287'.
-Creating decoders for process `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$284'.
+Creating decoders for process `\SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$284'.
+Creating decoders for process `\SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:882$283'.
+Creating decoders for process `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$282'.
+Creating decoders for process `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$279'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$283'.
-Creating decoders for process `\SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:742$277'.
+Creating decoders for process `\SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$278'.
+Creating decoders for process `\SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:742$272'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$276'.
-Creating decoders for process `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$273'.
+Creating decoders for process `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$271'.
+Creating decoders for process `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$268'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$272'.
-Creating decoders for process `\SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:601$266'.
+Creating decoders for process `\SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$267'.
+Creating decoders for process `\SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:601$261'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$265'.
-Creating decoders for process `\SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:527$263'.
+Creating decoders for process `\SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$260'.
+Creating decoders for process `\SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:527$258'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$262'.
-Creating decoders for process `\SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:477$260'.
+Creating decoders for process `\SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$257'.
+Creating decoders for process `\SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:477$255'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$259'.
-Creating decoders for process `\SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:406$257'.
+Creating decoders for process `\SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$254'.
+Creating decoders for process `\SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:406$252'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$256'.
-Creating decoders for process `\SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:356$254'.
+Creating decoders for process `\SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$251'.
+Creating decoders for process `\SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:356$249'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$253'.
-Creating decoders for process `\SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:311$252'.
+Creating decoders for process `\SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$248'.
+Creating decoders for process `\SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:311$247'.
      1/1: $0\Q[0:0]
-Creating decoders for process `\SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$251'.
-Creating decoders for process `\SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:271$250'.
-Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:71$517'.
-Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:70$516'.
-Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:69$515'.
-Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:67$514'.
-Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:65$513'.
-Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:63$512'.
-Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$498'.
+Creating decoders for process `\SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$246'.
+Creating decoders for process `\SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:271$245'.
+Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:71$509'.
+Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:70$508'.
+Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:69$507'.
+Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:67$506'.
+Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:65$505'.
+Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:63$504'.
+Creating decoders for process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$490'.
      1/6: $0\data_reg[8:0]
      2/6: $0\prescale_reg[18:0]
      3/6: $0\txd_reg[0:0]
      4/6: $0\busy_reg[0:0]
      5/6: $0\bit_cnt[3:0]
      6/6: $0\input_axis_tready_reg[0:0]
-Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:77$497'.
-Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:76$496'.
-Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:75$495'.
-Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:73$494'.
-Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:72$493'.
-Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:71$492'.
-Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:69$491'.
-Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:67$490'.
-Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:66$489'.
-Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
+Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:77$489'.
+Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:76$488'.
+Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:75$487'.
+Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:73$486'.
+Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:72$485'.
+Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:71$484'.
+Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:69$483'.
+Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:67$482'.
+Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:66$481'.
+Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
      1/9: $0\frame_error_reg[0:0]
      2/9: $0\overrun_error_reg[0:0]
      3/9: $0\rxd_reg[0:0]
@@ -430,12 +389,9 @@ Creating decoders for process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000
      7/9: $0\prescale_reg[18:0]
      8/9: $0\data_reg[7:0]
      9/9: $0\busy_reg[0:0]
-Creating decoders for process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:0$468'.
-     1/1: $1\nextState[7:0]
-Creating decoders for process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:56$466'.
-     1/1: $1\currentState[7:0]
-Creating decoders for process `\busInterface.$proc$source/dataflow/bus_interface.sv:0$28'.
-     1/1: $1\interfaceOutput[7:0]
+Creating decoders for process `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$proc$source/dataflow/internal_bus.sv:0$461'.
+Creating decoders for process `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$proc$source/dataflow/internal_bus.sv:0$458'.
+     1/1: $1$mem2reg_rd$\bus_outputs_unpacked$source/dataflow/internal_bus.sv:50$457_DATA[1:0]$460
 Creating decoders for process `\reset_on_start.$proc$ice40/ice40hx8k.sv:129$23'.
 Creating decoders for process `\reset_on_start.$proc$ice40/ice40hx8k.sv:131$16'.
      1/1: $0\startup[2:0]
@@ -449,181 +405,174 @@ Creating decoders for process `\ice40hx8k.$proc$ice40/ice40hx8k.sv:14$1'.
      1/2: $0\ctr[15:0]
      2/2: $0\hz100[0:0]
 
-6.3.8. Executing PROC_DLATCH pass (convert process syncs to latches).
-No latch inferred for signal `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.\nextState' from process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:0$464'.
-No latch inferred for signal `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.\nextState' from process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:0$468'.
-No latch inferred for signal `\busInterface.\interfaceOutput' from process `\busInterface.$proc$source/dataflow/bus_interface.sv:0$28'.
+7.3.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.\bus_outputs_unpacked[0]' from process `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$proc$source/dataflow/internal_bus.sv:0$461'.
+No latch inferred for signal `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.\bus_outputs_unpacked[1]' from process `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$proc$source/dataflow/internal_bus.sv:0$461'.
+No latch inferred for signal `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.\bus_outputs_unpacked[2]' from process `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$proc$source/dataflow/internal_bus.sv:0$461'.
+No latch inferred for signal `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.\bus_outputs_unpacked[3]' from process `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$proc$source/dataflow/internal_bus.sv:0$461'.
+No latch inferred for signal `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$mem2reg_rd$\bus_outputs_unpacked$source/dataflow/internal_bus.sv:50$457_DATA' from process `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$proc$source/dataflow/internal_bus.sv:0$458'.
 
-6.3.9. Executing PROC_DFF pass (convert process syncs to FFs).
-Creating register for signal `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.\currentState' using process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:56$462'.
-  created $adff cell `$procdff$830' with positive edge clock and negative level reset.
-Creating register for signal `\SB_DFFNES.\Q' using process `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$322'.
-  created $adff cell `$procdff$831' with negative edge clock and positive level reset.
-Creating register for signal `\SB_DFFNESS.\Q' using process `\SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1353$315'.
-  created $dff cell `$procdff$832' with negative edge clock.
-Creating register for signal `\SB_DFFNER.\Q' using process `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$311'.
-  created $adff cell `$procdff$833' with negative edge clock and positive level reset.
-Creating register for signal `\SB_DFFNESR.\Q' using process `\SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1212$304'.
-  created $dff cell `$procdff$834' with negative edge clock.
-Creating register for signal `\SB_DFFNS.\Q' using process `\SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1138$301'.
-  created $adff cell `$procdff$835' with negative edge clock and positive level reset.
-Creating register for signal `\SB_DFFNSS.\Q' using process `\SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1088$298'.
-  created $dff cell `$procdff$836' with negative edge clock.
-Creating register for signal `\SB_DFFNR.\Q' using process `\SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1017$295'.
-  created $adff cell `$procdff$837' with negative edge clock and positive level reset.
-Creating register for signal `\SB_DFFNSR.\Q' using process `\SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:967$292'.
-  created $dff cell `$procdff$838' with negative edge clock.
-Creating register for signal `\SB_DFFNE.\Q' using process `\SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:922$290'.
-  created $dff cell `$procdff$839' with negative edge clock.
-Creating register for signal `\SB_DFFN.\Q' using process `\SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:882$288'.
-  created $dff cell `$procdff$840' with negative edge clock.
-Creating register for signal `\SB_DFFES.\Q' using process `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$284'.
-  created $adff cell `$procdff$841' with positive edge clock and positive level reset.
-Creating register for signal `\SB_DFFESS.\Q' using process `\SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:742$277'.
+7.3.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\SB_DFFNES.\Q' using process `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$317'.
+  created $adff cell `$procdff$818' with negative edge clock and positive level reset.
+Creating register for signal `\SB_DFFNESS.\Q' using process `\SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1353$310'.
+  created $dff cell `$procdff$819' with negative edge clock.
+Creating register for signal `\SB_DFFNER.\Q' using process `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$306'.
+  created $adff cell `$procdff$820' with negative edge clock and positive level reset.
+Creating register for signal `\SB_DFFNESR.\Q' using process `\SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1212$299'.
+  created $dff cell `$procdff$821' with negative edge clock.
+Creating register for signal `\SB_DFFNS.\Q' using process `\SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1138$296'.
+  created $adff cell `$procdff$822' with negative edge clock and positive level reset.
+Creating register for signal `\SB_DFFNSS.\Q' using process `\SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1088$293'.
+  created $dff cell `$procdff$823' with negative edge clock.
+Creating register for signal `\SB_DFFNR.\Q' using process `\SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1017$290'.
+  created $adff cell `$procdff$824' with negative edge clock and positive level reset.
+Creating register for signal `\SB_DFFNSR.\Q' using process `\SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:967$287'.
+  created $dff cell `$procdff$825' with negative edge clock.
+Creating register for signal `\SB_DFFNE.\Q' using process `\SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:922$285'.
+  created $dff cell `$procdff$826' with negative edge clock.
+Creating register for signal `\SB_DFFN.\Q' using process `\SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:882$283'.
+  created $dff cell `$procdff$827' with negative edge clock.
+Creating register for signal `\SB_DFFES.\Q' using process `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$279'.
+  created $adff cell `$procdff$828' with positive edge clock and positive level reset.
+Creating register for signal `\SB_DFFESS.\Q' using process `\SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:742$272'.
+  created $dff cell `$procdff$829' with positive edge clock.
+Creating register for signal `\SB_DFFER.\Q' using process `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$268'.
+  created $adff cell `$procdff$830' with positive edge clock and positive level reset.
+Creating register for signal `\SB_DFFESR.\Q' using process `\SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:601$261'.
+  created $dff cell `$procdff$831' with positive edge clock.
+Creating register for signal `\SB_DFFS.\Q' using process `\SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:527$258'.
+  created $adff cell `$procdff$832' with positive edge clock and positive level reset.
+Creating register for signal `\SB_DFFSS.\Q' using process `\SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:477$255'.
+  created $dff cell `$procdff$833' with positive edge clock.
+Creating register for signal `\SB_DFFR.\Q' using process `\SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:406$252'.
+  created $adff cell `$procdff$834' with positive edge clock and positive level reset.
+Creating register for signal `\SB_DFFSR.\Q' using process `\SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:356$249'.
+  created $dff cell `$procdff$835' with positive edge clock.
+Creating register for signal `\SB_DFFE.\Q' using process `\SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:311$247'.
+  created $dff cell `$procdff$836' with positive edge clock.
+Creating register for signal `\SB_DFF.\Q' using process `\SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:271$245'.
+  created $dff cell `$procdff$837' with positive edge clock.
+Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\input_axis_tready_reg' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$490'.
+  created $dff cell `$procdff$838' with positive edge clock.
+Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\txd_reg' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$490'.
+  created $dff cell `$procdff$839' with positive edge clock.
+Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\busy_reg' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$490'.
+  created $dff cell `$procdff$840' with positive edge clock.
+Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\data_reg' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$490'.
+  created $dff cell `$procdff$841' with positive edge clock.
+Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\prescale_reg' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$490'.
   created $dff cell `$procdff$842' with positive edge clock.
-Creating register for signal `\SB_DFFER.\Q' using process `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$273'.
-  created $adff cell `$procdff$843' with positive edge clock and positive level reset.
-Creating register for signal `\SB_DFFESR.\Q' using process `\SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:601$266'.
+Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\bit_cnt' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$490'.
+  created $dff cell `$procdff$843' with positive edge clock.
+Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\busy_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
   created $dff cell `$procdff$844' with positive edge clock.
-Creating register for signal `\SB_DFFS.\Q' using process `\SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:527$263'.
-  created $adff cell `$procdff$845' with positive edge clock and positive level reset.
-Creating register for signal `\SB_DFFSS.\Q' using process `\SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:477$260'.
+Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\data_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
+  created $dff cell `$procdff$845' with positive edge clock.
+Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\prescale_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
   created $dff cell `$procdff$846' with positive edge clock.
-Creating register for signal `\SB_DFFR.\Q' using process `\SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:406$257'.
-  created $adff cell `$procdff$847' with positive edge clock and positive level reset.
-Creating register for signal `\SB_DFFSR.\Q' using process `\SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:356$254'.
+Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\bit_cnt' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
+  created $dff cell `$procdff$847' with positive edge clock.
+Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\output_axis_tdata_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
   created $dff cell `$procdff$848' with positive edge clock.
-Creating register for signal `\SB_DFFE.\Q' using process `\SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:311$252'.
+Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\output_axis_tvalid_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
   created $dff cell `$procdff$849' with positive edge clock.
-Creating register for signal `\SB_DFF.\Q' using process `\SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:271$250'.
+Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\rxd_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
   created $dff cell `$procdff$850' with positive edge clock.
-Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\input_axis_tready_reg' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$498'.
+Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\overrun_error_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
   created $dff cell `$procdff$851' with positive edge clock.
-Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\txd_reg' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$498'.
+Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\frame_error_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
   created $dff cell `$procdff$852' with positive edge clock.
-Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\busy_reg' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$498'.
-  created $dff cell `$procdff$853' with positive edge clock.
-Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\data_reg' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$498'.
-  created $dff cell `$procdff$854' with positive edge clock.
-Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\prescale_reg' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$498'.
-  created $dff cell `$procdff$855' with positive edge clock.
-Creating register for signal `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.\bit_cnt' using process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$498'.
-  created $dff cell `$procdff$856' with positive edge clock.
-Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\busy_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-  created $dff cell `$procdff$857' with positive edge clock.
-Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\data_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-  created $dff cell `$procdff$858' with positive edge clock.
-Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\prescale_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-  created $dff cell `$procdff$859' with positive edge clock.
-Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\bit_cnt' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-  created $dff cell `$procdff$860' with positive edge clock.
-Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\output_axis_tdata_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-  created $dff cell `$procdff$861' with positive edge clock.
-Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\output_axis_tvalid_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-  created $dff cell `$procdff$862' with positive edge clock.
-Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\rxd_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-  created $dff cell `$procdff$863' with positive edge clock.
-Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\overrun_error_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-  created $dff cell `$procdff$864' with positive edge clock.
-Creating register for signal `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.\frame_error_reg' using process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-  created $dff cell `$procdff$865' with positive edge clock.
-Creating register for signal `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.\currentState' using process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:56$466'.
-  created $adff cell `$procdff$866' with positive edge clock and negative level reset.
 Creating register for signal `\reset_on_start.\startup' using process `\reset_on_start.$proc$ice40/ice40hx8k.sv:131$16'.
-  created $adff cell `$procdff$867' with positive edge clock and positive level reset.
+  created $adff cell `$procdff$853' with positive edge clock and positive level reset.
 Creating register for signal `\ice40hx8k.\recv' using process `\ice40hx8k.$proc$ice40/ice40hx8k.sv:104$9'.
-  created $adff cell `$procdff$868' with positive edge clock and negative level reset.
+  created $adff cell `$procdff$854' with positive edge clock and negative level reset.
 Creating register for signal `\ice40hx8k.\xmit' using process `\ice40hx8k.$proc$ice40/ice40hx8k.sv:98$7'.
-  created $adff cell `$procdff$869' with positive edge clock and negative level reset.
+  created $adff cell `$procdff$855' with positive edge clock and negative level reset.
 Creating register for signal `\ice40hx8k.\ctr' using process `\ice40hx8k.$proc$ice40/ice40hx8k.sv:14$1'.
-  created $dff cell `$procdff$870' with positive edge clock.
+  created $dff cell `$procdff$856' with positive edge clock.
 Creating register for signal `\ice40hx8k.\hz100' using process `\ice40hx8k.$proc$ice40/ice40hx8k.sv:14$1'.
-  created $dff cell `$procdff$871' with positive edge clock.
+  created $dff cell `$procdff$857' with positive edge clock.
 
-6.3.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+7.3.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
 
-6.3.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
-Found and cleaned up 1 empty switch in `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:0$464'.
-Removing empty process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:0$464'.
-Removing empty process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:56$462'.
-Removing empty process `SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$325'.
-Found and cleaned up 1 empty switch in `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$322'.
-Removing empty process `SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$322'.
-Removing empty process `SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$321'.
-Found and cleaned up 2 empty switches in `\SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1353$315'.
-Removing empty process `SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1353$315'.
-Removing empty process `SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$314'.
-Found and cleaned up 1 empty switch in `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$311'.
-Removing empty process `SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$311'.
-Removing empty process `SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$310'.
-Found and cleaned up 2 empty switches in `\SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1212$304'.
-Removing empty process `SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1212$304'.
-Removing empty process `SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$303'.
-Removing empty process `SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1138$301'.
-Removing empty process `SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$300'.
-Found and cleaned up 1 empty switch in `\SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1088$298'.
-Removing empty process `SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1088$298'.
-Removing empty process `SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$297'.
-Removing empty process `SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1017$295'.
-Removing empty process `SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$294'.
-Found and cleaned up 1 empty switch in `\SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:967$292'.
-Removing empty process `SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:967$292'.
-Removing empty process `SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$291'.
-Found and cleaned up 1 empty switch in `\SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:922$290'.
-Removing empty process `SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:922$290'.
-Removing empty process `SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$289'.
-Removing empty process `SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:882$288'.
-Removing empty process `SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$287'.
-Found and cleaned up 1 empty switch in `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$284'.
-Removing empty process `SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$284'.
-Removing empty process `SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$283'.
-Found and cleaned up 2 empty switches in `\SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:742$277'.
-Removing empty process `SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:742$277'.
-Removing empty process `SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$276'.
-Found and cleaned up 1 empty switch in `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$273'.
-Removing empty process `SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$273'.
-Removing empty process `SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$272'.
-Found and cleaned up 2 empty switches in `\SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:601$266'.
-Removing empty process `SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:601$266'.
-Removing empty process `SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$265'.
-Removing empty process `SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:527$263'.
-Removing empty process `SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$262'.
-Found and cleaned up 1 empty switch in `\SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:477$260'.
-Removing empty process `SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:477$260'.
-Removing empty process `SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$259'.
-Removing empty process `SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:406$257'.
-Removing empty process `SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$256'.
-Found and cleaned up 1 empty switch in `\SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:356$254'.
-Removing empty process `SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:356$254'.
-Removing empty process `SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$253'.
-Found and cleaned up 1 empty switch in `\SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:311$252'.
-Removing empty process `SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:311$252'.
-Removing empty process `SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$251'.
-Removing empty process `SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:271$250'.
-Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:71$517'.
-Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:70$516'.
-Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:69$515'.
-Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:67$514'.
-Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:65$513'.
-Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:63$512'.
-Found and cleaned up 6 empty switches in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$498'.
-Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$498'.
-Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:77$497'.
-Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:76$496'.
-Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:75$495'.
-Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:73$494'.
-Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:72$493'.
-Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:71$492'.
-Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:69$491'.
-Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:67$490'.
-Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:66$489'.
-Found and cleaned up 10 empty switches in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$470'.
-Found and cleaned up 1 empty switch in `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:0$468'.
-Removing empty process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:0$468'.
-Removing empty process `$paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.$proc$source/dataflow/register.sv:56$466'.
-Found and cleaned up 1 empty switch in `\busInterface.$proc$source/dataflow/bus_interface.sv:0$28'.
-Removing empty process `busInterface.$proc$source/dataflow/bus_interface.sv:0$28'.
+7.3.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$320'.
+Found and cleaned up 1 empty switch in `\SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$317'.
+Removing empty process `SB_DFFNES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1414$317'.
+Removing empty process `SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$316'.
+Found and cleaned up 2 empty switches in `\SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1353$310'.
+Removing empty process `SB_DFFNESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1353$310'.
+Removing empty process `SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$309'.
+Found and cleaned up 1 empty switch in `\SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$306'.
+Removing empty process `SB_DFFNER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1273$306'.
+Removing empty process `SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$305'.
+Found and cleaned up 2 empty switches in `\SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1212$299'.
+Removing empty process `SB_DFFNESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1212$299'.
+Removing empty process `SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$298'.
+Removing empty process `SB_DFFNS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1138$296'.
+Removing empty process `SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$295'.
+Found and cleaned up 1 empty switch in `\SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1088$293'.
+Removing empty process `SB_DFFNSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1088$293'.
+Removing empty process `SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$292'.
+Removing empty process `SB_DFFNR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:1017$290'.
+Removing empty process `SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$289'.
+Found and cleaned up 1 empty switch in `\SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:967$287'.
+Removing empty process `SB_DFFNSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:967$287'.
+Removing empty process `SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$286'.
+Found and cleaned up 1 empty switch in `\SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:922$285'.
+Removing empty process `SB_DFFNE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:922$285'.
+Removing empty process `SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$284'.
+Removing empty process `SB_DFFN.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:882$283'.
+Removing empty process `SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$282'.
+Found and cleaned up 1 empty switch in `\SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$279'.
+Removing empty process `SB_DFFES.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:803$279'.
+Removing empty process `SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$278'.
+Found and cleaned up 2 empty switches in `\SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:742$272'.
+Removing empty process `SB_DFFESS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:742$272'.
+Removing empty process `SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$271'.
+Found and cleaned up 1 empty switch in `\SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$268'.
+Removing empty process `SB_DFFER.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:662$268'.
+Removing empty process `SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$267'.
+Found and cleaned up 2 empty switches in `\SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:601$261'.
+Removing empty process `SB_DFFESR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:601$261'.
+Removing empty process `SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$260'.
+Removing empty process `SB_DFFS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:527$258'.
+Removing empty process `SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$257'.
+Found and cleaned up 1 empty switch in `\SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:477$255'.
+Removing empty process `SB_DFFSS.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:477$255'.
+Removing empty process `SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$254'.
+Removing empty process `SB_DFFR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:406$252'.
+Removing empty process `SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$251'.
+Found and cleaned up 1 empty switch in `\SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:356$249'.
+Removing empty process `SB_DFFSR.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:356$249'.
+Removing empty process `SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$248'.
+Found and cleaned up 1 empty switch in `\SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:311$247'.
+Removing empty process `SB_DFFE.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:311$247'.
+Removing empty process `SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:0$246'.
+Removing empty process `SB_DFF.$proc$/home/shay/a/ece270/bin/../share/yosys/ice40/cells_sim.v:271$245'.
+Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:71$509'.
+Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:70$508'.
+Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:69$507'.
+Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:67$506'.
+Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:65$505'.
+Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:63$504'.
+Found and cleaned up 6 empty switches in `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$490'.
+Removing empty process `$paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_tx.v:78$490'.
+Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:77$489'.
+Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:76$488'.
+Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:75$487'.
+Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:73$486'.
+Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:72$485'.
+Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:71$484'.
+Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:69$483'.
+Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:67$482'.
+Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:66$481'.
+Found and cleaned up 10 empty switches in `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
+Removing empty process `$paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.$proc$ice40/uart/uart_rx.v:86$462'.
+Removing empty process `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$proc$source/dataflow/internal_bus.sv:0$461'.
+Found and cleaned up 1 empty switch in `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$proc$source/dataflow/internal_bus.sv:0$458'.
+Removing empty process `$paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.$proc$source/dataflow/internal_bus.sv:0$458'.
 Removing empty process `reset_on_start.$proc$ice40/ice40hx8k.sv:129$23'.
 Found and cleaned up 5 empty switches in `\reset_on_start.$proc$ice40/ice40hx8k.sv:131$16'.
 Removing empty process `reset_on_start.$proc$ice40/ice40hx8k.sv:131$16'.
@@ -633,51 +582,44 @@ Removing empty process `ice40hx8k.$proc$ice40/ice40hx8k.sv:104$9'.
 Removing empty process `ice40hx8k.$proc$ice40/ice40hx8k.sv:98$7'.
 Found and cleaned up 1 empty switch in `\ice40hx8k.$proc$ice40/ice40hx8k.sv:14$1'.
 Removing empty process `ice40hx8k.$proc$ice40/ice40hx8k.sv:14$1'.
-Cleaned up 43 empty switches.
+Cleaned up 41 empty switches.
 
-6.3.12. Executing OPT_EXPR pass (perform const folding).
-Optimizing module $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.
-<suppressed ~1 debug messages>
+7.3.12. Executing OPT_EXPR pass (perform const folding).
 Optimizing module $paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.
 <suppressed ~4 debug messages>
 Optimizing module $paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.
 <suppressed ~9 debug messages>
 Optimizing module uart.
-Optimizing module top.
-Optimizing module $paramod\internalBus\INPUT_COUNT=2'01.
-Optimizing module $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.
+Optimizing module $paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.
 <suppressed ~1 debug messages>
-Optimizing module busInterface.
+Optimizing module top.
 Optimizing module reset_on_start.
 <suppressed ~2 debug messages>
 Optimizing module ice40hx8k.
 
-6.4. Executing FLATTEN pass (flatten design).
-Deleting now unused module $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'10\DEFAULT_VALUE=8'10101010.
+7.4. Executing FLATTEN pass (flatten design).
 Deleting now unused module $paramod\uart_tx\DATA_WIDTH=s32'00000000000000000000000000001000.
 Deleting now unused module $paramod\uart_rx\DATA_WIDTH=s32'00000000000000000000000000001000.
 Deleting now unused module uart.
+Deleting now unused module $paramod$3a27a7ef4134db216579049f5bf139efdf87d1e6\internalBus.
 Deleting now unused module top.
-Deleting now unused module $paramod\internalBus\INPUT_COUNT=2'01.
-Deleting now unused module $paramod\register\INPUT_COUNT=2'01\OUTPUT_COUNT=2'01\DEFAULT_VALUE=8'10101010.
-Deleting now unused module busInterface.
 Deleting now unused module reset_on_start.
-<suppressed ~13 debug messages>
+<suppressed ~6 debug messages>
 
-6.5. Executing TRIBUF pass.
+7.5. Executing TRIBUF pass.
 
-6.6. Executing DEMINOUT pass (demote inout ports to input or output).
+7.6. Executing DEMINOUT pass (demote inout ports to input or output).
 
-6.7. Executing OPT_EXPR pass (perform const folding).
+7.7. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
-<suppressed ~26 debug messages>
+<suppressed ~20 debug messages>
 
-6.8. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.8. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
-Removed 89 unused cells and 313 unused wires.
-<suppressed ~130 debug messages>
+Removed 95 unused cells and 290 unused wires.
+<suppressed ~136 debug messages>
 
-6.9. Executing CHECK pass (checking for obvious problems).
+7.9. Executing CHECK pass (checking for obvious problems).
 Checking module ice40hx8k...
 Warning: Wire ice40hx8k.\ss7 [7] is used but has no driver.
 Warning: Wire ice40hx8k.\ss7 [6] is used but has no driver.
@@ -743,6 +685,14 @@ Warning: Wire ice40hx8k.\ss0 [3] is used but has no driver.
 Warning: Wire ice40hx8k.\ss0 [2] is used but has no driver.
 Warning: Wire ice40hx8k.\ss0 [1] is used but has no driver.
 Warning: Wire ice40hx8k.\ss0 [0] is used but has no driver.
+Warning: Wire ice40hx8k.\right [7] is used but has no driver.
+Warning: Wire ice40hx8k.\right [6] is used but has no driver.
+Warning: Wire ice40hx8k.\right [5] is used but has no driver.
+Warning: Wire ice40hx8k.\right [4] is used but has no driver.
+Warning: Wire ice40hx8k.\right [3] is used but has no driver.
+Warning: Wire ice40hx8k.\right [2] is used but has no driver.
+Warning: Wire ice40hx8k.\right [1] is used but has no driver.
+Warning: Wire ice40hx8k.\right [0] is used but has no driver.
 Warning: Wire ice40hx8k.\red is used but has no driver.
 Warning: Wire ice40hx8k.\green is used but has no driver.
 Warning: Wire ice40hx8k.\blue is used but has no driver.
@@ -755,142 +705,47 @@ Warning: Wire ice40hx8k.\uart_inst.uart_tx_inst.input_axis_tdata [3] is used but
 Warning: Wire ice40hx8k.\uart_inst.uart_tx_inst.input_axis_tdata [2] is used but has no driver.
 Warning: Wire ice40hx8k.\uart_inst.uart_tx_inst.input_axis_tdata [1] is used but has no driver.
 Warning: Wire ice40hx8k.\uart_inst.uart_tx_inst.input_axis_tdata [0] is used but has no driver.
-Found and reported 76 problems.
+Found and reported 84 problems.
 
-6.10. Executing OPT pass (performing simple optimizations).
+7.10. Executing OPT pass (performing simple optimizations).
 
-6.10.1. Executing OPT_EXPR pass (perform const folding).
+7.10.1. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.10.2. Executing OPT_MERGE pass (detect identical cells).
+7.10.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 <suppressed ~3 debug messages>
 Removed a total of 1 cells.
 
-6.10.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+7.10.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module \ice40hx8k..
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
-    dead port 2/2 on $mux $flatten\top_inst.\reg1.\genblk1[0].busInterface.$procmux$808.
-    dead port 2/2 on $mux $flatten\top_inst.\reg2.\genblk1[0].busInterface.$procmux$808.
-Removed 2 multiplexer ports.
-<suppressed ~9 debug messages>
+Removed 0 multiplexer ports.
+<suppressed ~6 debug messages>
 
-6.10.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+7.10.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \ice40hx8k.
 Performed a total of 0 changes.
 
-6.10.5. Executing OPT_MERGE pass (detect identical cells).
+7.10.5. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.10.6. Executing OPT_DFF pass (perform DFF optimizations).
+7.10.6. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.10.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.10.7. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 Removed 0 unused cells and 1 unused wires.
 <suppressed ~1 debug messages>
 
-6.10.8. Executing OPT_EXPR pass (perform const folding).
+7.10.8. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.10.9. Rerunning OPT passes. (Maybe there is more to do..)
+7.10.9. Rerunning OPT passes. (Maybe there is more to do..)
 
-6.10.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
-Running muxtree optimizer on module \ice40hx8k..
-  Creating internal representation of mux trees.
-  Evaluating internal representation of mux trees.
-  Analyzing evaluation results.
-Removed 0 multiplexer ports.
-<suppressed ~9 debug messages>
-
-6.10.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
-  Optimizing cells in module \ice40hx8k.
-Performed a total of 0 changes.
-
-6.10.12. Executing OPT_MERGE pass (detect identical cells).
-Finding identical cells in module `\ice40hx8k'.
-Removed a total of 0 cells.
-
-6.10.13. Executing OPT_DFF pass (perform DFF optimizations).
-
-6.10.14. Executing OPT_CLEAN pass (remove unused cells and wires).
-Finding unused cells or wires in module \ice40hx8k..
-
-6.10.15. Executing OPT_EXPR pass (perform const folding).
-Optimizing module ice40hx8k.
-
-6.10.16. Finished OPT passes. (There is nothing left to do.)
-
-6.11. Executing FSM pass (extract and optimize FSM).
-
-6.11.1. Executing FSM_DETECT pass (finding FSMs in design).
-
-6.11.2. Executing FSM_EXTRACT pass (extracting FSM from design).
-
-6.11.3. Executing FSM_OPT pass (simple optimizations of FSMs).
-
-6.11.4. Executing OPT_CLEAN pass (remove unused cells and wires).
-Finding unused cells or wires in module \ice40hx8k..
-
-6.11.5. Executing FSM_OPT pass (simple optimizations of FSMs).
-
-6.11.6. Executing FSM_RECODE pass (re-assigning FSM state encoding).
-
-6.11.7. Executing FSM_INFO pass (dumping all available information on FSM cells).
-
-6.11.8. Executing FSM_MAP pass (mapping FSMs to basic logic).
-
-6.12. Executing OPT pass (performing simple optimizations).
-
-6.12.1. Executing OPT_EXPR pass (perform const folding).
-Optimizing module ice40hx8k.
-
-6.12.2. Executing OPT_MERGE pass (detect identical cells).
-Finding identical cells in module `\ice40hx8k'.
-Removed a total of 0 cells.
-
-6.12.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
-Running muxtree optimizer on module \ice40hx8k..
-  Creating internal representation of mux trees.
-  Evaluating internal representation of mux trees.
-  Analyzing evaluation results.
-Removed 0 multiplexer ports.
-<suppressed ~9 debug messages>
-
-6.12.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
-  Optimizing cells in module \ice40hx8k.
-Performed a total of 0 changes.
-
-6.12.5. Executing OPT_MERGE pass (detect identical cells).
-Finding identical cells in module `\ice40hx8k'.
-Removed a total of 0 cells.
-
-6.12.6. Executing OPT_DFF pass (perform DFF optimizations).
-Adding EN signal on $procdff$871 ($dff) from module ice40hx8k (D = $not$ice40/ice40hx8k.sv:18$3_Y, Q = \hz100).
-Adding SRST signal on $procdff$870 ($dff) from module ice40hx8k (D = $add$ice40/ice40hx8k.sv:21$4_Y [15:0], Q = \ctr, rval = 16'0000000000000000).
-Adding EN signal on $flatten\uart_inst.\uart_tx_inst.$procdff$856 ($dff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$630_Y, Q = \uart_inst.uart_tx_inst.bit_cnt).
-Adding EN signal on $flatten\uart_inst.\uart_tx_inst.$procdff$855 ($dff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$0\prescale_reg[18:0], Q = \uart_inst.uart_tx_inst.prescale_reg).
-Adding EN signal on $flatten\uart_inst.\uart_tx_inst.$procdff$854 ($dff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y, Q = \uart_inst.uart_tx_inst.data_reg).
-Adding EN signal on $flatten\uart_inst.\uart_tx_inst.$procdff$852 ($dff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$603_Y, Q = \uart_inst.uart_tx_inst.txd_reg).
-Adding SRST signal on $flatten\uart_inst.\uart_tx_inst.$procdff$851 ($dff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$641_Y, Q = \uart_inst.uart_tx_inst.input_axis_tready_reg, rval = 1'0).
-Adding EN signal on $auto$ff.cc:266:slice$908 ($sdff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$639_Y, Q = \uart_inst.uart_tx_inst.input_axis_tready_reg).
-Adding EN signal on $flatten\top_inst.\reg2.$procdff$866 ($adff) from module ice40hx8k (D = \top_inst.reg2.filteredBytes, Q = \top_inst.reg2.currentState).
-Adding EN signal on $flatten\top_inst.\reg1.$procdff$830 ($adff) from module ice40hx8k (D = \pb [7:0], Q = \top_inst.reg1.currentState).
-
-6.12.7. Executing OPT_CLEAN pass (remove unused cells and wires).
-Finding unused cells or wires in module \ice40hx8k..
-Removed 9 unused cells and 9 unused wires.
-<suppressed ~12 debug messages>
-
-6.12.8. Executing OPT_EXPR pass (perform const folding).
-Optimizing module ice40hx8k.
-<suppressed ~4 debug messages>
-
-6.12.9. Rerunning OPT passes. (Maybe there is more to do..)
-
-6.12.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+7.10.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module \ice40hx8k..
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
@@ -898,28 +753,117 @@ Running muxtree optimizer on module \ice40hx8k..
 Removed 0 multiplexer ports.
 <suppressed ~6 debug messages>
 
-6.12.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+7.10.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \ice40hx8k.
 Performed a total of 0 changes.
 
-6.12.12. Executing OPT_MERGE pass (detect identical cells).
+7.10.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ice40hx8k'.
+Removed a total of 0 cells.
+
+7.10.13. Executing OPT_DFF pass (perform DFF optimizations).
+
+7.10.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ice40hx8k..
+
+7.10.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ice40hx8k.
+
+7.10.16. Finished OPT passes. (There is nothing left to do.)
+
+7.11. Executing FSM pass (extract and optimize FSM).
+
+7.11.1. Executing FSM_DETECT pass (finding FSMs in design).
+
+7.11.2. Executing FSM_EXTRACT pass (extracting FSM from design).
+
+7.11.3. Executing FSM_OPT pass (simple optimizations of FSMs).
+
+7.11.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ice40hx8k..
+
+7.11.5. Executing FSM_OPT pass (simple optimizations of FSMs).
+
+7.11.6. Executing FSM_RECODE pass (re-assigning FSM state encoding).
+
+7.11.7. Executing FSM_INFO pass (dumping all available information on FSM cells).
+
+7.11.8. Executing FSM_MAP pass (mapping FSMs to basic logic).
+
+7.12. Executing OPT pass (performing simple optimizations).
+
+7.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ice40hx8k.
+
+7.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ice40hx8k'.
+Removed a total of 0 cells.
+
+7.12.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ice40hx8k..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~6 debug messages>
+
+7.12.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ice40hx8k.
+Performed a total of 0 changes.
+
+7.12.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ice40hx8k'.
+Removed a total of 0 cells.
+
+7.12.6. Executing OPT_DFF pass (perform DFF optimizations).
+Adding EN signal on $flatten\uart_inst.\uart_tx_inst.$procdff$843 ($dff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$619_Y, Q = \uart_inst.uart_tx_inst.bit_cnt).
+Adding EN signal on $flatten\uart_inst.\uart_tx_inst.$procdff$842 ($dff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$0\prescale_reg[18:0], Q = \uart_inst.uart_tx_inst.prescale_reg).
+Adding EN signal on $flatten\uart_inst.\uart_tx_inst.$procdff$841 ($dff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$560_Y, Q = \uart_inst.uart_tx_inst.data_reg).
+Adding EN signal on $flatten\uart_inst.\uart_tx_inst.$procdff$839 ($dff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$592_Y, Q = \uart_inst.uart_tx_inst.txd_reg).
+Adding SRST signal on $flatten\uart_inst.\uart_tx_inst.$procdff$838 ($dff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$630_Y, Q = \uart_inst.uart_tx_inst.input_axis_tready_reg, rval = 1'0).
+Adding EN signal on $auto$ff.cc:266:slice$892 ($sdff) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$628_Y, Q = \uart_inst.uart_tx_inst.input_axis_tready_reg).
+
+7.12.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ice40hx8k..
+Removed 5 unused cells and 5 unused wires.
+<suppressed ~6 debug messages>
+
+7.12.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ice40hx8k.
+<suppressed ~4 debug messages>
+
+7.12.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+7.12.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ice40hx8k..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~6 debug messages>
+
+7.12.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ice40hx8k.
+Performed a total of 0 changes.
+
+7.12.12. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 <suppressed ~18 debug messages>
 Removed a total of 6 cells.
 
-6.12.13. Executing OPT_DFF pass (perform DFF optimizations).
+7.12.13. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.12.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.12.14. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 Removed 0 unused cells and 6 unused wires.
 <suppressed ~1 debug messages>
 
-6.12.15. Executing OPT_EXPR pass (perform const folding).
+7.12.15. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.12.16. Rerunning OPT passes. (Maybe there is more to do..)
+7.12.16. Rerunning OPT passes. (Maybe there is more to do..)
 
-6.12.17. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+7.12.17. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module \ice40hx8k..
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
@@ -927,93 +871,87 @@ Running muxtree optimizer on module \ice40hx8k..
 Removed 0 multiplexer ports.
 <suppressed ~6 debug messages>
 
-6.12.18. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+7.12.18. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \ice40hx8k.
 Performed a total of 0 changes.
 
-6.12.19. Executing OPT_MERGE pass (detect identical cells).
+7.12.19. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.12.20. Executing OPT_DFF pass (perform DFF optimizations).
+7.12.20. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.12.21. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.12.21. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.12.22. Executing OPT_EXPR pass (perform const folding).
+7.12.22. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.12.23. Finished OPT passes. (There is nothing left to do.)
+7.12.23. Finished OPT passes. (There is nothing left to do.)
 
-6.13. Executing WREDUCE pass (reducing word size of cells).
-Removed top 31 bits (of 32) from port B of cell ice40hx8k.$add$ice40/ice40hx8k.sv:21$4 ($add).
-Removed top 16 bits (of 32) from port Y of cell ice40hx8k.$add$ice40/ice40hx8k.sv:21$4 ($add).
-Removed top 31 bits (of 32) from port B of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$500 ($sub).
-Removed top 13 bits (of 32) from port Y of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$500 ($sub).
-Removed top 31 bits (of 32) from port B of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$gt$ice40/uart/uart_tx.v:102$505 ($gt).
-Removed top 31 bits (of 32) from port B of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$506 ($sub).
-Removed top 28 bits (of 32) from port Y of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$506 ($sub).
-Removed top 3 bits (of 4) from port B of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$eq$ice40/uart/uart_tx.v:106$509 ($eq).
-Removed top 31 bits (of 32) from port B of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$gt$ice40/uart/uart_tx.v:86$499 ($gt).
-Removed top 16 bits (of 32) from wire ice40hx8k.$add$ice40/ice40hx8k.sv:21$4_Y.
-Removed top 28 bits (of 32) from wire ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$506_Y.
-Removed top 20 bits (of 32) from wire ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$500_Y.
+7.13. Executing WREDUCE pass (reducing word size of cells).
+Removed top 31 bits (of 32) from port B of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$492 ($sub).
+Removed top 13 bits (of 32) from port Y of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$492 ($sub).
+Removed top 31 bits (of 32) from port B of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$gt$ice40/uart/uart_tx.v:102$497 ($gt).
+Removed top 31 bits (of 32) from port B of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$498 ($sub).
+Removed top 28 bits (of 32) from port Y of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$498 ($sub).
+Removed top 3 bits (of 4) from port B of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$eq$ice40/uart/uart_tx.v:106$501 ($eq).
+Removed top 31 bits (of 32) from port B of cell ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$gt$ice40/uart/uart_tx.v:86$491 ($gt).
+Removed top 1 bits (of 2) from port B of cell ice40hx8k.$flatten\top_inst.\bus.$procmux$796_CMP0 ($eq).
+Removed top 28 bits (of 32) from wire ice40hx8k.$flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$498_Y.
 
-6.14. Executing PEEPOPT pass (run peephole optimizers).
+7.14. Executing PEEPOPT pass (run peephole optimizers).
 
-6.15. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.15. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
-Removed 0 unused cells and 3 unused wires.
+Removed 0 unused cells and 1 unused wires.
 <suppressed ~1 debug messages>
 
-6.16. Executing SHARE pass (SAT-based resource sharing).
+7.16. Executing SHARE pass (SAT-based resource sharing).
 
-6.17. Executing TECHMAP pass (map to technology primitives).
+7.17. Executing TECHMAP pass (map to technology primitives).
 
-6.17.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/cmp2lut.v
+7.17.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/cmp2lut.v
 Parsing Verilog input from `/home/shay/a/ece270/bin/../share/yosys/cmp2lut.v' to AST representation.
 Generating RTLIL representation for module `\_90_lut_cmp_'.
 Successfully finished Verilog frontend.
 
-6.17.2. Continuing TECHMAP pass.
+7.17.2. Continuing TECHMAP pass.
 Using template $paramod$106e7676feb63f00b8f79ebab3ff16b0f4c109cb\_90_lut_cmp_ for cells of type $gt.
 No more expansions possible.
 <suppressed ~66 debug messages>
 
-6.18. Executing OPT_EXPR pass (perform const folding).
+7.18. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.19. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.19. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 Removed 0 unused cells and 3 unused wires.
 <suppressed ~1 debug messages>
 
-6.20. Executing ALUMACC pass (create $alu and $macc cells).
+7.20. Executing ALUMACC pass (create $alu and $macc cells).
 Extracting $alu and $macc cells in module ice40hx8k:
-  creating $macc model for $add$ice40/ice40hx8k.sv:21$4 ($add).
-  creating $macc model for $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$506 ($sub).
-  creating $macc model for $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$500 ($sub).
-  creating $alu model for $macc $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$500.
-  creating $alu model for $macc $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$506.
-  creating $alu model for $macc $add$ice40/ice40hx8k.sv:21$4.
-  creating $alu model for $flatten\uart_inst.\uart_tx_inst.$gt$ice40/uart/uart_tx.v:86$499 ($gt): new $alu
-  creating $alu cell for $flatten\uart_inst.\uart_tx_inst.$gt$ice40/uart/uart_tx.v:86$499: $auto$alumacc.cc:485:replace_alu$919
-  creating $alu cell for $add$ice40/ice40hx8k.sv:21$4: $auto$alumacc.cc:485:replace_alu$924
-  creating $alu cell for $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$506: $auto$alumacc.cc:485:replace_alu$927
-  creating $alu cell for $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$500: $auto$alumacc.cc:485:replace_alu$930
-  created 4 $alu and 0 $macc cells.
+  creating $macc model for $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$498 ($sub).
+  creating $macc model for $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$492 ($sub).
+  creating $alu model for $macc $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$492.
+  creating $alu model for $macc $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$498.
+  creating $alu model for $flatten\uart_inst.\uart_tx_inst.$gt$ice40/uart/uart_tx.v:86$491 ($gt): new $alu
+  creating $alu cell for $flatten\uart_inst.\uart_tx_inst.$gt$ice40/uart/uart_tx.v:86$491: $auto$alumacc.cc:485:replace_alu$899
+  creating $alu cell for $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:103$498: $auto$alumacc.cc:485:replace_alu$904
+  creating $alu cell for $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$492: $auto$alumacc.cc:485:replace_alu$907
+  created 3 $alu and 0 $macc cells.
 
-6.21. Executing OPT pass (performing simple optimizations).
+7.21. Executing OPT pass (performing simple optimizations).
 
-6.21.1. Executing OPT_EXPR pass (perform const folding).
+7.21.1. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 <suppressed ~3 debug messages>
 
-6.21.2. Executing OPT_MERGE pass (detect identical cells).
+7.21.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.21.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+7.21.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module \ice40hx8k..
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
@@ -1021,27 +959,27 @@ Running muxtree optimizer on module \ice40hx8k..
 Removed 0 multiplexer ports.
 <suppressed ~6 debug messages>
 
-6.21.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+7.21.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \ice40hx8k.
 Performed a total of 0 changes.
 
-6.21.5. Executing OPT_MERGE pass (detect identical cells).
+7.21.5. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.21.6. Executing OPT_DFF pass (perform DFF optimizations).
+7.21.6. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.21.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.21.7. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 Removed 0 unused cells and 2 unused wires.
 <suppressed ~1 debug messages>
 
-6.21.8. Executing OPT_EXPR pass (perform const folding).
+7.21.8. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.21.9. Rerunning OPT passes. (Maybe there is more to do..)
+7.21.9. Rerunning OPT passes. (Maybe there is more to do..)
 
-6.21.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+7.21.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module \ice40hx8k..
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
@@ -1049,125 +987,125 @@ Running muxtree optimizer on module \ice40hx8k..
 Removed 0 multiplexer ports.
 <suppressed ~6 debug messages>
 
-6.21.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+7.21.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \ice40hx8k.
 Performed a total of 0 changes.
 
-6.21.12. Executing OPT_MERGE pass (detect identical cells).
+7.21.12. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.21.13. Executing OPT_DFF pass (perform DFF optimizations).
+7.21.13. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.21.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.21.14. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.21.15. Executing OPT_EXPR pass (perform const folding).
+7.21.15. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.21.16. Finished OPT passes. (There is nothing left to do.)
+7.21.16. Finished OPT passes. (There is nothing left to do.)
 
-6.22. Executing MEMORY pass.
+7.22. Executing MEMORY pass.
 
-6.22.1. Executing OPT_MEM pass (optimize memories).
+7.22.1. Executing OPT_MEM pass (optimize memories).
 Performed a total of 0 transformations.
 
-6.22.2. Executing OPT_MEM_PRIORITY pass (removing unnecessary memory write priority relations).
+7.22.2. Executing OPT_MEM_PRIORITY pass (removing unnecessary memory write priority relations).
 Performed a total of 0 transformations.
 
-6.22.3. Executing OPT_MEM_FEEDBACK pass (finding memory read-to-write feedback paths).
+7.22.3. Executing OPT_MEM_FEEDBACK pass (finding memory read-to-write feedback paths).
 
-6.22.4. Executing MEMORY_BMUX2ROM pass (converting muxes to ROMs).
+7.22.4. Executing MEMORY_BMUX2ROM pass (converting muxes to ROMs).
 
-6.22.5. Executing MEMORY_DFF pass (merging $dff cells to $memrd).
+7.22.5. Executing MEMORY_DFF pass (merging $dff cells to $memrd).
 
-6.22.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.22.6. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.22.7. Executing MEMORY_SHARE pass (consolidating $memrd/$memwr cells).
+7.22.7. Executing MEMORY_SHARE pass (consolidating $memrd/$memwr cells).
 
-6.22.8. Executing OPT_MEM_WIDEN pass (optimize memories where all ports are wide).
+7.22.8. Executing OPT_MEM_WIDEN pass (optimize memories where all ports are wide).
 Performed a total of 0 transformations.
 
-6.22.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.22.9. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.22.10. Executing MEMORY_COLLECT pass (generating $mem cells).
+7.22.10. Executing MEMORY_COLLECT pass (generating $mem cells).
 
-6.23. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.23. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.24. Executing MEMORY_LIBMAP pass (mapping memories to cells).
+7.24. Executing MEMORY_LIBMAP pass (mapping memories to cells).
 
-6.25. Executing TECHMAP pass (map to technology primitives).
+7.25. Executing TECHMAP pass (map to technology primitives).
 
-6.25.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/brams_map.v
+7.25.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/brams_map.v
 Parsing Verilog input from `/home/shay/a/ece270/bin/../share/yosys/ice40/brams_map.v' to AST representation.
 Generating RTLIL representation for module `\$__ICE40_RAM4K_'.
 Successfully finished Verilog frontend.
 
-6.25.2. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/spram_map.v
+7.25.2. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/spram_map.v
 Parsing Verilog input from `/home/shay/a/ece270/bin/../share/yosys/ice40/spram_map.v' to AST representation.
 Generating RTLIL representation for module `\$__ICE40_SPRAM_'.
 Successfully finished Verilog frontend.
 
-6.25.3. Continuing TECHMAP pass.
+7.25.3. Continuing TECHMAP pass.
 No more expansions possible.
 <suppressed ~4 debug messages>
 
-6.26. Executing ICE40_BRAMINIT pass.
+7.26. Executing ICE40_BRAMINIT pass.
 
-6.27. Executing OPT pass (performing simple optimizations).
+7.27. Executing OPT pass (performing simple optimizations).
 
-6.27.1. Executing OPT_EXPR pass (perform const folding).
+7.27.1. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
-<suppressed ~44 debug messages>
+<suppressed ~43 debug messages>
 
-6.27.2. Executing OPT_MERGE pass (detect identical cells).
+7.27.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.27.3. Executing OPT_DFF pass (perform DFF optimizations).
-Handling const CLK on $procdff$869 ($adff) from module ice40hx8k (removing D path).
-Adding SRST signal on $auto$ff.cc:266:slice$874 ($dffe) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$625_Y, Q = \uart_inst.uart_tx_inst.bit_cnt, rval = 4'1001).
-Adding SRST signal on $auto$ff.cc:266:slice$899 ($dffe) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$598_Y, Q = \uart_inst.uart_tx_inst.txd_reg, rval = 1'0).
-Adding SRST signal on $auto$ff.cc:266:slice$890 ($dffe) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$566_Y [8], Q = \uart_inst.uart_tx_inst.data_reg [8], rval = 1'1).
-Setting constant 0-bit at position 0 on $procdff$869 ($dlatch) from module ice40hx8k.
+7.27.3. Executing OPT_DFF pass (perform DFF optimizations).
+Handling const CLK on $procdff$855 ($adff) from module ice40hx8k (removing D path).
+Adding SRST signal on $auto$ff.cc:266:slice$883 ($dffe) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$587_Y, Q = \uart_inst.uart_tx_inst.txd_reg, rval = 1'0).
+Adding SRST signal on $auto$ff.cc:266:slice$874 ($dffe) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$555_Y [8], Q = \uart_inst.uart_tx_inst.data_reg [8], rval = 1'1).
+Adding SRST signal on $auto$ff.cc:266:slice$858 ($dffe) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$procmux$614_Y, Q = \uart_inst.uart_tx_inst.bit_cnt, rval = 4'1001).
+Setting constant 0-bit at position 0 on $procdff$855 ($dlatch) from module ice40hx8k.
 
-6.27.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.27.4. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
-Removed 5 unused cells and 18 unused wires.
-<suppressed ~11 debug messages>
+Removed 6 unused cells and 19 unused wires.
+<suppressed ~12 debug messages>
 
-6.27.5. Rerunning OPT passes. (Removed registers in this run.)
+7.27.5. Rerunning OPT passes. (Removed registers in this run.)
 
-6.27.6. Executing OPT_EXPR pass (perform const folding).
+7.27.6. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 <suppressed ~1 debug messages>
 
-6.27.7. Executing OPT_MERGE pass (detect identical cells).
+7.27.7. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.27.8. Executing OPT_DFF pass (perform DFF optimizations).
+7.27.8. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.27.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.27.9. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.27.10. Finished fast OPT passes.
+7.27.10. Finished fast OPT passes.
 
-6.28. Executing MEMORY_MAP pass (converting memories to logic and flip-flops).
+7.28. Executing MEMORY_MAP pass (converting memories to logic and flip-flops).
 
-6.29. Executing OPT pass (performing simple optimizations).
+7.29. Executing OPT pass (performing simple optimizations).
 
-6.29.1. Executing OPT_EXPR pass (perform const folding).
+7.29.1. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.29.2. Executing OPT_MERGE pass (detect identical cells).
+7.29.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.29.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+7.29.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module \ice40hx8k..
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
@@ -1175,35 +1113,35 @@ Running muxtree optimizer on module \ice40hx8k..
 Removed 0 multiplexer ports.
 <suppressed ~4 debug messages>
 
-6.29.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+7.29.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \ice40hx8k.
-    Consolidated identical input bits for $mux cell $flatten\uart_inst.\uart_tx_inst.$procmux$582:
-      Old ports: A=19'0000000000000100000, B=19'0000000000000011111, Y=$flatten\uart_inst.\uart_tx_inst.$procmux$582_Y
-      New ports: A=2'10, B=2'01, Y={ $flatten\uart_inst.\uart_tx_inst.$procmux$582_Y [5] $flatten\uart_inst.\uart_tx_inst.$procmux$582_Y [0] }
-      New connections: { $flatten\uart_inst.\uart_tx_inst.$procmux$582_Y [18:6] $flatten\uart_inst.\uart_tx_inst.$procmux$582_Y [4:1] } = { 13'0000000000000 $flatten\uart_inst.\uart_tx_inst.$procmux$582_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$582_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$582_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$582_Y [0] }
+    Consolidated identical input bits for $mux cell $flatten\uart_inst.\uart_tx_inst.$procmux$571:
+      Old ports: A=19'0000000000000100000, B=19'0000000000000011111, Y=$flatten\uart_inst.\uart_tx_inst.$procmux$571_Y
+      New ports: A=2'10, B=2'01, Y={ $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y [5] $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y [0] }
+      New connections: { $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y [18:6] $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y [4:1] } = { 13'0000000000000 $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y [0] }
   Optimizing cells in module \ice40hx8k.
-    Consolidated identical input bits for $mux cell $flatten\uart_inst.\uart_tx_inst.$procmux$587:
-      Old ports: A=$flatten\uart_inst.\uart_tx_inst.$procmux$582_Y, B=19'0000000000000011111, Y=$flatten\uart_inst.\uart_tx_inst.$procmux$587_Y
-      New ports: A={ $flatten\uart_inst.\uart_tx_inst.$procmux$582_Y [5] $flatten\uart_inst.\uart_tx_inst.$procmux$582_Y [0] }, B=2'01, Y={ $flatten\uart_inst.\uart_tx_inst.$procmux$587_Y [5] $flatten\uart_inst.\uart_tx_inst.$procmux$587_Y [0] }
-      New connections: { $flatten\uart_inst.\uart_tx_inst.$procmux$587_Y [18:6] $flatten\uart_inst.\uart_tx_inst.$procmux$587_Y [4:1] } = { 13'0000000000000 $flatten\uart_inst.\uart_tx_inst.$procmux$587_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$587_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$587_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$587_Y [0] }
+    Consolidated identical input bits for $mux cell $flatten\uart_inst.\uart_tx_inst.$procmux$576:
+      Old ports: A=$flatten\uart_inst.\uart_tx_inst.$procmux$571_Y, B=19'0000000000000011111, Y=$flatten\uart_inst.\uart_tx_inst.$procmux$576_Y
+      New ports: A={ $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y [5] $flatten\uart_inst.\uart_tx_inst.$procmux$571_Y [0] }, B=2'01, Y={ $flatten\uart_inst.\uart_tx_inst.$procmux$576_Y [5] $flatten\uart_inst.\uart_tx_inst.$procmux$576_Y [0] }
+      New connections: { $flatten\uart_inst.\uart_tx_inst.$procmux$576_Y [18:6] $flatten\uart_inst.\uart_tx_inst.$procmux$576_Y [4:1] } = { 13'0000000000000 $flatten\uart_inst.\uart_tx_inst.$procmux$576_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$576_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$576_Y [0] $flatten\uart_inst.\uart_tx_inst.$procmux$576_Y [0] }
   Optimizing cells in module \ice40hx8k.
 Performed a total of 2 changes.
 
-6.29.5. Executing OPT_MERGE pass (detect identical cells).
+7.29.5. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.29.6. Executing OPT_DFF pass (perform DFF optimizations).
+7.29.6. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.29.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.29.7. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.29.8. Executing OPT_EXPR pass (perform const folding).
+7.29.8. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.29.9. Rerunning OPT passes. (Maybe there is more to do..)
+7.29.9. Rerunning OPT passes. (Maybe there is more to do..)
 
-6.29.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+7.29.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module \ice40hx8k..
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
@@ -1211,26 +1149,26 @@ Running muxtree optimizer on module \ice40hx8k..
 Removed 0 multiplexer ports.
 <suppressed ~4 debug messages>
 
-6.29.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+7.29.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \ice40hx8k.
 Performed a total of 0 changes.
 
-6.29.12. Executing OPT_MERGE pass (detect identical cells).
+7.29.12. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.29.13. Executing OPT_DFF pass (perform DFF optimizations).
-Adding SRST signal on $auto$ff.cc:266:slice$883 ($dffe) from module ice40hx8k (D = $auto$wreduce.cc:455:run$914 [18:6], Q = \uart_inst.uart_tx_inst.prescale_reg [18:6], rval = 13'0000000000000).
+7.29.13. Executing OPT_DFF pass (perform DFF optimizations).
+Adding SRST signal on $auto$ff.cc:266:slice$867 ($dffe) from module ice40hx8k (D = $flatten\uart_inst.\uart_tx_inst.$sub$ice40/uart/uart_tx.v:88$492_Y [18:6], Q = \uart_inst.uart_tx_inst.prescale_reg [18:6], rval = 13'0000000000000).
 
-6.29.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.29.14. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.29.15. Executing OPT_EXPR pass (perform const folding).
+7.29.15. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.29.16. Rerunning OPT passes. (Maybe there is more to do..)
+7.29.16. Rerunning OPT passes. (Maybe there is more to do..)
 
-6.29.17. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+7.29.17. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module \ice40hx8k..
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
@@ -1238,29 +1176,29 @@ Running muxtree optimizer on module \ice40hx8k..
 Removed 0 multiplexer ports.
 <suppressed ~4 debug messages>
 
-6.29.18. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+7.29.18. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \ice40hx8k.
 Performed a total of 0 changes.
 
-6.29.19. Executing OPT_MERGE pass (detect identical cells).
+7.29.19. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.29.20. Executing OPT_DFF pass (perform DFF optimizations).
+7.29.20. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.29.21. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.29.21. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.29.22. Executing OPT_EXPR pass (perform const folding).
+7.29.22. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.29.23. Finished OPT passes. (There is nothing left to do.)
+7.29.23. Finished OPT passes. (There is nothing left to do.)
 
-6.30. Executing ICE40_WRAPCARRY pass (wrap carries).
+7.30. Executing ICE40_WRAPCARRY pass (wrap carries).
 
-6.31. Executing TECHMAP pass (map to technology primitives).
+7.31. Executing TECHMAP pass (map to technology primitives).
 
-6.31.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/techmap.v
+7.31.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/techmap.v
 Parsing Verilog input from `/home/shay/a/ece270/bin/../share/yosys/techmap.v' to AST representation.
 Generating RTLIL representation for module `\_90_simplemap_bool_ops'.
 Generating RTLIL representation for module `\_90_simplemap_reduce_ops'.
@@ -1288,99 +1226,98 @@ Generating RTLIL representation for module `\_90_demux'.
 Generating RTLIL representation for module `\_90_lut'.
 Successfully finished Verilog frontend.
 
-6.31.2. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/arith_map.v
+7.31.2. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/arith_map.v
 Parsing Verilog input from `/home/shay/a/ece270/bin/../share/yosys/ice40/arith_map.v' to AST representation.
 Generating RTLIL representation for module `\_80_ice40_alu'.
 Successfully finished Verilog frontend.
 
-6.31.3. Continuing TECHMAP pass.
-Using extmapper simplemap for cells of type $sdffce.
-Using extmapper simplemap for cells of type $not.
-Using template $paramod$20b1d0597707d55efcb9664e40f63985956d7680\_80_ice40_alu for cells of type $alu.
-Using extmapper simplemap for cells of type $eq.
-Using template $paramod$8742280fdebca84e1c87f2a86ed84f62d558f4cc\_80_ice40_alu for cells of type $alu.
+7.31.3. Continuing TECHMAP pass.
 Using extmapper simplemap for cells of type $reduce_bool.
-Using extmapper simplemap for cells of type $sdff.
+Using extmapper simplemap for cells of type $sdffce.
 Using extmapper simplemap for cells of type $reduce_and.
 Using extmapper simplemap for cells of type $lut.
+Using template $paramod$20b1d0597707d55efcb9664e40f63985956d7680\_80_ice40_alu for cells of type $alu.
 Using extmapper simplemap for cells of type $dffe.
-Using extmapper simplemap for cells of type $ne.
 Using extmapper simplemap for cells of type $logic_not.
 Using template $paramod$3826c06832e910ed7e3a5e37dc9a6adea7917f5a\_80_ice40_alu for cells of type $alu.
+Using extmapper simplemap for cells of type $eq.
 Using extmapper simplemap for cells of type $mux.
-Using extmapper simplemap for cells of type $adffe.
-Using template $paramod$2af30114e9bd4ccb04dad757b3f0a8f6bf0615b0\_80_ice40_alu for cells of type $alu.
+Using template $paramod$8742280fdebca84e1c87f2a86ed84f62d558f4cc\_80_ice40_alu for cells of type $alu.
+Using extmapper simplemap for cells of type $ne.
+Using extmapper simplemap for cells of type $not.
+Using template $paramod$97565c3687be688407d1272a293bd9d0ae6852dc\_90_pmux for cells of type $pmux.
 Using extmapper simplemap for cells of type $pos.
 Using extmapper simplemap for cells of type $xor.
+Using extmapper simplemap for cells of type $reduce_or.
+Using extmapper simplemap for cells of type $and.
 No more expansions possible.
-<suppressed ~203 debug messages>
+<suppressed ~195 debug messages>
 
-6.32. Executing OPT pass (performing simple optimizations).
+7.32. Executing OPT pass (performing simple optimizations).
 
-6.32.1. Executing OPT_EXPR pass (perform const folding).
+7.32.1. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
-<suppressed ~211 debug messages>
+<suppressed ~152 debug messages>
 
-6.32.2. Executing OPT_MERGE pass (detect identical cells).
+7.32.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
-<suppressed ~87 debug messages>
-Removed a total of 29 cells.
+<suppressed ~69 debug messages>
+Removed a total of 23 cells.
 
-6.32.3. Executing OPT_DFF pass (perform DFF optimizations).
+7.32.3. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.32.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.32.4. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
-Removed 26 unused cells and 104 unused wires.
-<suppressed ~27 debug messages>
+Removed 16 unused cells and 109 unused wires.
+<suppressed ~17 debug messages>
 
-6.32.5. Finished fast OPT passes.
+7.32.5. Finished fast OPT passes.
 
-6.33. Executing ICE40_OPT pass (performing simple optimizations).
+7.33. Executing ICE40_OPT pass (performing simple optimizations).
 
-6.33.1. Running ICE40 specific optimizations.
-Optimized $__ICE40_CARRY_WRAPPER cell back to logic (without SB_CARRY) ice40hx8k.$auto$alumacc.cc:485:replace_alu$919.slice[0].carry: CO=$auto$alumacc.cc:485:replace_alu$919.BB [0]
-Optimized $__ICE40_CARRY_WRAPPER cell back to logic (without SB_CARRY) ice40hx8k.$auto$alumacc.cc:485:replace_alu$924.slice[0].carry: CO=\ctr [0]
-Optimized $__ICE40_CARRY_WRAPPER cell back to logic (without SB_CARRY) ice40hx8k.$auto$alumacc.cc:485:replace_alu$927.slice[0].carry: CO=\uart_inst.uart_tx_inst.bit_cnt [0]
-Optimized $__ICE40_CARRY_WRAPPER cell back to logic (without SB_CARRY) ice40hx8k.$auto$alumacc.cc:485:replace_alu$930.slice[0].carry: CO=\uart_inst.uart_tx_inst.prescale_reg [0]
+7.33.1. Running ICE40 specific optimizations.
+Optimized $__ICE40_CARRY_WRAPPER cell back to logic (without SB_CARRY) ice40hx8k.$auto$alumacc.cc:485:replace_alu$899.slice[0].carry: CO=$auto$alumacc.cc:485:replace_alu$899.BB [0]
+Optimized $__ICE40_CARRY_WRAPPER cell back to logic (without SB_CARRY) ice40hx8k.$auto$alumacc.cc:485:replace_alu$904.slice[0].carry: CO=\uart_inst.uart_tx_inst.bit_cnt [0]
+Optimized $__ICE40_CARRY_WRAPPER cell back to logic (without SB_CARRY) ice40hx8k.$auto$alumacc.cc:485:replace_alu$907.slice[0].carry: CO=\uart_inst.uart_tx_inst.prescale_reg [0]
 
-6.33.2. Executing OPT_EXPR pass (perform const folding).
+7.33.2. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 <suppressed ~8 debug messages>
 
-6.33.3. Executing OPT_MERGE pass (detect identical cells).
+7.33.3. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.33.4. Executing OPT_DFF pass (perform DFF optimizations).
+7.33.4. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.33.5. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.33.5. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 Removed 1 unused cells and 1 unused wires.
 <suppressed ~2 debug messages>
 
-6.33.6. Rerunning OPT passes. (Removed registers in this run.)
+7.33.6. Rerunning OPT passes. (Removed registers in this run.)
 
-6.33.7. Running ICE40 specific optimizations.
+7.33.7. Running ICE40 specific optimizations.
 
-6.33.8. Executing OPT_EXPR pass (perform const folding).
+7.33.8. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.33.9. Executing OPT_MERGE pass (detect identical cells).
+7.33.9. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.33.10. Executing OPT_DFF pass (perform DFF optimizations).
+7.33.10. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.33.11. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.33.11. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.33.12. Finished OPT passes. (There is nothing left to do.)
+7.33.12. Finished OPT passes. (There is nothing left to do.)
 
-6.34. Executing DFFLEGALIZE pass (convert FFs to types supported by the target).
+7.34. Executing DFFLEGALIZE pass (convert FFs to types supported by the target).
 
-6.35. Executing TECHMAP pass (map to technology primitives).
+7.35. Executing TECHMAP pass (map to technology primitives).
 
-6.35.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/ff_map.v
+7.35.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/ff_map.v
 Parsing Verilog input from `/home/shay/a/ece270/bin/../share/yosys/ice40/ff_map.v' to AST representation.
 Generating RTLIL representation for module `\$_DFF_N_'.
 Generating RTLIL representation for module `\$_DFF_P_'.
@@ -1404,80 +1341,76 @@ Generating RTLIL representation for module `\$_SDFFCE_PP0P_'.
 Generating RTLIL representation for module `\$_SDFFCE_PP1P_'.
 Successfully finished Verilog frontend.
 
-6.35.2. Continuing TECHMAP pass.
-Using template \$_SDFFCE_PP1P_ for cells of type $_SDFFCE_PP1P_.
+7.35.2. Continuing TECHMAP pass.
 Using template \$_DFFE_PP_ for cells of type $_DFFE_PP_.
-Using template \$_SDFF_PP0_ for cells of type $_SDFF_PP0_.
 Using template \$_SDFFCE_PP0P_ for cells of type $_SDFFCE_PP0P_.
-Using template \$_DFFE_PP1P_ for cells of type $_DFFE_PP1P_.
-Using template \$_DFFE_PP0P_ for cells of type $_DFFE_PP0P_.
+Using template \$_SDFFCE_PP1P_ for cells of type $_SDFFCE_PP1P_.
 No more expansions possible.
-<suppressed ~88 debug messages>
+<suppressed ~55 debug messages>
 
-6.36. Executing OPT_EXPR pass (perform const folding).
+7.36. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.37. Executing SIMPLEMAP pass (map simple cells to gate primitives).
-Mapping ice40hx8k.$auto$alumacc.cc:485:replace_alu$924.slice[0].carry ($lut).
-Mapping ice40hx8k.$auto$alumacc.cc:485:replace_alu$927.slice[0].carry ($lut).
-Mapping ice40hx8k.$auto$alumacc.cc:485:replace_alu$930.slice[0].carry ($lut).
+7.37. Executing SIMPLEMAP pass (map simple cells to gate primitives).
+Mapping ice40hx8k.$auto$alumacc.cc:485:replace_alu$904.slice[0].carry ($lut).
+Mapping ice40hx8k.$auto$alumacc.cc:485:replace_alu$907.slice[0].carry ($lut).
 
-6.38. Executing ICE40_OPT pass (performing simple optimizations).
+7.38. Executing ICE40_OPT pass (performing simple optimizations).
 
-6.38.1. Running ICE40 specific optimizations.
+7.38.1. Running ICE40 specific optimizations.
 
-6.38.2. Executing OPT_EXPR pass (perform const folding).
+7.38.2. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
-<suppressed ~51 debug messages>
+<suppressed ~29 debug messages>
 
-6.38.3. Executing OPT_MERGE pass (detect identical cells).
+7.38.3. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
-<suppressed ~78 debug messages>
-Removed a total of 26 cells.
+<suppressed ~30 debug messages>
+Removed a total of 10 cells.
 
-6.38.4. Executing OPT_DFF pass (perform DFF optimizations).
+7.38.4. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.38.5. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.38.5. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
-Removed 0 unused cells and 400 unused wires.
+Removed 0 unused cells and 199 unused wires.
 <suppressed ~1 debug messages>
 
-6.38.6. Rerunning OPT passes. (Removed registers in this run.)
+7.38.6. Rerunning OPT passes. (Removed registers in this run.)
 
-6.38.7. Running ICE40 specific optimizations.
+7.38.7. Running ICE40 specific optimizations.
 
-6.38.8. Executing OPT_EXPR pass (perform const folding).
+7.38.8. Executing OPT_EXPR pass (perform const folding).
 Optimizing module ice40hx8k.
 
-6.38.9. Executing OPT_MERGE pass (detect identical cells).
+7.38.9. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\ice40hx8k'.
 Removed a total of 0 cells.
 
-6.38.10. Executing OPT_DFF pass (perform DFF optimizations).
+7.38.10. Executing OPT_DFF pass (perform DFF optimizations).
 
-6.38.11. Executing OPT_CLEAN pass (remove unused cells and wires).
+7.38.11. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \ice40hx8k..
 
-6.38.12. Finished OPT passes. (There is nothing left to do.)
+7.38.12. Finished OPT passes. (There is nothing left to do.)
 
-6.39. Executing TECHMAP pass (map to technology primitives).
+7.39. Executing TECHMAP pass (map to technology primitives).
 
-6.39.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/latches_map.v
+7.39.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/latches_map.v
 Parsing Verilog input from `/home/shay/a/ece270/bin/../share/yosys/ice40/latches_map.v' to AST representation.
 Generating RTLIL representation for module `\$_DLATCH_N_'.
 Generating RTLIL representation for module `\$_DLATCH_P_'.
 Successfully finished Verilog frontend.
 
-6.39.2. Continuing TECHMAP pass.
+7.39.2. Continuing TECHMAP pass.
 No more expansions possible.
 <suppressed ~4 debug messages>
 
-6.40. Executing ABC pass (technology mapping using ABC).
+7.40. Executing ABC pass (technology mapping using ABC).
 
-6.40.1. Extracting gate netlist of module `\ice40hx8k' to `<abc-temp-dir>/input.blif'..
-Extracted 86 gates and 144 wires to a netlist network with 57 inputs and 43 outputs.
+7.40.1. Extracting gate netlist of module `\ice40hx8k' to `<abc-temp-dir>/input.blif'..
+Extracted 75 gates and 117 wires to a netlist network with 41 inputs and 34 outputs.
 
-6.40.1.1. Executing ABC.
+7.40.1.1. Executing ABC.
 Running ABC command: "<yosys-exe-dir>/yosys-abc" -s -f <abc-temp-dir>/abc.script 2>&1
 ABC: ABC command line: "source <abc-temp-dir>/abc.script".
 ABC: 
@@ -1497,27 +1430,27 @@ ABC: + if
 ABC: + mfs2 
 ABC: + lutpack -S 1 
 ABC: + dress <abc-temp-dir>/input.blif 
-ABC: Total number of equiv classes                =      45.
-ABC: Participating nodes from both networks       =      96.
-ABC: Participating nodes from the first network   =      44. (  89.80 % of nodes)
-ABC: Participating nodes from the second network  =      52. ( 106.12 % of nodes)
-ABC: Node pairs (any polarity)                    =      44. (  89.80 % of names can be moved)
-ABC: Node pairs (same polarity)                   =      44. (  89.80 % of names can be moved)
-ABC: Total runtime =     0.02 sec
+ABC: Total number of equiv classes                =      36.
+ABC: Participating nodes from both networks       =      77.
+ABC: Participating nodes from the first network   =      35. (  92.11 % of nodes)
+ABC: Participating nodes from the second network  =      42. ( 110.53 % of nodes)
+ABC: Node pairs (any polarity)                    =      35. (  92.11 % of names can be moved)
+ABC: Node pairs (same polarity)                   =      35. (  92.11 % of names can be moved)
+ABC: Total runtime =     0.01 sec
 ABC: + write_blif <abc-temp-dir>/output.blif 
 
-6.40.1.2. Re-integrating ABC results.
-ABC RESULTS:              $lut cells:       48
-ABC RESULTS:        internal signals:       44
-ABC RESULTS:           input signals:       57
-ABC RESULTS:          output signals:       43
+7.40.1.2. Re-integrating ABC results.
+ABC RESULTS:              $lut cells:       37
+ABC RESULTS:        internal signals:       42
+ABC RESULTS:           input signals:       41
+ABC RESULTS:          output signals:       34
 Removing temp directory.
 
-6.41. Executing ICE40_WRAPCARRY pass (wrap carries).
+7.41. Executing ICE40_WRAPCARRY pass (wrap carries).
 
-6.42. Executing TECHMAP pass (map to technology primitives).
+7.42. Executing TECHMAP pass (map to technology primitives).
 
-6.42.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/ff_map.v
+7.42.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/ff_map.v
 Parsing Verilog input from `/home/shay/a/ece270/bin/../share/yosys/ice40/ff_map.v' to AST representation.
 Generating RTLIL representation for module `\$_DFF_N_'.
 Generating RTLIL representation for module `\$_DFF_P_'.
@@ -1541,112 +1474,106 @@ Generating RTLIL representation for module `\$_SDFFCE_PP0P_'.
 Generating RTLIL representation for module `\$_SDFFCE_PP1P_'.
 Successfully finished Verilog frontend.
 
-6.42.2. Continuing TECHMAP pass.
+7.42.2. Continuing TECHMAP pass.
 No more expansions possible.
 <suppressed ~22 debug messages>
-Removed 21 unused cells and 128 unused wires.
+Removed 20 unused cells and 103 unused wires.
 
-6.43. Executing OPT_LUT pass (optimize LUTs).
+7.43. Executing OPT_LUT pass (optimize LUTs).
 Discovering LUTs.
-Number of LUTs:       84
-  1-LUT               23
-  2-LUT               14
-  3-LUT               36
-  4-LUT               11
-  with \SB_CARRY    (#0)   33
-  with \SB_CARRY    (#1)   39
+Number of LUTs:       58
+  1-LUT               21
+  2-LUT                5
+  3-LUT               22
+  4-LUT               10
+  with \SB_CARRY    (#0)   19
+  with \SB_CARRY    (#1)   25
 
 Eliminating LUTs.
-Number of LUTs:       84
-  1-LUT               23
-  2-LUT               14
-  3-LUT               36
-  4-LUT               11
-  with \SB_CARRY    (#0)   33
-  with \SB_CARRY    (#1)   39
+Number of LUTs:       58
+  1-LUT               21
+  2-LUT                5
+  3-LUT               22
+  4-LUT               10
+  with \SB_CARRY    (#0)   19
+  with \SB_CARRY    (#1)   25
 
 Combining LUTs.
-Number of LUTs:       84
-  1-LUT               23
-  2-LUT               14
-  3-LUT               36
-  4-LUT               11
-  with \SB_CARRY    (#0)   33
-  with \SB_CARRY    (#1)   39
+Number of LUTs:       58
+  1-LUT               21
+  2-LUT                5
+  3-LUT               22
+  4-LUT               10
+  with \SB_CARRY    (#0)   19
+  with \SB_CARRY    (#1)   25
 
 Eliminated 0 LUTs.
 Combined 0 LUTs.
-<suppressed ~313 debug messages>
+<suppressed ~211 debug messages>
 
-6.44. Executing TECHMAP pass (map to technology primitives).
+7.44. Executing TECHMAP pass (map to technology primitives).
 
-6.44.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/cells_map.v
+7.44.1. Executing Verilog-2005 frontend: /home/shay/a/ece270/bin/../share/yosys/ice40/cells_map.v
 Parsing Verilog input from `/home/shay/a/ece270/bin/../share/yosys/ice40/cells_map.v' to AST representation.
 Generating RTLIL representation for module `\$lut'.
 Successfully finished Verilog frontend.
 
-6.44.2. Continuing TECHMAP pass.
-Using template $paramod$fd904e9e35cfd343a9df248824bd3f1408724879\$lut for cells of type $lut.
-Using template $paramod\$lut\WIDTH=32'00000000000000000000000000000001\LUT=2'01 for cells of type $lut.
-Using template $paramod$571404c0889eaf57f492cb5e37f8acb5df5852f9\$lut for cells of type $lut.
+7.44.2. Continuing TECHMAP pass.
+Using template $paramod$de3d8c0ac9a85f776878d56395b6e0bf04ae72e7\$lut for cells of type $lut.
+Using template $paramod$bdb7f9ed72fd4f5c7ad81c376f2d8a5c72a0098d\$lut for cells of type $lut.
 Using template $paramod\$lut\WIDTH=32'00000000000000000000000000000011\LUT=8'00000001 for cells of type $lut.
-Using template $paramod$3039c7f41767c4672f4e3f22ad78f16d42720fbf\$lut for cells of type $lut.
-Using template $paramod$2e7a95e82db1d690ae9ba5d10f68b175fa2cb467\$lut for cells of type $lut.
-Using template $paramod\$lut\WIDTH=32'00000000000000000000000000000010\LUT=4'1000 for cells of type $lut.
-Using template $paramod$279a8d961e6b2ded8450bee8ed637cb9efa31f02\$lut for cells of type $lut.
-Using template $paramod\$lut\WIDTH=32'00000000000000000000000000000011\LUT=8'10110000 for cells of type $lut.
-Using template $paramod\$lut\WIDTH=32'00000000000000000000000000000011\LUT=8'10111111 for cells of type $lut.
 Using template $paramod\$lut\WIDTH=32'00000000000000000000000000000010\LUT=4'0100 for cells of type $lut.
-Using template $paramod$272652f6c6fbe9a75eff76e45cc7e2788835518b\$lut for cells of type $lut.
-Using template $paramod$658b9ed803f0d3d335616d3858b53e0a2522f1e8\$lut for cells of type $lut.
-Using template $paramod$6e238df02989b317f10820a22773676e71120644\$lut for cells of type $lut.
+Using template $paramod\$lut\WIDTH=32'00000000000000000000000000000011\LUT=8'10110000 for cells of type $lut.
+Using template $paramod$fd904e9e35cfd343a9df248824bd3f1408724879\$lut for cells of type $lut.
+Using template $paramod$279a8d961e6b2ded8450bee8ed637cb9efa31f02\$lut for cells of type $lut.
+Using template $paramod\$lut\WIDTH=32'00000000000000000000000000000001\LUT=2'01 for cells of type $lut.
+Using template $paramod$2e7a95e82db1d690ae9ba5d10f68b175fa2cb467\$lut for cells of type $lut.
 Using template $paramod\$lut\WIDTH=32'00000000000000000000000000000010\LUT=4'0001 for cells of type $lut.
+Using template $paramod\$lut\WIDTH=32'00000000000000000000000000000011\LUT=8'10111111 for cells of type $lut.
+Using template $paramod$3039c7f41767c4672f4e3f22ad78f16d42720fbf\$lut for cells of type $lut.
 No more expansions possible.
-<suppressed ~282 debug messages>
-Removed 0 unused cells and 171 unused wires.
+<suppressed ~217 debug messages>
+Removed 0 unused cells and 116 unused wires.
 
-6.45. Executing AUTONAME pass.
-Renamed 2039 objects in module ice40hx8k (21 iterations).
-<suppressed ~226 debug messages>
+7.45. Executing AUTONAME pass.
+Renamed 1136 objects in module ice40hx8k (17 iterations).
+<suppressed ~150 debug messages>
 
-6.46. Executing HIERARCHY pass (managing design hierarchy).
+7.46. Executing HIERARCHY pass (managing design hierarchy).
 
-6.46.1. Analyzing design hierarchy..
+7.46.1. Analyzing design hierarchy..
 Top module:  \ice40hx8k
 
-6.46.2. Analyzing design hierarchy..
+7.46.2. Analyzing design hierarchy..
 Top module:  \ice40hx8k
 Removed 0 unused modules.
 
-6.47. Printing statistics.
+7.47. Printing statistics.
 
 === ice40hx8k ===
 
-   Number of wires:                130
-   Number of wire bits:            757
-   Number of public wires:         130
-   Number of public wire bits:     757
+   Number of wires:                100
+   Number of wire bits:            513
+   Number of public wires:         100
+   Number of public wire bits:     513
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
-   Number of cells:                202
-     SB_CARRY                       51
-     SB_DFFE                        15
-     SB_DFFER                        8
-     SB_DFFES                        8
+   Number of cells:                129
+     SB_CARRY                       37
+     SB_DFFE                        14
      SB_DFFESR                      15
      SB_DFFESS                       4
-     SB_DFFSR                       16
-     SB_LUT4                        84
+     SB_LUT4                        58
      SB_PLL40_CORE                   1
 
-6.48. Executing CHECK pass (checking for obvious problems).
+7.48. Executing CHECK pass (checking for obvious problems).
 Checking module ice40hx8k...
 Found and reported 0 problems.
 
-6.49. Executing JSON backend.
+7.49. Executing JSON backend.
 
-Warnings: 84 unique messages, 86 total
-End of script. Logfile hash: ebe3e270d6, CPU: user 0.56s system 0.04s, MEM: 27.22 MB peak
+Warnings: 87 unique messages, 88 total
+End of script. Logfile hash: 360afb1a38, CPU: user 0.52s system 0.02s, MEM: 32.77 MB peak
 Yosys 0.27 (git sha1 5f88c218b, gcc 11.3.0-1ubuntu1~22.04 -fPIC -O3)
-Time spent: 38% 17x read_verilog (0 sec), 21% 1x abc (0 sec), ...
+Time spent: 42% 18x read_verilog (0 sec), 20% 1x abc (0 sec), ...
