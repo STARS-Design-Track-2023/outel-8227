@@ -1,4 +1,4 @@
-module timingGenerator (
+module timing_generator (
     input logic clk, rst, passAddressing,
     input logic [2:0] addressTimingCode, opTimingCode,
     output logic [2:0] timeOut,

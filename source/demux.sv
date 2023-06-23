@@ -1,3 +1,5 @@
+`include "timing_generator.sv" 
+
 parameter ADC = 6'd1; // INSTRUCTION PARAMATERS
 parameter AND = 6'd2;
 parameter ASL = 6'd3;
@@ -42,22 +44,23 @@ parameter ROR = 6'd41;
 parameter RTI = 6'd42;
 parameter RTS = 6'd43;
 parameter SBC = 6'd44;
-parameter SEC = 6'd44;
-parameter SED = 6'd45;
-parameter SEI = 6'd46;
-parameter STA = 6'd47;
-parameter STX = 6'd48;
-parameter STY = 6'd49;
-parameter TAX = 6'd50;
-parameter TAY = 6'd51;
-parameter TSX = 6'd52;
-parameter TXA = 6'd53;
-parameter TXS = 6'd54;
-parameter ASLA =6'd55; // Start of instructions that were forgot
-parameter ROLA = 6'd56;
-parameter LSRA = 6'd57;
-parameter RORA = 6'd58;
-parameter TYA = 6'd59; // END OF INSTRUCTION PARAMETERS
+parameter SEC = 6'd45;
+parameter SED = 6'd46;
+parameter SEI = 6'd47;
+parameter STA = 6'd48;
+parameter STO = 6'd49;
+parameter STX = 6'd50;
+parameter STY = 6'd51;
+parameter TAX = 6'd52;
+parameter TAY = 6'd53;
+parameter TSX = 6'd54;
+parameter TXA = 6'd55;
+parameter TXS = 6'd56;
+parameter ASLA =6'd57; // Start of instructions that were forgot
+parameter ROLA = 6'd58;
+parameter LSRA = 6'd59;
+parameter RORA = 6'd60;
+parameter TYA = 6'd61; // END OF INSTRUCTION PARAMETERS
 
 parameter A = 5'd0;
 parameter abs = 5'd1; // ADDRESSING PARAMETERS
@@ -74,17 +77,19 @@ parameter zpgX = 5'd11;
 parameter zpgY = 5'd12; 
 parameter implied = 5'd13; // END OF ADDRESSING PARAMETERS
 
+parameter NUMFLAGS = 100000; // taken from Thomas
+
 module setFlags(
 input logic [5:0] instructionCode,
 input logic [4:0] addressingCode,
 input logic [2:0] addressTimingCode, opTimingCode,
-input logic rst,
+input logic rst, clk,
 output logic [NUMFLAGS - 1:0] outFlags
 );
 
 
 logic [13:0] [NUMFLAGS - 1:0] outputListAddressing;
-logic [59:0] [NUMFLAGS - 1:0]  outputListInstruction;
+logic [61:0] [NUMFLAGS - 1:0]  outputListInstruction;
 logic [2:0] currentTime;
 logic isAddressing;
 logic IS_STORE_ACC_INSTRUCT;
@@ -92,14 +97,15 @@ logic IS_STORE_X_INSTRUCT;
 logic IS_STORE_Y_INSTRUCT;
 logic passAddressing;
 
-timing_generator u1(.clk(), .addressTimingCode(addressTimingCode), .opTimingCode(opTimingCode), .rst(rst), .timeOut(currentTime), .isAddressing(isAddressing), .passAddressing(passAddressing) );
+timing_generator u1(.timeOut(currentTime), .clk(clk), .addressTimingCode(addressTimingCode), .opTimingCode(opTimingCode), .rst(rst), .isAddressing(isAddressing), .passAddressing(passAddressing) );
 
 always_comb begin : blockName
     
-case(opTimingCode) 
-    STO: IS_STORE_ACC_INSTRUCT = 1'b1;
+case(instructionCode) 
+    STA: IS_STORE_ACC_INSTRUCT = 1'b1;
     STY: IS_STORE_X_INSTRUCT = 1'b1;
     STX: IS_STORE_Y_INSTRUCT = 1'b1;
+    default: IS_STORE_ACC_INSTRUCT = 1'b0;
 endcase
 
 if(addressingCode == IMMEDIATE | addressingCode == implied | addressingCode == A) // bypasses Addressing
@@ -109,20 +115,20 @@ if(addressingCode == IMMEDIATE | addressingCode == implied | addressingCode == A
 if(isAddressing & ~passAddressing) begin
 
 case(addressingCode)
-    A: outFlags = outputListAddressing[A];
-    abs: outFlags = outputListAddressing[abs];
-    absX: outFlags = outputListAddressing[absX];
-    absY: outFlags = outputListAddressing[absY];
+    A: outFlags         = outputListAddressing[A];
+    abs: outFlags       = outputListAddressing[abs];
+    absX: outFlags      = outputListAddressing[absX];
+    absY: outFlags      = outputListAddressing[absY];
     IMMEDIATE: outFlags = outputListAddressing[IMMEDIATE];
-    impl: outFlags = outputListAddressing[impl];
-    ind: outFlags = outputListAddressing[ind];
-    Xind: outFlags = outputListAddressing[Xind];
-    indY: outFlags = outputListAddressing[indY];
-    rel: outFlags = outputListAddressing[rel];
-    zpg: outFlags = outputListAddressing[zpg];
-    zpgX: outFlags = outputListAddressing[zpgX];
-    zpgY: outFlags = outputListAddressing[zpgY];
-    implied: outFlags = outputListAddressing[implied];
+    impl: outFlags      = outputListAddressing[impl];
+    ind: outFlags       = outputListAddressing[ind];
+    Xind: outFlags      = outputListAddressing[Xind];
+    indY: outFlags      = outputListAddressing[indY];
+    rel: outFlags       = outputListAddressing[rel];
+    zpg: outFlags       = outputListAddressing[zpg];
+    zpgX: outFlags      = outputListAddressing[zpgX];
+    zpgY: outFlags      = outputListAddressing[zpgY];
+    implied: outFlags   = outputListAddressing[implied];
 endcase
 
 end
