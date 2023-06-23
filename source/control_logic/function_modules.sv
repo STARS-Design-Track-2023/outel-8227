@@ -560,7 +560,6 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-            
         end
         default: flags = 0;
     endcase
@@ -589,7 +588,6 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-            
         end
         default: flags = 0;
     endcase
@@ -618,7 +616,6 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-            
         end
         default: flags = 0;
     endcase
@@ -647,7 +644,6 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-            
         end
         default: flags = 0;
     endcase
@@ -676,7 +672,6 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-            
         end
         default: flags = 0;
     endcase
@@ -2330,6 +2325,94 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
+module RTI(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Set input B to SP
+            flags[SET_SB_TO_SP] = 1;
+            flags[SET_DB_TO_SB] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+
+            //Set A to 0
+            flags[SET_INPUT_A_TO_LOW] = 1;
+
+            //Add 1 to SP
+            flags[SET_ALU_CARRY_HIGH] = 1;
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T1: begin
+            //ALU to SP
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_SP] = 1;
+
+            //Set input B to SP
+            flags[SET_ADL_TO_SP] = 1;
+            flags[SET_INPUT_B_TO_ADL] = 1;
+
+            //Set A to 0
+            flags[SET_INPUT_A_TO_LOW] = 1;
+
+            //Add 1 to SP
+            flags[SET_ALU_CARRY_HIGH] = 1;
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T2: begin
+            //ALU to SP
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_SP] = 1;
+            
+            //Set input B to SP
+            flags[SET_ADL_TO_SP] = 1;
+            flags[SET_INPUT_B_TO_ADL] = 1;
+
+            //Set A to 0
+            flags[SET_INPUT_A_TO_LOW] = 1;
+
+            //Add 1 to SP
+            flags[SET_ALU_CARRY_HIGH] = 1;
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+
+            //Set PSR
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_PSR_TO_DB] = 1;
+            
+        end
+        T3: begin
+            //ALU to SP
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_SP] = 1;
+            
+            //Set input B to Data
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;//goofy forgot what was happening here
+            flags[SET_INPUT_B_TO_ADL] = 1;
+
+            //Set A to 0
+            flags[SET_INPUT_A_TO_LOW] = 1;
+
+            //Add 1 to SP
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+
+            //Set PSR
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_PSR_TO_DB] = 1;
         end
         default: flags = 0;
     endcase
