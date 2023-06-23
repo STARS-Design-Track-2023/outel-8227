@@ -2483,10 +2483,8 @@ endmodule
 
 module BCC(
     input logic [2:0] state,
-    input logic breek,
-    input logic carry_to_high_op,
+    input logic breek, free_carry,
     output logic [NUMFLAGS-1:0] flags,
-    output logic carry_from_low_op
 );
 
 always_comb begin
@@ -2515,48 +2513,15 @@ always_comb begin
             flags[LOAD_ALU] = 1;
         end
         T1: begin
-            //ALU to SP
-            flags[SET_SB_TO_ALU] = 1;
-            flags[LOAD_SP] = 1;
-
-            //Set input B to SP
-            flags[SET_ADL_TO_SP] = 1;
-            flags[SET_INPUT_B_TO_ADL] = 1;
-
-            //Set A to 0
-            flags[SET_INPUT_A_TO_LOW] = 1;
-
-            //Add 1 to SP
-            flags[SET_ALU_CARRY_HIGH] = 1;
-            flags[ALU_ADD] = 1;
-            flags[LOAD_ALU] = 1;
+            if(breek) begin
+                
+            end
         end
         T2: begin
-            //ALU to SP
-            flags[SET_SB_TO_ALU] = 1;
-            flags[LOAD_SP] = 1;
             
-            //Set input B to SP
-            flags[SET_ADL_TO_SP] = 1;
-            flags[SET_INPUT_B_TO_ADL] = 1;
-
-            //Set A to 0
-            flags[SET_INPUT_A_TO_LOW] = 1;
-
-            //Add 1 to SP
-            flags[SET_ALU_CARRY_HIGH] = 1;
-            flags[ALU_ADD] = 1;
-            flags[LOAD_ALU] = 1;
         end
         T3: begin
-            //Increment PC
-            flags[PC_INC] = 1;
-
-            //set ABH and ABL to PC
-            flags[SET_ADH_TO_PCH] = 1;
-            flags[LOAD_ABH] = 1;
-            flags[SET_ADL_TO_PCL] = 1;
-            flags[LOAD_ABL] = 1;
+            
         end
         default: flags = 0;
     endcase
