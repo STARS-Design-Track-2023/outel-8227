@@ -1,4 +1,4 @@
-module ALU(
+module alu(
     input logic [7:0] DB_input, ADL_input, SB_input,    //input data
     input logic ldb_inv_db,                             //input data bus not on b
     input logic ldb_db,                                 //input data bus on b
