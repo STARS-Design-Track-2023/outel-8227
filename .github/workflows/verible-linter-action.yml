@@ -12,7 +12,7 @@ jobs:
               ./source
         exclude_paths: |
           ./ice40
-        extra_args: "--check_syntax=true"
+        extra_args: "--check_syntax=true --module-filename=false"
         verible_version: "v0.0-3100-gd75b1c47"
         extensions: |
           .sv
