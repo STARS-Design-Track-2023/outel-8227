@@ -1,5 +1,6 @@
 module programCounterLogic (
-    input logic [7:0] input_lowbyte, input_highbyte,        //components of 16-bit address to be given to PC
+    //components of 16-bit address to be given to PC
+    input logic [7:0] input_lowbyte, input_highbyte,        
     input logic increment, decrement,                       //control flags for modiflying address
     output logic [7:0] output_lowbyte, output_highbyte      //address output of the PC
 );
@@ -13,4 +14,5 @@ module programCounterLogic (
 
     assign output_lowbyte = address[7:0];
     assign output_highbyte = address[15:8];
+
 endmodule

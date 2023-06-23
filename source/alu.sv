@@ -29,14 +29,15 @@ module ALU(
         if(lda_sb) a = SB_input;
         if(lda_zero) a = 8'b00000000;
     end
-                                    
-    logic [8:0] sum;                                    //buffer to hold sum and cout       
+
+    logic [8:0] sum;                                    //buffer to hold sum and cout
     logic [7:0] rot_buffer;                             //buffer to hold shifted part of rotate
-   
+
     logic [3:0] lo_nib, hi_nib;                         //for bcd ops
     logic [7:0] bcd_buffer;
 
-    always_comb begin                                   //NOTE: ALU is only directly responsible for outputting carry and overflow 
+    //NOTE: ALU is only directly responsible for outputting carry and overflow
+    always_comb begin
         alu_out = 0;                                    //default to 0
         carry_out = 0;
         overflow = 0;
