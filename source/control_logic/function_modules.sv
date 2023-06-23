@@ -2,11 +2,11 @@
 
 /*
 * Finished Modules:
-* 1. Single byte instructions: ALL, BUT THE FLAGS ARE NOT DONE!!!!!!!!!!!!!!!!!!!!!!!!
-* 2. Internal Execution on Memory Data: ALL, besides BIT
+* 1. Single byte instructions: ALL, Finished FLAGS I THINK
+* 2. Internal Execution on Memory Data: ALL
 * 3. Store Operations: ALL
-* 4. Read Modify Write: none
-* 5. Misc.: none
+* 4. Read Modify Write: ALL
+* 5. Misc.: PSP PLP JSR
 */
 
 module ASL_A(
@@ -47,7 +47,7 @@ always_comb begin
             flags[SET_DB_TO_SB] = 1;
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -92,7 +92,7 @@ always_comb begin
             flags[SET_DB_TO_SB] = 1;
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -136,7 +136,7 @@ always_comb begin
             flags[SET_DB_TO_SB] = 1;
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -179,7 +179,7 @@ always_comb begin
             flags[SET_DB_TO_SB] = 1;
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
-            end  
+            end
         default: flags = 0;
     endcase
 end
@@ -215,7 +215,7 @@ always_comb begin
             //Move ALU to X
             flags[SET_SB_TO_ALU] = 1;
             flags[LOAD_X] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -251,7 +251,7 @@ always_comb begin
             //Move ALU to Y
             flags[SET_SB_TO_ALU] = 1;
             flags[LOAD_Y] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -288,7 +288,7 @@ always_comb begin
             //Move ALU to Y
             flags[SET_SB_TO_ALU] = 1;
             flags[LOAD_Y] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -325,7 +325,7 @@ always_comb begin
             //Move ALU to X
             flags[SET_SB_TO_ALU] = 1;
             flags[LOAD_X] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -351,7 +351,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -382,7 +382,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -412,7 +412,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -442,7 +442,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -472,7 +472,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -502,7 +502,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -532,7 +532,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -561,7 +561,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -590,7 +590,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -619,7 +619,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -648,7 +648,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -677,7 +677,7 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
             
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -705,7 +705,7 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -733,7 +733,7 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -762,7 +762,7 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -828,7 +828,7 @@ always_comb begin
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
 
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -885,7 +885,7 @@ always_comb begin
             
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -893,7 +893,6 @@ end
 endmodule
 
 
-///////////////////////////////////////NOT DONE\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 module BIT(
     input logic [2:0] state,
     output logic [NUMFLAGS-1:0] flags
@@ -920,7 +919,7 @@ always_comb begin
             flags[SET_SB_TO_ACC] = 1;
             flags[SET_INPUT_A_TO_SB] = 1;
 
-            //Subtract ACC-M
+            //And ACC&M
             flags[ALU_AND] = 1;
             flags[LOAD_ALU] = 1;
         
@@ -935,16 +934,11 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
 
-            //Move ALU to ACC
-            flags[SET_SB_TO_ALU] = 1;
-            flags[SET_DB_TO_SB] = 1;
-            flags[LOAD_ACC] = 1;
-
             //Set PSR from ALU Flags
-            
+            flags[SET_PSR_N_TO_DB7] = 1;
+            flags[SET_PSR_V_TO_DB6] = 1;
             flags[WRITE_ZERO_FLAG] = 1;
-            flags[WRITE_NEGATIVE_FLAG] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -1003,7 +997,7 @@ always_comb begin
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
 
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -1062,7 +1056,7 @@ always_comb begin
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
 
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -1121,7 +1115,7 @@ always_comb begin
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
 
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -1178,7 +1172,7 @@ always_comb begin
             
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -1235,7 +1229,7 @@ always_comb begin
             
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -1299,7 +1293,7 @@ always_comb begin
             flags[WRITE_ZERO_FLAG] = 1;
             flags[WRITE_NEGATIVE_FLAG] = 1;
 
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -1343,7 +1337,7 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -1386,7 +1380,7 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -1430,7 +1424,7 @@ always_comb begin
             flags[LOAD_ABH] = 1;
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
-        end  
+        end
         default: flags = 0;
     endcase
 end
@@ -1834,6 +1828,7 @@ always_comb begin
 
             //Load PSR to DOR
             flags[SET_DB_TO_PSR] = 1;
+            flags[SET_PSR_OUTPUT_BRK_HIGH] = 1;
             flags[LOAD_DOR] = 1;
         end
         T1: begin
@@ -1873,7 +1868,7 @@ always_comb begin
 
             //Set SP to SP-1
             flags[SET_SB_TO_ALU] = 1;
-            flags[SET_SP_TO_SB] = 1;
+            flags[LOAD_SP] = 1;
         end
         default: flags = 0;
     endcase
@@ -1909,7 +1904,7 @@ always_comb begin
         T1: begin
             //ALU to SP
             flags[SET_SB_TO_ALU] = 1;
-            flags[SET_SP_TO_SB] = 1;
+            flags[LOAD_SP] = 1;
 
             //ALU to ABL
             flags[SET_ADL_TO_ALU] = 1;
@@ -1948,3 +1943,117 @@ always_comb begin
 end
     
 endmodule
+
+module JSR(
+    input logic [2:0] state,
+    output logic [NUMFLAGS-1:0] flags
+);
+
+always_comb begin
+    flags = 0;
+    case (state)
+        T0: begin
+            //Set input B and ABL to SP
+            flags[SET_ADL_TO_SP] = 1;
+            flags[SET_INPUT_B_TO_ADL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Add 0 to SP
+            flags[SET_INPUT_A_TO_LOW] = 1;
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+
+            //Get PCH to DOR
+            flags[SET_DB_TO_PCH] = 1;
+            flags[LOAD_DOR] = 1;
+
+            //Set SP to Data
+            flags[SET_ADH_TO_DATA] = 1;
+            flags[SET_SB_TO_ADH] = 1;
+            flags[LOAD_SP] = 1;
+            
+        end
+        T1: begin
+            //ABH to 01
+            flags[SET_ADH_TO_ONE] = 1;
+            flags[LOAD_ABH] = 1;
+
+            //ALU to Input A
+            flags[SET_SB_TO_ALU] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+
+            //FF to Input B
+            flags[SET_DB_HIGH] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+
+            //Add FF to SP
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T2: begin
+            //Write DOR
+            flags[SET_WRITE_FLAG] = 1;
+
+            //Get PCL to DOR
+            flags[SET_DB_TO_PCL] = 1;
+            flags[LOAD_DOR] = 1;
+
+            //ALU to ABL
+            flags[SET_ADL_TO_ALU] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        T3: begin
+            //Write DOR
+            flags[SET_WRITE_FLAG] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //ALU to Input A
+            flags[SET_SB_TO_ALU] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+
+            //FF to Input B
+            flags[SET_DB_HIGH] = 1;
+            flags[SET_INPUT_B_TO_DB] = 1;
+
+            //Add FF to SP
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
+        end
+        T4: begin
+            //Update ABL
+            flags[SET_ADL_TO_SP] = 1;
+            flags[LOAD_ABL] = 1;
+
+            //Update ABH
+            flags[SET_ADH_TO_DATA] = 1;
+            flags[LOAD_ABH] = 1;
+
+            //Update PC
+            flags[LOAD_PC] = 1;
+            flags[PC_INC] = 1;
+
+            //Update SP Reg
+            flags[SET_SB_TO_ALU] = 1;
+            flags[LOAD_SP] = 1;
+        end
+        T5: begin
+            //Increment PC
+            flags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            flags[SET_ADH_TO_PCH] = 1;
+            flags[LOAD_ABH] = 1;
+            flags[SET_ADL_TO_PCL] = 1;
+            flags[LOAD_ABL] = 1;
+        end
+        default: flags = 0;
+    endcase
+end
+    
+endmodule
+
