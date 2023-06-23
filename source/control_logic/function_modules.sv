@@ -6,7 +6,7 @@
 * 2. Internal Execution on Memory Data: ALL
 * 3. Store Operations: ALL
 * 4. Read Modify Write: ALL
-* 5. Misc.: PSP PLP JSR
+* 5. Misc.: PSP PLP , PSA, PLA, BRK, JSR, 
 */
 
 module ASL_A(
@@ -2401,7 +2401,6 @@ always_comb begin
             //Set input B to Data
             flags[SET_DB_TO_DATA] = 1;
             flags[SET_INPUT_B_TO_DB] = 1;//goofy forgot what was happening here
-            flags[SET_INPUT_B_TO_ADL] = 1;
 
             //Set A to 0
             flags[SET_INPUT_A_TO_LOW] = 1;
