@@ -7,7 +7,7 @@
 `include "source/dataflow/bridge.sv"
 `include "source/dataflow/bus_interface.sv"
 `include "source/dataflow/bus_preset_logic.sv"
-`include "source/dataflow/bus2.sv"
+// `include "source/dataflow/bus2.sv"
 `include "source/dataflow/internal_bus.sv"
 `include "source/dataflow/internal_dataflow.sv"
 `include "source/dataflow/process_status_register_wrapper.sv"

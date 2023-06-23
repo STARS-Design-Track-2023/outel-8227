@@ -38,14 +38,14 @@ module internalBus #(
   output logic [WIDTH - 1:0] busOutput
 );
 
-   logic [$clog2(INPUTS)-1:0] busSelectEncoded;
+  logic [$clog2(INPUTS)-1:0] busSelectEncoded;
 
   //One hot encoder
   always_comb begin
      busSelectEncoded = 0;
      for (int i = 0; i < WIDTH; i++) begin
        if (busSelect[i])
-         busSelectEncoded = i;
+         busSelectEncoded = i[$clog2(INPUTS)-1:0];
      end
    end
 
@@ -57,6 +57,6 @@ module internalBus #(
     end
   endgenerate
 
-  assign busOutput = busOutputUnpacked[busSelect];
+  assign busOutput = busOutputUnpacked[busSelectEncoded];
 
 endmodule
