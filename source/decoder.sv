@@ -60,26 +60,35 @@ parameter LSRA = 6'd57;
 parameter RORA = 6'd58;
 parameter TYA = 6'd59; // END OF INSTRUCTION PARAMETERS
 
-parameter A = 5'd0;
-parameter abs = 5'd1; // ADDRESSING PARAMETERS
-parameter absX = 5'd2;
-parameter absY = 5'd3;
-parameter IMMEDIATE = 5'd4;
-parameter impl = 5'd5;
-parameter ind = 5'd6;
-parameter Xind = 5'd7;
-parameter indY= 5'd8;
-parameter rel = 5'd9;
-parameter zpg = 5'd10;
-parameter zpgX = 5'd11;
-parameter zpgY = 5'd12; 
-parameter implied = 5'd13; // END OF ADDRESSING PARAMETERS
+parameter A = 4'd0;
+parameter abs = 4'd1; // ADDRESSING PARAMETERS
+parameter absX = 4'd2;
+parameter absY = 4'd3;
+parameter IMMEDIATE = 4'd4;
+parameter impl = 4'd5;
+parameter ind = 4'd6;
+parameter Xind = 4'd7;
+parameter indY= 4'd8;
+parameter rel = 4'd9;
+parameter zpg = 4'd10;
+parameter zpgX = 4'd11;
+parameter zpgY = 4'd12; 
+parameter implied = 4'd13; // END OF ADDRESSING PARAMETERS
+
+parameter T1 = 3'd1;
+parameter T2 = 3'd2;
+parameter T3 = 3'd3;
+parameter T4 = 3'd4;
+parameter T5 = 3'd5;
+parameter T6 = 3'd6;
+parameter T7 = 3'd7;
+
 
 module decoder (
     input  logic [7:0] opcode,
     output logic [2:0] addressTimingCode, opTimingCode,
     output logic [5:0] CMD,
-    output logic [4:0] ADDRESS
+    output logic [3:0] ADDRESS
 );
 
     logic [2:0] a = opcode[7:5];
@@ -94,7 +103,7 @@ module decoder (
 
     
     CMD = 6'b0;
-    ADDRESS = 5'b0;
+    ADDRESS = 4'b0;
     addressTimingCode = 3'b000;
     opTimingCode = 3'b000;
     
