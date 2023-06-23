@@ -12,7 +12,7 @@ always_comb begin : comb_timingGenerator
     timeOut = 3'b000;
     if(negTime == 3'b000) begin
 
-        if(isAddressing & ~passAddressing) // passAddressing is needed for functions that don't do addressing
+        if(isAddressing | passAddressing) // passAddressing is needed for functions that don't do addressing
             nextTime = opTimingCode; // goes from addressing to operations
         else
             nextTime = addressTimingCode; // goes from operations to addressing
