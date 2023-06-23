@@ -2484,7 +2484,7 @@ endmodule
 module BCC(
     input logic [2:0] state,
     input logic breek, free_carry,
-    output logic [NUMFLAGS-1:0] flags,
+    output logic [NUMFLAGS-1:0] flags
 );
 
 always_comb begin
@@ -2514,7 +2514,7 @@ always_comb begin
         end
         T1: begin
             if(breek) begin
-                
+
             end
         end
         T2: begin
