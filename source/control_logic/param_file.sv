@@ -100,6 +100,7 @@ parameter SET_BREAK_HIGH = 74;
 parameter SET_NEGATIVE_FLAG_LOW = 75;
 parameter SET_SB_TO_ADH = 76;
 parameter SET_ADH_TO_ONE = 77;
+parameter LOAD_INSTRUCT = 78;
 
 parameter A0 = 2'b00;
 parameter A1 = 2'b01;

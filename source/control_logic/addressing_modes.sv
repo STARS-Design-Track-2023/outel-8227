@@ -1,5 +1,5 @@
 `include "param_file.sv"
-//hello there
+
 module ZPG
 (
     input logic [1:0] state,
