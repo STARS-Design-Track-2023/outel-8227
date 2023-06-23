@@ -28,31 +28,34 @@
   
 // endmodule
 
+
+//If an input is not selected, then the bus will display the first signal
 module internalBus #(
-  parameter INPUTS = 2,
-  parameter WIDTH = 8
+  parameter INPUT_COUNT = 2,
+  parameter WIDTH = 8,
+  parameter BUS_SELECT_ENCODED_SIZE = (INPUT_COUNT > 1)?$clog2(INPUT_COUNT):1
 ) 
 (
-  input logic [INPUTS-1:0] busSelect,
-  input logic [WIDTH*INPUTS - 1:0] busInputs,
+  input logic [INPUT_COUNT-1:0] busSelect,
+  input logic [WIDTH*INPUT_COUNT - 1:0] busInputs,
   output logic [WIDTH - 1:0] busOutput
 );
 
-  logic [$clog2(INPUTS)-1:0] busSelectEncoded;
+  logic [BUS_SELECT_ENCODED_SIZE-1:0] busSelectEncoded;
 
   //One hot encoder
   always_comb begin
      busSelectEncoded = 0;
      for (int i = 0; i < WIDTH; i++) begin
        if (busSelect[i])
-         busSelectEncoded = i[$clog2(INPUTS)-1:0];
+         busSelectEncoded = i[BUS_SELECT_ENCODED_SIZE-1:0];
      end
    end
 
-  logic [WIDTH - 1:0] busOutputUnpacked [INPUTS];
+  logic [WIDTH - 1:0] busOutputUnpacked [INPUT_COUNT];
 
   generate // Unpack array
-    for (genvar i = 0; i < INPUTS; i = i + 1) begin
+    for (genvar i = 0; i < INPUT_COUNT; i = i + 1) begin
       assign busOutputUnpacked[i] = busInputs[WIDTH*(i+1) - 1:WIDTH*i];
     end
   endgenerate

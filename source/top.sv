@@ -3,17 +3,17 @@
 
 `include "source/constants.sv"
 
-`include "source/dataflow/alu.sv"
-`include "source/dataflow/bridge.sv"
-`include "source/dataflow/bus_interface.sv"
-`include "source/dataflow/bus_preset_logic.sv"
-// `include "source/dataflow/bus2.sv"
-`include "source/dataflow/internal_bus.sv"
-`include "source/dataflow/internal_dataflow.sv"
-`include "source/dataflow/process_status_register_wrapper.sv"
-`include "source/dataflow/process_status_register.sv"
-`include "source/dataflow/program_counter_logic.sv"
-`include "source/dataflow/register.sv"
+// `include "source/dataflow/alu.sv"
+// `include "source/dataflow/bridge.sv"
+// `include "source/dataflow/bus_interface.sv"
+// `include "source/dataflow/bus_preset_logic.sv"
+// // `include "source/dataflow/bus2.sv"
+// `include "source/dataflow/internal_bus.sv"
+// `include "source/dataflow/internal_dataflow.sv"
+// `include "source/dataflow/process_status_register_wrapper.sv"
+// `include "source/dataflow/process_status_register.sv"
+// `include "source/dataflow/program_counter_logic.sv"
+// `include "source/dataflow/register.sv"
 
 module top 
 (
@@ -62,7 +62,7 @@ module top
     flags[LOAD_ABH] = pb[1];
     flags[SET_ADH_FF] = pb[2];
 
-    // flags[SET_SB_TO_ADH] = pb[1];
+     flags[SET_SB_TO_ADH] = pb[3];
     // flags[LOAD_X] = pb[2];
 
     // flags[SET_SB_TO_X] = pb[3];
