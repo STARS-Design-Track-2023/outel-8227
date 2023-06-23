@@ -1,14 +1,14 @@
 # STARS 2023 Design Final Project
 
-## [Team Name]
-* [Name]
-* [Name]
-* [Name]
-* [Name]
-* [TA]
+## Outel
+* Aidan
+* Adrian
+* Andrew
+* Thomas
+* Spencer
 
-## [Project Name]
-Description of functionality, how to use it, and any supporting equipment required
+## 6502 like chip
+A chip that works the same as the 6502 and has the same ISA
 
 ## Pin Layout
 Put all the GPIO pin numbers, i/o/io determination, and labels
