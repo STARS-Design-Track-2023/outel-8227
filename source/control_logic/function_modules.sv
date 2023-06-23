@@ -2502,7 +2502,17 @@ always_comb begin
             flags[SET_ADL_TO_PCL] = 1;
             flags[LOAD_ABL] = 1;
 
-            //Data+PCL
+            //Set B=PCL
+            flags[SET_INPUT_B_TO_ADL] = 1;
+            
+            //Set A=Data
+            flags[SET_DB_TO_DATA] = 1;
+            flags[SET_SB_TO_DB] = 1;
+            flags[SET_INPUT_A_TO_SB] = 1;
+            
+            //A+B=PCL+Data
+            flags[ALU_ADD] = 1;
+            flags[LOAD_ALU] = 1;
         end
         T1: begin
             //ALU to SP
@@ -2539,19 +2549,6 @@ always_comb begin
             flags[LOAD_ALU] = 1;
         end
         T3: begin
-            //Update ABL
-            flags[SET_ADL_TO_ALU] = 1;
-            flags[LOAD_ABL] = 1;
-
-            //Update ABH
-            flags[SET_ADH_TO_DATA] = 1;
-            flags[LOAD_ABH] = 1;
-
-            //Update PC
-            flags[LOAD_PC] = 1;
-            flags[PC_INC] = 1;
-        end
-        T4, T5: begin
             //Increment PC
             flags[PC_INC] = 1;
 

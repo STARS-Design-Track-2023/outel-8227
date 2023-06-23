@@ -289,7 +289,6 @@ module Indrect_Y(
     input logic carry_to_high_op,
     input logic IS_STORE_ACC_INSTRUCT, IS_STORE_X_INSTRUCT, IS_STORE_Y_INSTRUCT,
     output logic [NUMFLAGS:0] flags,
-    output logic carry_from_low_op
 );
 
 always_comb begin
@@ -326,8 +325,7 @@ always_comb begin
         
         flags[LOAD_ALU] = 1;
         flags[ALU_ADD] = 1;
-        flags[SET_ALU_CARRY_HIGH] = carry_to_high_op;
-    
+        flags[SET_FREE_CARRY_FLAG_TO_ALU] = 1;
     end else if(state == A2)begin
         //Set Zero Page:00,Data1+Y
         flags[SET_ADH_LOW] = 1;
@@ -340,7 +338,7 @@ always_comb begin
         flags[SET_INPUT_B_TO_DB] = 1;
         
         flags[SET_INPUT_A_TO_LOW] = 1;
-        flags[SET_ALU_CARRY_HIGH] = carry_to_high_op;
+        flags[SET_ALU_CARRY_TO_FREE_CARRY] = 1;
 
         flags[LOAD_ALU] = 1;
         flags[ALU_ADD] = 1;
@@ -355,7 +353,6 @@ always_comb begin
         flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
         flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
     end
-    carry_from_low_op = 0;
 end
 endmodule
 
