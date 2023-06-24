@@ -1,9 +1,8 @@
-`include "source/constants.sv"
-
 module internalDataflow(
     input logic nrst, clk,
-    input logic flags[100:0],
+    input logic [100:0] flags,
     input logic [7:0] externalDBRead,
+    output logic [7:0] externalDBWrite,
     output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput
 );
     //outputs from registers
@@ -33,6 +32,10 @@ module internalDataflow(
 
     logic aluCarryOut, aluOverflowOut;
 
+    logic dbPresetWriteEnable, adhPresetWriteEnable, adlPresetWriteEnable, sbPresetWriteEnable;
+
+    assign externalDBWrite = dorRegToExternalDB;
+
     //current bus lines to be used as inputs to registers and other modules
     logic [7:0] dataBusDisconnected, addressLowBus, addressHighBusDisconnected, stackBusDisconnected;
     logic [7:0] dataBus, addressHighBus, stackBus;
@@ -51,30 +54,34 @@ module internalDataflow(
     );
     
     internalBus #(
-        .INPUT_COUNT(5)
+        .INPUT_COUNT(6)
     ) dataBusModule (
-        .busInputs({dbPresetOutput, psrRegToDB, pchRegToDB, pclRegToDB, accRegToDB}),
+        .busSelect({flags[SET_DB_TO_PSR], flags[SET_DB_TO_PCH], flags[SET_DB_TO_PCL], flags[SET_DB_TO_ACC], flags[SET_DB_TO_DATA], dbPresetWriteEnable}),
+        .busInputs({psrRegToDB, pchRegToDB, pclRegToDB, accRegToDB, externalDBRead, dbPresetOutput}),
         .busOutput(dataBusDisconnected)
     );
 
     internalBus #(
-        .INPUT_COUNT(4)
+        .INPUT_COUNT(5)
     ) addressLowBusModule (
-        .busInputs({adlPresetOutput, stackPointerRegToADL, aluRegToADL, pclRegToADL}),
+        .busSelect({flags[SET_ADL_TO_SP], flags[SET_ADL_TO_ALU], flags[SET_ADL_TO_PCL], flags[SET_ADL_TO_DATA], adlPresetWriteEnable}),
+        .busInputs({stackPointerRegToADL, aluRegToADL, pclRegToADL, externalDBRead, adlPresetOutput}),
         .busOutput(addressLowBus)
     );
 
     internalBus #(
-        .INPUT_COUNT(2)
+        .INPUT_COUNT(3)
     ) addressHighBusModule (
-        .busInputs({adhPresetOutput, pchRegToADH}),
+        .busSelect({flags[SET_ADH_TO_PCH], flags[SET_ADH_TO_DATA], adhPresetWriteEnable}),
+        .busInputs({pchRegToADH, externalDBRead, adhPresetOutput}),
         .busOutput(addressHighBusDisconnected)
     );
 
     internalBus #(
         .INPUT_COUNT(6)
     ) stackBusModule (
-        .busInputs({sbPresetOutput, xRegToSB, yRegToSB, stackPointerRegToSB, aluRegToSB, accRegToSB}),
+        .busSelect({flags[SET_SB_TO_X], flags[SET_SB_TO_Y], flags[SET_SB_TO_SP], flags[SET_SB_TO_ALU], flags[SET_SB_TO_ACC], sbPresetWriteEnable}),
+        .busInputs({xRegToSB, yRegToSB, stackPointerRegToSB, aluRegToSB, accRegToSB, sbPresetOutput}),
         .busOutput(stackBusDisconnected)
     );
 
@@ -126,7 +133,7 @@ module internalDataflow(
         .nrst(nrst),
         .clk(clk), 
         .busInputs(addressHighBus), 
-        .busOutputs(abhRegToExternalADL), 
+        .busOutputs(ablRegToExternalADL), 
         .busReadEnable(flags[LOAD_ABL])
     );
 
@@ -205,16 +212,15 @@ module internalDataflow(
         .clk(clk), 
         .busInputs(dataBus), 
         .busOutputs(dorRegToExternalDB), 
-        .busReadEnable(flags[LOAD_DOR]), 
-        .busWriteEnable(1'b1)
+        .busReadEnable(flags[LOAD_DOR])
     );
 
     //PC Incrementer
     programCounterLogic pcIncrementor (
         .input_lowbyte(pclRegToPcIncrementer), 
         .input_highbyte(pchRegToPcIncrementer),
-        .increment(PC_INC), 
-        .decrement(PC_DEC),
+        .increment(flags[PC_INC]), 
+        .decrement(flags[PC_DEC]),
         .output_lowbyte(pcIncrementerToPclReg), 
         .output_highbyte(pcIncrementerToPchReg)
     );
@@ -223,8 +229,8 @@ module internalDataflow(
     programCounterLogic adlADHIncrementor (
         .input_lowbyte(addressHighBus), 
         .input_highbyte(addressHighBus),
-        .increment(PC_INC), 
-        .decrement(PC_DEC),
+        .increment(flags[PC_INC]), 
+        .decrement(flags[PC_DEC]),
         .output_lowbyte(adlADHIncrementerToPclReg), 
         .output_highbyte(adlADHIncrementerToPchReg)
     );
@@ -272,7 +278,7 @@ module internalDataflow(
         .DBall_Z(flags[WRITE_ZERO_FLAG]),//NOR databus (equivalent to databus=0)
         .overflow_V(flags[SET_PSR_OVERFLOW_TO_ALU_OVERFLOW]),//Flag to tell PSR to grab overflow from ALU
         .rcl_V(flags[LOAD_OVERFLOW_PSR_FLAG]),//Flag to tell PSR to set overflow high
-        .break_set(SET_PSR_OUTPUT_BRK_HIGH),
+        .break_set(flags[SET_PSR_OUTPUT_BRK_HIGH]),
         .PSR_RCL(psrRegToLogicController),
         .PSR_DB(psrRegToDB),
         .enableDBWrite(flags[SET_DB_TO_PSR])
@@ -290,6 +296,8 @@ module internalDataflow(
         .set_01(1'b0),
         .bus_out(dbPresetOutput)
     );
+    assign adhPresetWriteEnable = flags[SET_DB_HIGH];
+
 
     //Stack Bus Preset
     busPreset sbPreset(
@@ -303,6 +311,7 @@ module internalDataflow(
         .set_01(1'b0),
         .bus_out(sbPresetOutput)
     );
+    assign adhPresetWriteEnable = flags[SET_SB_HIGH];
 
     //ADL Preset
     busPreset adlPreset(
@@ -316,6 +325,9 @@ module internalDataflow(
         .set_01(1'b0),
         .bus_out(adlPresetOutput)
     );
+    assign adhPresetWriteEnable =   flags[SET_ADL_FF] | flags[SET_ADL_FE] | flags[SET_ADL_FD] | 
+                                    flags[SET_ADL_FC] | flags[SET_ADL_FB] | flags[SET_ADL_FA] | 
+                                    flags[SET_ADL_00];
 
     //ADH Preset
     busPreset adhPreset(
@@ -325,10 +337,11 @@ module internalDataflow(
         .set_FC(1'b0),
         .set_FB(1'b0),
         .set_FA(1'b0),
-        .set_00(flags[SET_ADH_00]),
-        .set_01(flags[SET_ADL_01]),
+        .set_00(flags[SET_ADH_LOW]),
+        .set_01(flags[SET_ADH_TO_ONE]),
         .bus_out(adhPresetOutput)
     );
+    assign adhPresetWriteEnable = flags[SET_ADH_FF] | flags[SET_ADH_LOW] | flags[SET_ADH_TO_ONE];
 
     //Input Latch to DB
     busInterface externalDBToDB(
