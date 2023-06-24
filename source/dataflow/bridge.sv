@@ -1,6 +1,6 @@
 module bridge(
-  input logic bus1Input, bus2Input, bus3Input,
-  output logic bus1Output, bus2Output, bus3Output,
+  input logic [7:0] bus1Input, bus2Input, bus3Input,
+  output logic [7:0] bus1Output, bus2Output, bus3Output,
   input logic open2To1, open1To2, open2To3, open3To2
 );
 

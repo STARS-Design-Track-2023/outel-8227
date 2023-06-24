@@ -1,3 +1,5 @@
+`include "source/constants.sv"
+
 module internalDataflow(
     input logic nrst, clk,
     input logic flags[100:0],
@@ -20,21 +22,22 @@ module internalDataflow(
                 aluRegToADL, aluRegToSB, //ALU Register Outputs
                 accRegToDB, accRegToSB, //Accumulator Register Outputs
                 dorRegToExternalDB, //DOR Register Outputs
-                pcIncrementerToPchReg, pcIncrementerToPclReg;//PCIncrementer Outputs
+                pcIncrementerToPchReg, pcIncrementerToPclReg,//PCIncrementer Outputs
                 adlADHIncrementerToPchReg, adlADHIncrementerToPclReg,//PCIncrementer Outputs from the ADH,ADL lines
-                aluOutput, aluCarryOut, aluOverflowOut, //Output line from ALU
+                aluOutput, //Output line from ALU
                 psrRegToLogicController, psrRegToDB,//Output from Process Status Register
                 dbPresetOutput, sbPresetOutput, adlPresetOutput, adhPresetOutput,//Preset Outputs
                 sbToADH, adhToSB,//SB/ADH Bridge Outputs
                 sbToDB, dbToSB,//SB/DB Bridge Outputs
                 dataToDB, dataToADL, dataToADH;//External DB Interface Outputs
 
-    
+    logic aluCarryOut, aluOverflowOut;
+
     //current bus lines to be used as inputs to registers and other modules
     logic [7:0] dataBusDisconnected, addressLowBus, addressHighBusDisconnected, stackBusDisconnected;
-    logic [7:0] dataBus, addressLowBus, addressHighBus, stackBus;
+    logic [7:0] dataBus, addressHighBus, stackBus;
 
-    module bridge(
+    bridge bridge(
         .bus1Input(dataBusDisconnected),
         .bus2Input(stackBusDisconnected),
         .bus3Input(addressHighBusDisconnected),
@@ -50,8 +53,6 @@ module internalDataflow(
     internalBus #(
         .INPUT_COUNT(5)
     ) dataBusModule (
-        .nrst(nrst),
-        .clk(clk),
         .busInputs({dbPresetOutput, psrRegToDB, pchRegToDB, pclRegToDB, accRegToDB}),
         .busOutput(dataBusDisconnected)
     );
@@ -59,8 +60,6 @@ module internalDataflow(
     internalBus #(
         .INPUT_COUNT(4)
     ) addressLowBusModule (
-        .nrst(nrst),
-        .clk(clk),
         .busInputs({adlPresetOutput, stackPointerRegToADL, aluRegToADL, pclRegToADL}),
         .busOutput(addressLowBus)
     );
@@ -68,152 +67,139 @@ module internalDataflow(
     internalBus #(
         .INPUT_COUNT(2)
     ) addressHighBusModule (
-        .nrst(nrst),
-        .clk(clk),
         .busInputs({adhPresetOutput, pchRegToADH}),
         .busOutput(addressHighBusDisconnected)
     );
 
     internalBus #(
         .INPUT_COUNT(6)
-    ) stackBus (
-        .nrst(nrst),
-        .clk(clk),
+    ) stackBusModule (
         .busInputs({sbPresetOutput, xRegToSB, yRegToSB, stackPointerRegToSB, aluRegToSB, accRegToSB}),
         .busOutput(stackBusDisconnected)
     );
 
     //X Register
     register #(
-        .INPUT_COUNT(2'd1), 
-        .OUTPUT_COUNT(2'd1),
+        .INPUT_COUNT(1), 
+        .OUTPUT_COUNT(1),
         .DEFAULT_VALUE(8'b0)
     ) xRegister (
         .nrst(nrst),
         .clk(clk), 
         .busInputs(stackBus), 
         .busOutputs(xRegToSB), 
-        .busReadEnable(flags[LOAD_X]), 
-        .busWriteEnable(flags[SET_SB_TO_X])
+        .busReadEnable(flags[LOAD_X])
     );
 
     //Y Register
     register #(
-        .INPUT_COUNT(2'd1), 
-        .OUTPUT_COUNT(2'd1),
+        .INPUT_COUNT(1), 
+        .OUTPUT_COUNT(1),
         .DEFAULT_VALUE(8'b0)
     ) yRegister (
         .nrst(nrst),
         .clk(clk), 
         .busInputs(stackBus), 
         .busOutputs(yRegToSB), 
-        .busReadEnable(flags[LOAD_Y]), 
-        .busWriteEnable(flags[SET_SB_TO_Y])
+        .busReadEnable(flags[LOAD_Y])
     );
 
     //ABH Register
     register #(
-        .INPUT_COUNT(2'd1), 
-        .OUTPUT_COUNT(2'd1),
-        .DEFAULT_VALUE(8'0)
+        .INPUT_COUNT(1), 
+        .OUTPUT_COUNT(1),
+        .DEFAULT_VALUE(0)
     ) abhRegister (
         .nrst(nrst),
         .clk(clk), 
         .busInputs(addressHighBus), 
         .busOutputs(abhRegToExternalADH), 
-        .busReadEnable(flags[LOAD_ABH]), 
-        .busWriteEnable(1'b1)//always write
+        .busReadEnable(flags[LOAD_ABH])
     );
 
     //ABL Register
     register #(
-        .INPUT_COUNT(2'd1), 
-        .OUTPUT_COUNT(2'd1),
-        .DEFAULT_VALUE(8'0)
+        .INPUT_COUNT(1), 
+        .OUTPUT_COUNT(1),
+        .DEFAULT_VALUE(0)
     ) ablRegister (
         .nrst(nrst),
         .clk(clk), 
         .busInputs(addressHighBus), 
         .busOutputs(abhRegToExternalADL), 
-        .busReadEnable(flags[LOAD_ABL]), 
-        .busWriteEnable(1'b1)//always write
+        .busReadEnable(flags[LOAD_ABL])
     );
 
     //PCH Register
     register #(
-        .INPUT_COUNT(2'd2), 
-        .OUTPUT_COUNT(2'd3),
-        .DEFAULT_VALUE(8'0)
+        .INPUT_COUNT(2), 
+        .OUTPUT_COUNT(3),
+        .DEFAULT_VALUE(0)
     ) pchRegister (
         .nrst(nrst),
         .clk(clk), 
-        .busInputs(pcIncrementerToPchReg, adlADHIncrementerToPchReg), 
+        .busInputs({pcIncrementerToPchReg, adlADHIncrementerToPchReg}), 
         .busOutputs({pchRegToADH, pchRegToDB, pchRegToPcIncrementer}), 
-        .busReadEnable({~flags[LOAD_PC], flags[LOAD_PC]}), //If load_pc is high, load from ADL/ADH, else load from PC
-        .busWriteEnable({flags[SET_ADH_TO_PCH], flags[SET_DB_TO_PCH], 1'b1})//always write to the incrementer
+        .busReadEnable({~flags[LOAD_PC], flags[LOAD_PC]}) //If load_pc is high, load from ADL/ADH, else load from PC
     );
 
     //PCL Register
     register #(
-        .INPUT_COUNT(2'd2), 
-        .OUTPUT_COUNT(2'd3),
-        .DEFAULT_VALUE(8'0)
+        .INPUT_COUNT(2), 
+        .OUTPUT_COUNT(3),
+        .DEFAULT_VALUE(0)
     ) pclRegister (
         .nrst(nrst),
         .clk(clk), 
-        .busInputs(pcIncrementerToPclReg, adlADHIncrementerToPclReg), 
+        .busInputs({pcIncrementerToPclReg, adlADHIncrementerToPclReg}), 
         .busOutputs({pclRegToADL, pclRegToDB, pclRegToPcIncrementer}), 
-        .busReadEnable({~flags[LOAD_PC], flags[LOAD_PC]}), //If load_pc is high, load from ADL/ADH, else load from PC
-        .busWriteEnable({flags[SET_ADL_TO_PCL], flags[SET_DB_TO_PCL], 1'b1})//always write to the incrementer
+        .busReadEnable({~flags[LOAD_PC], flags[LOAD_PC]}) //If load_pc is high, load from ADL/ADH, else load from PC
     );
 
     //Stack Pointer Register
     register #(
-        .INPUT_COUNT(2'd1), 
-        .OUTPUT_COUNT(2'd2),
-        .DEFAULT_VALUE(8'0)
+        .INPUT_COUNT(1), 
+        .OUTPUT_COUNT(2),
+        .DEFAULT_VALUE(0)
     ) stackPointerRegister (
         .nrst(nrst),
         .clk(clk), 
         .busInputs(stackBus), 
         .busOutputs({stackPointerRegToSB,stackPointerRegToADL}), 
-        .busReadEnable(flags[LOAD_SP]), 
-        .busWriteEnable({flags[SET_SB_TO_SP],flags[SET_ADL_TO_SP]})
+        .busReadEnable(flags[LOAD_SP])
     );
 
     //ALU Register
     register #(
-        .INPUT_COUNT(2'd1), 
-        .OUTPUT_COUNT(2'd2),
-        .DEFAULT_VALUE(8'0)
+        .INPUT_COUNT(1), 
+        .OUTPUT_COUNT(2),
+        .DEFAULT_VALUE(0)
     ) aluRegister (
         .nrst(nrst),
         .clk(clk), 
         .busInputs(aluOutput), 
         .busOutputs({aluRegToADL, aluRegToSB}), 
-        .busReadEnable(flags[LOAD_ALU]), 
-        .busWriteEnable({flags[SET_ADL_TO_ALU],flags[SET_SB_TO_ALU]})
+        .busReadEnable(flags[LOAD_ALU])
     );
 
     //Accumulator Register
     register #(
-        .INPUT_COUNT(2'd1), 
-        .OUTPUT_COUNT(2'd2),
-        .DEFAULT_VALUE(8'0)
+        .INPUT_COUNT(1), 
+        .OUTPUT_COUNT(2),
+        .DEFAULT_VALUE(0)
     ) accumulatorRegister (
         .nrst(nrst),
         .clk(clk), 
         .busInputs(stackBus), 
         .busOutputs({accRegToDB, accRegToSB}), 
-        .busReadEnable(flags[LOAD_ACC]), 
-        .busWriteEnable({flags[SET_DB_TO_ACC], flags[SET_SB_TO_ACC]})
+        .busReadEnable(flags[LOAD_ACC])
     );
 
     //DOR Register
     register #(
-        .INPUT_COUNT(2'd1), 
-        .OUTPUT_COUNT(2'd1),
-        .DEFAULT_VALUE(8'0)
+        .INPUT_COUNT(1), 
+        .OUTPUT_COUNT(1),
+        .DEFAULT_VALUE(0)
     ) dorRegister (
         .nrst(nrst),
         .clk(clk), 
@@ -244,7 +230,7 @@ module internalDataflow(
     );
 
     //ALU
-    ALU alu(
+    alu alu(
         .DB_input(dataBus),
         .ADL_input(addressLowBus),
         .SB_input(stackBus),
