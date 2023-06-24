@@ -54,22 +54,11 @@ module top
 
   logic [100:0] flags;
 
-  always_comb begin
-    flags = 101'b0;
+  assign flags[SET_ADH_TO_DATA] = pb[0];
+  assign flags[LOAD_ABH] = pb[1];
+  assign flags[SET_ADH_FF] = pb[2];
 
-    flags[SET_ADH_TO_DATA] = pb[0];
-    flags[LOAD_ABH] = pb[1];
-    flags[SET_ADH_FF] = pb[2];
-
-     flags[SET_SB_TO_ADH] = pb[3];
-    // flags[LOAD_X] = pb[2];
-
-    // flags[SET_SB_TO_X] = pb[3];
-    // flags[LOAD_ACC] = pb[4];
-    
-    // flags[SET_DB_TO_ACC] = pb[5];
-    // flags[LOAD_DOR] = pb[6];
-  end
+  assign flags[SET_SB_TO_ADH] = pb[3];
 
   internalDataflow dataflow(
     .nrst(~pb[19]), 

@@ -296,7 +296,7 @@ module internalDataflow(
         .set_01(1'b0),
         .bus_out(dbPresetOutput)
     );
-    assign adhPresetWriteEnable = flags[SET_DB_HIGH];
+    assign dbPresetWriteEnable = flags[SET_DB_HIGH];
 
 
     //Stack Bus Preset
@@ -311,7 +311,7 @@ module internalDataflow(
         .set_01(1'b0),
         .bus_out(sbPresetOutput)
     );
-    assign adhPresetWriteEnable = flags[SET_SB_HIGH];
+    assign sbPresetWriteEnable = flags[SET_SB_HIGH];
 
     //ADL Preset
     busPreset adlPreset(
@@ -325,7 +325,7 @@ module internalDataflow(
         .set_01(1'b0),
         .bus_out(adlPresetOutput)
     );
-    assign adhPresetWriteEnable =   flags[SET_ADL_FF] | flags[SET_ADL_FE] | flags[SET_ADL_FD] | 
+    assign adlPresetWriteEnable =   flags[SET_ADL_FF] | flags[SET_ADL_FE] | flags[SET_ADL_FD] | 
                                     flags[SET_ADL_FC] | flags[SET_ADL_FB] | flags[SET_ADL_FA] | 
                                     flags[SET_ADL_00];
 

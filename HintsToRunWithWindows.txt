@@ -8,6 +8,7 @@ After restarting the shell, I ran 'choco install make' to install make and creat
 I then had to set maketools' extension settings:
 makefile path: directory to the makefile (C:\XXXXX\GitHub\outel-8227\MakefileWindows)
 Make path: make
+Add (C:\ProgramData\chocolatey) to your environment variables
 
 I then needed iverilog (choco install iverilog)
 

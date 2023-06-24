@@ -30,31 +30,34 @@ module processStatusReg(
         end
     end
 
-    always_comb begin                                   //comb block to handle next state logic
-        stat_buf_nxt = status_buffer;
-        if(DB0_C) stat_buf_nxt[0] = DB_in[0];           //handle inputs from DB
-        if(DB1_Z) stat_buf_nxt[1] = DB_in[1];
-        if(DB2_I) stat_buf_nxt[2] = DB_in[2];
-        if(DB3_D) stat_buf_nxt[3] = DB_in[3];
-        if(DB6_V) stat_buf_nxt[6] = DB_in[6];
-        if(DB7_N) stat_buf_nxt[7] = DB_in[7];
+    //This implementation should match the below commented implementation.  Unfortunately, it looks like one of the tools does not support connstant selects like (DB_in[0]) in always_comb blocks for some reason
+    assign stat_buf_nxt[0] = (DB0_C & DB_in[0]) | (manual_C & manual_set) | (carry_C & carry) | (~DB0_C & ~manual_C & !carry_C & status_buffer[0]);
+    assign stat_buf_nxt[1] = (DB1_Z & DB_in[1]) | (DBall_Z & ~|DB_in);
+    assign stat_buf_nxt[2] = (DB2_I & DB_in[2]) | (manual_I & manual_set);
+    assign stat_buf_nxt[3] = (DB3_D & DB_in[3]) | (manual_D & manual_set);
+    assign stat_buf_nxt[6] = (DB6_V & DB_in[6]) | (overflow_V & overflow) | (rcl_V);
+    assign stat_buf_nxt[7] = (DB7_N & DB_in[7]);
 
-        if(manual_C) stat_buf_nxt[0] = manual_set;      //handle manual set on certain flags
-        if(manual_D) stat_buf_nxt[3] = manual_set;
-        if(manual_I) stat_buf_nxt[2] = manual_set;
+    // always_comb begin                                   //comb block to handle next state logic
+    //     stat_buf_nxt = status_buffer;
+    //     if(DB0_C) stat_buf_nxt[0] = DB_in[0];           //handle inputs from DB
+    //     if(DB1_Z) stat_buf_nxt[1] = DB_in[1];
+    //     if(DB2_I) stat_buf_nxt[2] = DB_in[2];
+    //     if(DB3_D) stat_buf_nxt[3] = DB_in[3];
+    //     if(DB6_V) stat_buf_nxt[6] = DB_in[6];
+    //     if(DB7_N) stat_buf_nxt[7] = DB_in[7];
 
-        if(carry_C) stat_buf_nxt[0] = carry;            //misc cases and direct sets and clears
-        if(DBall_Z) stat_buf_nxt[1] = ~(DB_in != 0);
-        if(overflow_V) stat_buf_nxt[6] = overflow;
-        if(rcl_V) stat_buf_nxt[6] = 1'b1;
-        if(break_set) 
-        begin
-            stat_buf_nxt[4] = 1'b1; //If the break flag is set, set it high before writing
-            stat_buf_nxt[5] = 1'b1; //If the break flag is set, set it high before writing
-        end
-    end
+    //     if(manual_C) stat_buf_nxt[0] = manual_set;      //handle manual set on certain flags
+    //     if(manual_D) stat_buf_nxt[3] = manual_set;
+    //     if(manual_I) stat_buf_nxt[2] = manual_set;
+
+    //     if(carry_C) stat_buf_nxt[0] = carry;            //misc cases and direct sets and clears
+    //     if(DBall_Z) stat_buf_nxt[1] = ~(DB_in != 0);
+    //     if(overflow_V) stat_buf_nxt[6] = overflow;
+    //     if(rcl_V) stat_buf_nxt[6] = 1'b1;
+    // end
 
     // Set Final outputs
-    assign PSR_Output = status_buffer;
+    assign PSR_Output = {status_buffer[7:6], break_set, break_set, status_buffer[3:0]}; //Set the break flag high if break_set is true
 
 endmodule
