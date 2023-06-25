@@ -26,3 +26,6 @@ Check the Verilog>Linting>Verilator>Use WSL tick box.  This requires that verila
 
 Adding yosys
 sudo apt-get install yosys
+
+Adding GTKWave
+sudo apt-get install gtkwave

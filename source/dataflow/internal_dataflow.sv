@@ -35,6 +35,8 @@ module internalDataflow(
     logic dbPresetWriteEnable, adhPresetWriteEnable, adlPresetWriteEnable, sbPresetWriteEnable;
 
     assign externalDBWrite = dorRegToExternalDB;
+    assign externalAddressBusLowOutput = ablRegToExternalADL;
+    assign externalAddressBusHighOutput = abhRegToExternalADH;
 
     //current bus lines to be used as inputs to registers and other modules
     logic [7:0] dataBusDisconnected, addressLowBus, addressHighBusDisconnected, stackBusDisconnected;

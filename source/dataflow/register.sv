@@ -25,7 +25,7 @@ module register
   logic [BUS_SELECT_ENCODED_SIZE-1:0] busSelectEncoded;
 
   //One hot encoder - takes a signal like [01000] and turns it into [011] (three)
-    oneHotEncoder #(.INPUT_COUNT(INPUT_COUNT)) encoder (.select(busReadEnable), .encodedSelect(busSelectEncoded));
+  oneHotEncoder #(.INPUT_COUNT(INPUT_COUNT)) encoder (.select(busReadEnable), .encodedSelect(busSelectEncoded));
 
   logic [WIDTH - 1:0] busOutputUnpacked [INPUT_COUNT];
 

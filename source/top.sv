@@ -59,6 +59,19 @@ module top
   assign flags[SET_ADH_FF] = pb[2];
 
   assign flags[SET_SB_TO_ADH] = pb[3];
+  always_comb begin
+    flags = 101'b0;
+
+    
+    
+    // flags[LOAD_X] = pb[2];
+
+    // flags[SET_SB_TO_X] = pb[3];
+    // flags[LOAD_ACC] = pb[4];
+    
+    // flags[SET_DB_TO_ACC] = pb[5];
+    // flags[LOAD_DOR] = pb[6];
+  end
 
   internalDataflow dataflow(
     .nrst(~pb[19]), 
