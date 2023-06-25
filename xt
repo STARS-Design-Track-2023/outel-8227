@@ -1,0 +1,11 @@
+** VVP Stop(0) **
+** Flushing output streams.
+** Current simulation time is 0 ticks.
+** Continue **
+VCD info: dumpfile dump.vcd opened for output.
+VCD warning: $dumpvars: Package ($unit) is not dumpable with VCD.
+Simulation complete
+** VVP Stop(0) **
+** Flushing output streams.
+** Current simulation time is 2000 ticks.
+** Continue **

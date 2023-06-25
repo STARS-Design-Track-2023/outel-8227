@@ -1,0 +1,31 @@
+The most important part is to get access to make.  To do this, I installed 
+chocolatey by running the following command in an elevated powershell terminal
+
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+After restarting the shell, I ran 'choco install make' to install make and created a new makefile using windows commands as needed
+
+I then had to set maketools' extension settings:
+makefile path: directory to the makefile (C:\XXXXX\GitHub\outel-8227\MakefileWindows)
+Make path: make
+Add (C:\ProgramData\chocolatey) to your environment variables
+
+I then needed iverilog (choco install iverilog)
+
+To install verilator:
+(in wsl)
+sudo apt update
+sudo apt-get install verilator
+
+Adding verilator extension:
+Add verilog-hdl/systemVerilog... extension to vsc
+In the extension settings, set Verilog>Linting>Verilator>Arguments to:
+-Werror-WIDTH -Werror-SELRANGE -Werror-COMBDLY -Werror-MULTIDRIVEN -v source/dataflow/*
+The above assumes that all files are in the source/dataflow folder contained directly within the overall project folder
+Check the Verilog>Linting>Verilator>Use WSL tick box.  This requires that verilator have been installed via wsl
+
+Adding yosys
+sudo apt-get install yosys
+
+Adding GTKWave
+sudo apt-get install gtkwave
