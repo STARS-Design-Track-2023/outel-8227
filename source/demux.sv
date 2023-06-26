@@ -84,7 +84,7 @@ module setoutflags(
 input logic [5:0] instructionCode,
 input logic [3:0] addressingCode,
 input logic [2:0] addressTimingCode, opTimingCode,
-input logic rst, clk, free_carry, nmi, irq, reset,
+input logic rst, clk, free_carry, nmi, irq, reset, PSR_C, PSR_N, PSR_V, PSR_Z,
 output logic [NUMoutflags - 1:0] outflags
 );
 
@@ -96,8 +96,19 @@ logic IS_STORE_ACC_INSTRUCT;
 logic IS_STORE_X_INSTRUCT;
 logic IS_STORE_Y_INSTRUCT;
 logic passAddressing;
+logic jump; // to be fixed later // was kind of fixed later
 
-logic jump; // to be fixed later
+
+
+assign jump = ((instructionCode == BCC) & (!PSR_C)) | // eww
+              ((instructionCode == BCS) & (PSR_C))  |
+              ((instructionCode == BEQ) & (PSR_Z))  |
+              ((instructionCode == BMI) & (PSR_N))  |
+              ((instructionCode == BNE) & (!PSR_Z)) |
+              ((instructionCode == BPL) & (!PSR_N)) |
+              ((instructionCode == BVC) & (!PSR_V)) |
+              ((instructionCode == BVS) & (PSR_V));
+
 
 
 timing_generator u1(.timeOut(state), .clk(clk), .addressTimingCode(addressTimingCode), .opTimingCode(opTimingCode), .rst(rst), .isAddressing(isAddressing), .passAddressing(passAddressing) );
@@ -444,7 +455,7 @@ case(addressingCode)
             end 
 
     end
-    default: outflags = 'bX;                           // code default
+    default: outflags = 0;
 endcase
 
 end
@@ -2768,6 +2779,7 @@ case(instructionCode)
     endcase
 
     end
+    default: outflags = 0;
 endcase
 
 end
