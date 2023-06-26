@@ -1,13 +1,13 @@
 module instructionLoader (
     input logic clk, nrst,
     input logic nonMaskableInterrupt, interruptRequest, processStatusRegIFlag, loadNextInstruction,
-    input loig externalDB,
+    input logic [7:0] externalDB,
     output logic [7:0] currentInstruction,
     output logic enableIFlag,
     output logic nmiRunning, resetRunning
 );
 
-    logic resetDected, irqGenerated, nmiGenerated;
+    logic resetDetected, irqGenerated, nmiGenerated;
     logic instructionRegReadEnable; //Normally the same as 'loadNextInstruction' but needs to go high if a reset is detected
 
     logic [7:0] nextInstruction;
@@ -23,7 +23,8 @@ module instructionLoader (
         .irqGenerated(irqGenerated), 
         .nmiGenerated(nmiGenerated), 
         .nmiRunning(nmiRunning), 
-        .resetRunning(resetRunning)
+        .resetRunning(resetRunning),
+        .resetDetected(resetDetected)
     );
 
     //Instruction Register Loading Logic
@@ -32,7 +33,7 @@ module instructionLoader (
         instructionRegReadEnable = loadNextInstruction;
         
         //If a reset is detected load a break instruction on the next 
-        if (resetDected)
+        if (resetDetected)
         begin
             instructionRegReadEnable = 1'b1;
             nextInstruction = 8'b0;//Load a break instruction
@@ -43,6 +44,9 @@ module instructionLoader (
             nextInstruction = 8'b0;//Load a break instruction when the next opcode is requested
         end
     end
+
+    //Set the PSR I flag to high if a reset is detected or an interrupt is beginning its instruction cycle
+    assign enableIFlag = resetDetected | ((irqGenerated | nmiGenerated) & instructionRegReadEnable);
 
     //Instruction Register
     register #(

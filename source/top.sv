@@ -32,45 +32,87 @@ module top
 );
 
   logic [100:0] flags;
+  logic [7:0] psrRegCurrentState;
+  logic nrst;
+  logic synchronizedLoad, edgeDetectLoad;
+  logic synchronizedFinishInterrupt, edgeDetectFinishInterrupt;
+  logic [7:0] externalDBRead;
+  logic setIFlag;
 
-  always_comb begin
-    flags = 101'b0;
+  assign nrst = ~pb[19];
+  assign externalDBRead = 8'b11001010;
 
-    flags[SET_ADH_TO_DATA] = pb[0];
-    flags[LOAD_ABH] = pb[1];
-    flags[SET_ADH_FF] = pb[2];
+  synchronizer loadSync(
+    .nrst(nrst),
+    .clk(hwclk),
+    .in(pb[2]),
+    .out(synchronizedLoad)
+  ); 
 
-     flags[SET_SB_TO_ADH] = pb[3];
-    // flags[LOAD_X] = pb[2];
+  edgeDetector loadEdgeDetector(
+    .clk(hwclk),
+    .nrst(nrst),
+    .in(synchronizedLoad),
+    .out(edgeDetectLoad)
+  );
 
-    // flags[SET_SB_TO_X] = pb[3];
-    // flags[LOAD_ACC] = pb[4];
-    
-    // flags[SET_DB_TO_ACC] = pb[5];
-    // flags[LOAD_DOR] = pb[6];
-  end
+  synchronizer finishInterruptSync(
+    .nrst(nrst),
+    .clk(hwclk),
+    .in(pb[3]),
+    .out(synchronizedFinishInterrupt)
+  ); 
+
+  edgeDetector finishInterruptEdgeDetector(
+    .clk(hwclk),
+    .nrst(nrst),
+    .in(synchronizedFinishInterrupt),
+    .out(edgeDetectFinishInterrupt)
+  );
 
   internalDataflow dataflow(
-    .nrst(~pb[19]), 
+    .nrst(nrst), 
     .clk(hwclk),
     .flags(flags),
-    .externalDBRead(8'b10101010),
+    .externalDBRead(externalDBRead),
     .externalAddressBusLowOutput(),
     .externalAddressBusHighOutput(), 
-    .externalDBWrite()
+    .externalDBWrite(),
+    .psrRegToLogicController(psrRegCurrentState)
   );
 
-  interruptInjector interruptInjector(
+  instructionLoader instructionLoader(
     .clk(hwclk),
-    .nrst(~pb[19]),
-    .nonMaskableInterrupt(),
-    .interruptRequest(), //Inputs from exterior (could be buttons outside IC)
-    .processStatusRegIFlag(),
-    .interruptAcknowleged(), //Should be high going into the clock cycle when the Instruction Register is loaded
-    .irqGenerated(),
-    .nmiGenerated(),
-    .nmiRunning(),
-    .resetRunning() //output signals that state whether an interrupt has been generated and whether a nonmaskable interrupt is running
+    .nrst(nrst),
+    .nonMaskableInterrupt(pb[0]),
+    .interruptRequest(pb[1]),
+    .processStatusRegIFlag(psrRegCurrentState[2]),
+    .loadNextInstruction(edgeDetectLoad),
+    .externalDB(externalDBRead),
+    .currentInstruction(right),
+    .enableIFlag(setIFlag),
+    .nmiRunning(left[7]),
+    .resetRunning(left[6])
   );
+
+  assign flags[SET_PSR_I_TO_DB2] = 1'b0;
+
+  always_comb begin
+    if(setIFlag)
+    begin
+      flags[PSR_DATA_TO_LOAD] = 1'b1;
+      flags[LOAD_INTERUPT_PSR_FLAG] = 1'b1;
+    end
+    else if(edgeDetectFinishInterrupt)
+    begin
+      flags[PSR_DATA_TO_LOAD] = 1'b0;
+      flags[LOAD_INTERUPT_PSR_FLAG] = 1'b1;
+    end
+    else
+    begin
+      flags[PSR_DATA_TO_LOAD] = 1'b0;
+      flags[LOAD_INTERUPT_PSR_FLAG] = 1'b0;
+    end
+  end
 
 endmodule

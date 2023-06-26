@@ -25,13 +25,17 @@ module irqGeneratedFF (
             //sice PSRi is also low, the interrupt was finished processing
             nextIRQGenerated = 1'b0;
         end
+        else
+        begin
+            nextIRQGenerated = irqGenerated;
+        end
     end
 
     always_ff @(posedge clk, negedge nrst) begin : nmiAssignment
         if(~nrst)
-            nmiGenerated = 1'b0;
+            irqGenerated = 1'b0;
         else
-            nmiGenerated = nextNMIGenerated;
+            irqGenerated = nextIRQGenerated;
     end
 
 endmodule
