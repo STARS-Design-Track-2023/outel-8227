@@ -3,7 +3,8 @@ module internalDataflow(
     input logic [100:0] flags,
     input logic [7:0] externalDBRead,
     output logic [7:0] externalDBWrite,
-    output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput
+    output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput,
+    output logic [7:0] psrRegToLogicController
 );
     //outputs from registers
     //ABL = address bus low
@@ -24,7 +25,7 @@ module internalDataflow(
                 pcIncrementerToPchReg, pcIncrementerToPclReg,//PCIncrementer Outputs
                 adlADHIncrementerToPchReg, adlADHIncrementerToPclReg,//PCIncrementer Outputs from the ADH,ADL lines
                 aluOutput, //Output line from ALU
-                psrRegToLogicController, psrRegToDB,//Output from Process Status Register
+                psrRegToDB,//Output from Process Status Register
                 dbPresetOutput, sbPresetOutput, adlPresetOutput, adhPresetOutput,//Preset Outputs
                 sbToADH, adhToSB,//SB/ADH Bridge Outputs
                 sbToDB, dbToSB,//SB/DB Bridge Outputs
