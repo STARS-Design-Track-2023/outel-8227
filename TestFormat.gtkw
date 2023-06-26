@@ -1,36 +1,18 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Sun Jun 25 01:15:59 2023
+[*] Mon Jun 26 20:11:42 2023
 [*]
-[dumpfile] "/mnt/c/Users/draid/Documents/GitHub/outel-8227/dump.vcd"
-[dumpfile_mtime] "Sun Jun 25 01:04:45 2023"
-[dumpfile_size] 25559
-[savefile] "/mnt/c/Users/draid/Documents/GitHub/outel-8227/TestFormat.gtkw"
+[dumpfile] "/home/shay/c/ecng005/Desktop/STARS/RTL Stuff/outel-8227/dump.vcd"
+[dumpfile_mtime] "Mon Jun 26 20:10:59 2023"
+[dumpfile_size] 43500
+[savefile] "/home/shay/c/ecng005/Desktop/STARS/RTL Stuff/outel-8227/TestFormat.gtkw"
 [timestart] 0
-[size] 1908 997
+[size] 1000 600
 [pos] -1 -1
-*-12.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
-[treeopen] tb_shift_reg.
-[treeopen] tb_shift_reg.dataflow.
-[treeopen] tb_shift_reg.dataflow.abhRegister.
-[sst_width] 214
-[signals_width] 318
+*0.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 233
+[signals_width] 78
 [sst_expanded] 1
-[sst_vpaned_height] 291
-@820
-tb_shift_reg.test_name[1024:0]
-@28
-tb_shift_reg.tb_clk
-@22
-tb_shift_reg.tb_flags[100:0]
-@200
--
--
-@22
-tb_shift_reg.tb_externalDBRead[7:0]
-+{XRegState} tb_shift_reg.dataflow.xRegister.currentState[7:0]
-+{AccRegState} tb_shift_reg.dataflow.accumulatorRegister.currentState[7:0]
-+{DorRegState} tb_shift_reg.dataflow.dorRegister.currentState[7:0]
-tb_shift_reg.tb_externalDBWrite[7:0]
+[sst_vpaned_height] 144
 [pattern_trace] 1
 [pattern_trace] 0
