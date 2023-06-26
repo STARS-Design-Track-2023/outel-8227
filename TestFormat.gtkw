@@ -1,18 +1,29 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Mon Jun 26 20:11:42 2023
+[*] Mon Jun 26 20:32:39 2023
 [*]
 [dumpfile] "/home/shay/c/ecng005/Desktop/STARS/RTL Stuff/outel-8227/dump.vcd"
-[dumpfile_mtime] "Mon Jun 26 20:10:59 2023"
-[dumpfile_size] 43500
+[dumpfile_mtime] "Mon Jun 26 20:30:06 2023"
+[dumpfile_size] 44020
 [savefile] "/home/shay/c/ecng005/Desktop/STARS/RTL Stuff/outel-8227/TestFormat.gtkw"
-[timestart] 0
-[size] 1000 600
-[pos] -1 -1
-*0.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 14520
+[size] 1846 1016
+[pos] -39 -39
+*-12.000000 28840 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_internalDataflow.
+[treeopen] tb_internalDataflow.dataflow.
 [sst_width] 233
-[signals_width] 78
+[signals_width] 166
 [sst_expanded] 1
-[sst_vpaned_height] 144
+[sst_vpaned_height] 289
+@28
+tb_internalDataflow.tb_clk
+@820
+tb_internalDataflow.test_name[1024:0]
+@22
+tb_internalDataflow.dataflow.pclRegister.currentState[7:0]
+@28
+tb_internalDataflow.dataflow.pcIncrementor.decrement
+tb_internalDataflow.dataflow.pcIncrementor.increment
 [pattern_trace] 1
 [pattern_trace] 0

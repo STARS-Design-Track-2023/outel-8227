@@ -142,8 +142,6 @@ module tb_internalDataflow ();
     assign tb_flags[SET_SB_TO_Y] = 1;
     assign tb_flags[LOAD_ACC] = 1;
 
-
-
     assign test_name = "Increment Program Counter"; 
     @(negedge tb_clk);
     reset_flags();
