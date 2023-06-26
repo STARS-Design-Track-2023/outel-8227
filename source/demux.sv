@@ -84,20 +84,23 @@ module setoutflags(
 input logic [5:0] instructionCode,
 input logic [3:0] addressingCode,
 input logic [2:0] addressTimingCode, opTimingCode,
-input logic rst, clk,
+input logic rst, clk, free_carry, nmi, irq, reset,
 output logic [NUMoutflags - 1:0] outflags
 );
 
 logic  [NUMoutflags - 1:0] outputListAddressing [13:0] ;
 logic  [NUMoutflags - 1:0] outputListInstruction [61:0];
-logic [2:0] currentTime;
+logic [2:0] state;
 logic isAddressing;
 logic IS_STORE_ACC_INSTRUCT;
 logic IS_STORE_X_INSTRUCT;
 logic IS_STORE_Y_INSTRUCT;
 logic passAddressing;
 
-timing_generator u1(.timeOut(currentTime), .clk(clk), .addressTimingCode(addressTimingCode), .opTimingCode(opTimingCode), .rst(rst), .isAddressing(isAddressing), .passAddressing(passAddressing) );
+logic jump; // to be fixed later
+
+
+timing_generator u1(.timeOut(state), .clk(clk), .addressTimingCode(addressTimingCode), .opTimingCode(opTimingCode), .rst(rst), .isAddressing(isAddressing), .passAddressing(passAddressing) );
 
 always_comb begin : blockName
     
@@ -117,7 +120,7 @@ else
 if(isAddressing & ~passAddressing) begin
 
 case(addressingCode)
-    abs: begin                                         // addressing instruction abs
+    abs: begin                                         // addressing instruction kbs
 
             outflags = 0;
             if(state == A0)begin
@@ -656,7 +659,8 @@ case(instructionCode)
                 outflags[SET_DB_TO_SB] = 1;
                 outflags[SET_INPUT_A_TO_LOW] = 1;
                 outflags[SET_INPUT_B_TO_DB] = 1;
-                outflags[SET_ALU_CARRY_TO_FREE_CARRY] = 1;
+                outflags[SET_FREE_CARRY_FLAG_TO_ALU] = 1;
+
             end else begin
                 //Increment PC
                 outflags[PC_INC] = 1;
@@ -788,7 +792,7 @@ case(instructionCode)
         end
         T1: begin
             //Write DOR
-            outflags[SET_WRITE_FLAG] = ~RESET;
+            outflags[SET_WRITE_FLAG] = ~reset;
 
             //Go to next Stack
             outflags[SET_ADL_TO_ALU] = 1;
@@ -812,7 +816,7 @@ case(instructionCode)
         end
         T2: begin
             //Write DOR
-            outflags[SET_WRITE_FLAG] = ~RESET;
+            outflags[SET_WRITE_FLAG] = ~reset;
 
             //Go to next Stack
             outflags[SET_ADL_TO_ALU] = 1;
@@ -831,19 +835,19 @@ case(instructionCode)
 
             //Get PSR to DOR
             outflags[SET_DB_TO_PSR] = 1;
-            outflags[SET_PSR_OUTPUT_BRK_HIGH] = ~(NMI|IRQ|RESET);
+            outflags[SET_PSR_OUTPUT_BRK_HIGH] = ~(nmi|irq|reset);
             outflags[LOAD_DOR] = 1;
         end
         T3: begin
             //Write DOR
-            outflags[SET_WRITE_FLAG] = ~RESET;
+            outflags[SET_WRITE_FLAG] = ~reset;
 
             //set ABH and ABL to presets
             outflags[SET_ADH_FF] = 1;
             outflags[LOAD_ABH] = 1;
-            outflags[SET_ADL_FA] = NMI;
-            outflags[SET_ADL_FC] = RESET;
-            outflags[SET_ADL_FE] = ~(NMI|RESET);
+            outflags[SET_ADL_FA] = nmi;
+            outflags[SET_ADL_FC] = reset;
+            outflags[SET_ADL_FE] = ~(nmi|reset);
             outflags[LOAD_ABL] = 1;
 
             //Get ALU ouput to SP Reg
@@ -854,9 +858,9 @@ case(instructionCode)
             //set ABH and ABL to presets
             outflags[SET_ADH_FF] = 1;
             outflags[LOAD_ABH] = 1;
-            outflags[SET_ADL_FA] = NMI;
-            outflags[SET_ADL_FC] = RESET;
-            outflags[SET_ADL_FE] = ~(NMI|RESET);
+            outflags[SET_ADL_FB] = nmi;
+            outflags[SET_ADL_FD] = reset;
+            outflags[SET_ADL_FF] = ~(nmi|reset);
             outflags[LOAD_ABL] = 1;
 
             //set B to Data
@@ -2178,7 +2182,7 @@ case(instructionCode)
 
     end
     RTI: begin                                          // code RTI
-
+    
     outflags = 0;
     case (state)
         T0: begin
@@ -2196,12 +2200,11 @@ case(instructionCode)
             outflags[LOAD_ALU] = 1;
         end
         T1: begin
-            //ALU to SP
-            outflags[SET_SB_TO_ALU] = 1;
-            outflags[LOAD_SP] = 1;
+            //ABL to ALU
+            outflags[SET_ADL_TO_ALU] = 1;
+            outflags[LOAD_ABL]  = 1;
 
-            //Set input B to SP
-            outflags[SET_ADL_TO_SP] = 1;
+            //Set input B to ADL(SP+1)
             outflags[SET_INPUT_B_TO_ADL] = 1;
 
             //Set A to 0
@@ -2213,12 +2216,11 @@ case(instructionCode)
             outflags[LOAD_ALU] = 1;
         end
         T2: begin
-            //ALU to SP
-            outflags[SET_SB_TO_ALU] = 1;
-            outflags[LOAD_SP] = 1;
-            
-            //Set input B to SP
-            outflags[SET_ADL_TO_SP] = 1;
+            ///ABL to ALU
+            outflags[SET_ADL_TO_ALU] = 1;
+            outflags[LOAD_ABL]  = 1;
+
+            //Set input B to ADL(SP+1)
             outflags[SET_INPUT_B_TO_ADL] = 1;
 
             //Set A to 0
@@ -2235,6 +2237,10 @@ case(instructionCode)
             
         end
         T3: begin
+            ///ABL to ALU
+            outflags[SET_ADL_TO_ALU] = 1;
+            outflags[LOAD_ABL]  = 1;
+
             //ALU to SP
             outflags[SET_SB_TO_ALU] = 1;
             outflags[LOAD_SP] = 1;
@@ -2279,7 +2285,83 @@ case(instructionCode)
     end
     RTS: begin                                          // code RTS // STILL NEEDS WORK
 
+    outflags = 0;
+    case (state)
+        T0: begin
+            //Set input B to SP
+            outflags[SET_SB_TO_SP] = 1;
+            outflags[SET_DB_TO_SB] = 1;
+            outflags[SET_INPUT_B_TO_DB] = 1;
 
+            //Set A to 0
+            outflags[SET_INPUT_A_TO_LOW] = 1;
+
+            //Add 1 to SP
+            outflags[SET_ALU_CARRY_HIGH] = 1;
+            outflags[ALU_ADD] = 1;
+            outflags[LOAD_ALU] = 1;
+        end
+        T1: begin
+            //ABL to ALU
+            outflags[SET_ADL_TO_ALU] = 1;
+            outflags[LOAD_ABL]  = 1;
+
+            //Set input B to ADL(SP+1)
+            outflags[SET_INPUT_B_TO_ADL] = 1;
+
+            //Set A to 0
+            outflags[SET_INPUT_A_TO_LOW] = 1;
+
+            //Add 1 to SP
+            outflags[SET_ALU_CARRY_HIGH] = 1;
+            outflags[ALU_ADD] = 1;
+            outflags[LOAD_ALU] = 1;
+        end
+        T2: begin
+            //ABL to ALU
+            outflags[SET_ADL_TO_ALU] = 1;
+            outflags[LOAD_ABL]  = 1;
+
+            //SP to ALU
+            outflags[SET_SB_TO_ALU] = 1;
+            outflags[LOAD_SP] = 1;
+            
+            //Set input B to Data
+            outflags[SET_DB_TO_DATA] = 1;
+            outflags[SET_INPUT_B_TO_DB] = 1;
+
+            //Set A to 0
+            outflags[SET_INPUT_A_TO_LOW] = 1;
+
+            //Save Data in ALU
+            outflags[ALU_ADD] = 1;
+            outflags[LOAD_ALU] = 1;
+        end
+        T3: begin
+            //Update ABL
+            outflags[SET_ADL_TO_ALU] = 1;
+            outflags[LOAD_ABL] = 1;
+
+            //Update ABH
+            outflags[SET_ADH_TO_DATA] = 1;
+            outflags[LOAD_ABH] = 1;
+
+            //Update PC
+            outflags[LOAD_PC] = 1;
+            outflags[PC_INC] = 1;
+        end
+        T4: begin
+            //Increment PC
+            outflags[PC_INC] = 1;
+
+            //set ABH and ABL to PC
+            outflags[SET_ADH_TO_PCH] = 1;
+            outflags[LOAD_ABH] = 1;
+            outflags[SET_ADL_TO_PCL] = 1;
+            outflags[LOAD_ABL] = 1;
+        end
+        default: outflags = 0;
+    endcase
 
     end
     SBC: begin                                          // code SBC
