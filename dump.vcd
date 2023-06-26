@@ -1,0 +1,1954 @@
+$date
+	Mon Jun 26 15:37:03 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	10ps
+$end
+$scope module edgeDetector $end
+$var wire 1 ! clk $end
+$var wire 1 " in $end
+$var wire 1 # nrst $end
+$var reg 1 $ lastIn $end
+$var reg 1 % out $end
+$upscope $end
+$scope module instructionLoader $end
+$var wire 1 & clk $end
+$var wire 1 ' enableIFlag $end
+$var wire 8 ( externalDB [7:0] $end
+$var wire 1 ) interruptRequest $end
+$var wire 1 * loadNextInstruction $end
+$var wire 1 + nonMaskableInterrupt $end
+$var wire 1 , nrst $end
+$var wire 1 - processStatusRegIFlag $end
+$var wire 1 . resetRunning $end
+$var wire 1 / resetDetected $end
+$var wire 1 0 nmiRunning $end
+$var wire 1 1 nmiGenerated $end
+$var wire 1 2 irqGenerated $end
+$var wire 8 3 currentInstruction [7:0] $end
+$var reg 1 4 instructionRegReadEnable $end
+$var reg 8 5 nextInstruction [7:0] $end
+$scope module instructionRegister $end
+$var wire 8 6 busInputs [7:0] $end
+$var wire 1 4 busReadEnable $end
+$var wire 1 & clk $end
+$var wire 8 7 muxOutput [7:0] $end
+$var wire 1 , nrst $end
+$var wire 1 8 busSelectEncoded $end
+$var wire 8 9 busOutputs [7:0] $end
+$var parameter 32 : BUS_SELECT_ENCODED_SIZE $end
+$var parameter 8 ; DEFAULT_VALUE $end
+$var parameter 64 < INPUT_BIT_COUNT $end
+$var parameter 32 = INPUT_COUNT $end
+$var parameter 64 > OUTPUT_BIT_COUNT $end
+$var parameter 32 ? OUTPUT_COUNT $end
+$var parameter 32 @ WIDTH $end
+$var reg 8 A currentState [7:0] $end
+$var reg 8 B nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 C i $end
+$upscope $end
+$scope module encoder $end
+$var wire 1 4 select $end
+$var wire 1 8 encodedSelect $end
+$var parameter 32 D INPUT_COUNT $end
+$var parameter 32 E OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 1 F temp $end
+$var parameter 2 G i $end
+$scope begin genblk1[0] $end
+$var parameter 2 H j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module interruptInjector $end
+$var wire 1 & clk $end
+$var wire 1 4 interruptAcknowleged $end
+$var wire 1 ) interruptRequest $end
+$var wire 1 + nonMaskableInterrupt $end
+$var wire 1 , nrst $end
+$var wire 1 - processStatusRegIFlag $end
+$var wire 1 I synchronizedNMI $end
+$var wire 1 J synchronizedIRQ $end
+$var wire 1 . resetRunning $end
+$var wire 1 / resetDetected $end
+$var wire 1 0 nmiRunning $end
+$var wire 1 1 nmiGenerated $end
+$var wire 1 2 irqGenerated $end
+$scope module irqGeneratedFF $end
+$var wire 1 & clk $end
+$var wire 1 4 interruptAcknowleged $end
+$var wire 1 , nrst $end
+$var wire 1 - processStatusRegIFlag $end
+$var wire 1 J synchronizedIRQ $end
+$var reg 1 2 irqGenerated $end
+$var reg 1 K nextIRQGenerated $end
+$scope begin IRQNextStateLogic $end
+$upscope $end
+$scope begin nmiAssignment $end
+$upscope $end
+$upscope $end
+$scope module irqSync $end
+$var wire 1 & clk $end
+$var wire 1 ) in $end
+$var wire 1 , nrst $end
+$var reg 1 L nextQ1 $end
+$var reg 1 M nextQ2 $end
+$var reg 1 J out $end
+$var reg 1 N q1 $end
+$var reg 1 O q2 $end
+$scope begin nextStateAssignment $end
+$upscope $end
+$scope begin nextStateLogic $end
+$upscope $end
+$scope begin outputLogic $end
+$upscope $end
+$upscope $end
+$scope module nmiGeneratedFF $end
+$var wire 1 & clk $end
+$var wire 1 4 interruptAcknowleged $end
+$var wire 1 , nrst $end
+$var wire 1 - processStatusRegIFlag $end
+$var wire 1 I synchronizedNMI $end
+$var wire 1 0 nmiRunning $end
+$var reg 1 P nextNMIGenerated $end
+$var reg 1 1 nmiGenerated $end
+$scope begin NMInextStateLogic $end
+$upscope $end
+$scope begin nmiAssignment $end
+$upscope $end
+$upscope $end
+$scope module nmiRunningFF $end
+$var wire 1 & clk $end
+$var wire 1 4 interruptAcknowleged $end
+$var wire 1 1 nmiGenerated $end
+$var wire 1 , nrst $end
+$var wire 1 - processStatusRegIFlag $end
+$var wire 1 I synchronizedNMI $end
+$var reg 1 Q nextNMIRunning $end
+$var reg 1 0 nmiRunning $end
+$scope begin NMInextStateLogic $end
+$upscope $end
+$scope begin nmiAssignment $end
+$upscope $end
+$upscope $end
+$scope module nmiSync $end
+$var wire 1 & clk $end
+$var wire 1 + in $end
+$var wire 1 , nrst $end
+$var reg 1 R nextQ1 $end
+$var reg 1 S nextQ2 $end
+$var reg 1 I out $end
+$var reg 1 T q1 $end
+$var reg 1 U q2 $end
+$scope begin nextStateAssignment $end
+$upscope $end
+$scope begin nextStateLogic $end
+$upscope $end
+$scope begin outputLogic $end
+$upscope $end
+$upscope $end
+$scope module resetDetector $end
+$var wire 1 & clk $end
+$var wire 1 , nrst $end
+$var reg 1 V nextState $end
+$var reg 1 / resetInection $end
+$var reg 1 W state $end
+$scope begin nextStateAssignment $end
+$upscope $end
+$scope begin nextStateLogic $end
+$upscope $end
+$scope begin outputLogic $end
+$upscope $end
+$upscope $end
+$scope module resetRunningFF $end
+$var wire 1 & clk $end
+$var wire 1 , nrst $end
+$var wire 1 - processStatusRegIFlag $end
+$var wire 1 / resetInitiated $end
+$var reg 1 X nextResetRunning $end
+$var reg 1 . resetRunning $end
+$scope begin nmiAssignment $end
+$upscope $end
+$scope begin resetRunningNextStateLogic $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module tb_shift_reg $end
+$var wire 8 Y tb_externalDBWrite [7:0] $end
+$var wire 8 Z tb_externalAddressBusLowOutput [7:0] $end
+$var wire 8 [ tb_externalAddressBusHighOutput [7:0] $end
+$var parameter 32 \ CLK_PERIOD $end
+$var reg 1 ] tb_clk $end
+$var reg 8 ^ tb_externalDBRead [7:0] $end
+$var reg 101 _ tb_flags [100:0] $end
+$var reg 1 ` tb_nrst $end
+$var reg 1025 a test_name [1024:0] $end
+$scope module dataflow $end
+$var wire 1 b adhPresetWriteEnable $end
+$var wire 1 c adlPresetWriteEnable $end
+$var wire 1 ] clk $end
+$var wire 8 d externalAddressBusHighOutput [7:0] $end
+$var wire 8 e externalAddressBusLowOutput [7:0] $end
+$var wire 8 f externalDBRead [7:0] $end
+$var wire 8 g externalDBWrite [7:0] $end
+$var wire 101 h flags [100:0] $end
+$var wire 1 ` nrst $end
+$var wire 8 i yRegToSB [7:0] $end
+$var wire 8 j xRegToSB [7:0] $end
+$var wire 8 k stackPointerRegToSB [7:0] $end
+$var wire 8 l stackPointerRegToADL [7:0] $end
+$var wire 8 m stackBusDisconnected [7:0] $end
+$var wire 8 n stackBus [7:0] $end
+$var wire 1 o sbPresetWriteEnable $end
+$var wire 8 p sbPresetOutput [7:0] $end
+$var wire 8 q psrRegToLogicController [7:0] $end
+$var wire 8 r psrRegToDB [7:0] $end
+$var wire 8 s pclRegToPcIncrementer [7:0] $end
+$var wire 8 t pclRegToDB [7:0] $end
+$var wire 8 u pclRegToADL [7:0] $end
+$var wire 8 v pchRegToPcIncrementer [7:0] $end
+$var wire 8 w pchRegToDB [7:0] $end
+$var wire 8 x pchRegToADH [7:0] $end
+$var wire 8 y pcIncrementerToPclReg [7:0] $end
+$var wire 8 z pcIncrementerToPchReg [7:0] $end
+$var wire 8 { dorRegToExternalDB [7:0] $end
+$var wire 1 | dbPresetWriteEnable $end
+$var wire 8 } dbPresetOutput [7:0] $end
+$var wire 8 ~ dataToDB [7:0] $end
+$var wire 8 !" dataToADL [7:0] $end
+$var wire 8 "" dataToADH [7:0] $end
+$var wire 8 #" dataBusDisconnected [7:0] $end
+$var wire 8 $" dataBus [7:0] $end
+$var wire 8 %" aluRegToSB [7:0] $end
+$var wire 8 &" aluRegToADL [7:0] $end
+$var wire 1 '" aluOverflowOut $end
+$var wire 8 (" aluOutput [7:0] $end
+$var wire 1 )" aluCarryOut $end
+$var wire 8 *" adlPresetOutput [7:0] $end
+$var wire 8 +" adlADHIncrementerToPclReg [7:0] $end
+$var wire 8 ," adlADHIncrementerToPchReg [7:0] $end
+$var wire 8 -" adhPresetOutput [7:0] $end
+$var wire 8 ." addressLowBus [7:0] $end
+$var wire 8 /" addressHighBusDisconnected [7:0] $end
+$var wire 8 0" addressHighBus [7:0] $end
+$var wire 8 1" accRegToSB [7:0] $end
+$var wire 8 2" accRegToDB [7:0] $end
+$var wire 8 3" ablRegToExternalADL [7:0] $end
+$var wire 8 4" abhRegToExternalADH [7:0] $end
+$scope module abhRegister $end
+$var wire 1 5" busReadEnable $end
+$var wire 1 ] clk $end
+$var wire 8 6" muxOutput [7:0] $end
+$var wire 1 ` nrst $end
+$var wire 1 7" busSelectEncoded $end
+$var wire 8 8" busOutputs [7:0] $end
+$var wire 8 9" busInputs [7:0] $end
+$var parameter 32 :" BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 ;" DEFAULT_VALUE $end
+$var parameter 64 <" INPUT_BIT_COUNT $end
+$var parameter 32 =" INPUT_COUNT $end
+$var parameter 64 >" OUTPUT_BIT_COUNT $end
+$var parameter 32 ?" OUTPUT_COUNT $end
+$var parameter 32 @" WIDTH $end
+$var reg 8 A" currentState [7:0] $end
+$var reg 8 B" nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 C" i $end
+$upscope $end
+$scope module encoder $end
+$var wire 1 5" select $end
+$var wire 1 7" encodedSelect $end
+$var parameter 32 D" INPUT_COUNT $end
+$var parameter 32 E" OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 1 F" temp $end
+$var parameter 2 G" i $end
+$scope begin genblk1[0] $end
+$var parameter 2 H" j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module ablRegister $end
+$var wire 1 I" busReadEnable $end
+$var wire 1 ] clk $end
+$var wire 8 J" muxOutput [7:0] $end
+$var wire 1 ` nrst $end
+$var wire 1 K" busSelectEncoded $end
+$var wire 8 L" busOutputs [7:0] $end
+$var wire 8 M" busInputs [7:0] $end
+$var parameter 32 N" BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 O" DEFAULT_VALUE $end
+$var parameter 64 P" INPUT_BIT_COUNT $end
+$var parameter 32 Q" INPUT_COUNT $end
+$var parameter 64 R" OUTPUT_BIT_COUNT $end
+$var parameter 32 S" OUTPUT_COUNT $end
+$var parameter 32 T" WIDTH $end
+$var reg 8 U" currentState [7:0] $end
+$var reg 8 V" nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 W" i $end
+$upscope $end
+$scope module encoder $end
+$var wire 1 I" select $end
+$var wire 1 K" encodedSelect $end
+$var parameter 32 X" INPUT_COUNT $end
+$var parameter 32 Y" OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 1 Z" temp $end
+$var parameter 2 [" i $end
+$scope begin genblk1[0] $end
+$var parameter 2 \" j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module accumulatorRegister $end
+$var wire 1 ]" busReadEnable $end
+$var wire 1 ] clk $end
+$var wire 8 ^" muxOutput [7:0] $end
+$var wire 1 ` nrst $end
+$var wire 1 _" busSelectEncoded $end
+$var wire 16 `" busOutputs [15:0] $end
+$var wire 8 a" busInputs [7:0] $end
+$var parameter 32 b" BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 c" DEFAULT_VALUE $end
+$var parameter 64 d" INPUT_BIT_COUNT $end
+$var parameter 32 e" INPUT_COUNT $end
+$var parameter 64 f" OUTPUT_BIT_COUNT $end
+$var parameter 32 g" OUTPUT_COUNT $end
+$var parameter 32 h" WIDTH $end
+$var reg 8 i" currentState [7:0] $end
+$var reg 8 j" nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 k" i $end
+$upscope $end
+$scope module encoder $end
+$var wire 1 ]" select $end
+$var wire 1 _" encodedSelect $end
+$var parameter 32 l" INPUT_COUNT $end
+$var parameter 32 m" OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 1 n" temp $end
+$var parameter 2 o" i $end
+$scope begin genblk1[0] $end
+$var parameter 2 p" j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module addressHighBusModule $end
+$var wire 24 q" busInputs [23:0] $end
+$var wire 8 r" busOutput [7:0] $end
+$var wire 3 s" busSelect [2:0] $end
+$var wire 2 t" busSelectEncoded [1:0] $end
+$var parameter 32 u" BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 v" INPUT_COUNT $end
+$var parameter 32 w" WIDTH $end
+$scope begin genblk1[0] $end
+$var parameter 2 x" i $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 y" i $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 z" i $end
+$upscope $end
+$scope module encoder $end
+$var wire 3 {" select [2:0] $end
+$var wire 2 |" encodedSelect [1:0] $end
+$var parameter 32 }" INPUT_COUNT $end
+$var parameter 32 ~" OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 3 !# temp [2:0] $end
+$var parameter 2 "# i $end
+$scope begin genblk1[0] $end
+$var parameter 2 ## j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 $# j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 %# j $end
+$upscope $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var wire 3 &# temp [2:0] $end
+$var parameter 2 '# i $end
+$scope begin genblk1[0] $end
+$var parameter 2 (# j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 )# j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 *# j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module addressLowBusModule $end
+$var wire 40 +# busInputs [39:0] $end
+$var wire 8 ,# busOutput [7:0] $end
+$var wire 5 -# busSelect [4:0] $end
+$var wire 3 .# busSelectEncoded [2:0] $end
+$var parameter 32 /# BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 0# INPUT_COUNT $end
+$var parameter 32 1# WIDTH $end
+$scope begin genblk1[0] $end
+$var parameter 2 2# i $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 3# i $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 4# i $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 5# i $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 6# i $end
+$upscope $end
+$scope module encoder $end
+$var wire 5 7# select [4:0] $end
+$var wire 3 8# encodedSelect [2:0] $end
+$var parameter 32 9# INPUT_COUNT $end
+$var parameter 32 :# OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 5 ;# temp [4:0] $end
+$var parameter 2 <# i $end
+$scope begin genblk1[0] $end
+$var parameter 2 =# j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 ># j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 ?# j $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 @# j $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 A# j $end
+$upscope $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var wire 5 B# temp [4:0] $end
+$var parameter 2 C# i $end
+$scope begin genblk1[0] $end
+$var parameter 2 D# j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 E# j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 F# j $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 G# j $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 H# j $end
+$upscope $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var wire 5 I# temp [4:0] $end
+$var parameter 3 J# i $end
+$scope begin genblk1[0] $end
+$var parameter 2 K# j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 L# j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 M# j $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 N# j $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 O# j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module adhPreset $end
+$var wire 1 P# set_00 $end
+$var wire 1 Q# set_01 $end
+$var wire 1 R# set_FA $end
+$var wire 1 S# set_FB $end
+$var wire 1 T# set_FC $end
+$var wire 1 U# set_FD $end
+$var wire 1 V# set_FE $end
+$var wire 1 W# set_FF $end
+$var reg 8 X# bus_out [7:0] $end
+$upscope $end
+$scope module adlADHIncrementor $end
+$var wire 1 Y# decrement $end
+$var wire 1 Z# increment $end
+$var wire 8 [# input_lowbyte [7:0] $end
+$var wire 8 \# input_highbyte [7:0] $end
+$var wire 8 ]# address [7:0] $end
+$var reg 8 ^# output_highbyte [7:0] $end
+$var reg 8 _# output_lowbyte [7:0] $end
+$upscope $end
+$scope module adlPreset $end
+$var wire 1 `# set_00 $end
+$var wire 1 a# set_01 $end
+$var wire 1 b# set_FA $end
+$var wire 1 c# set_FB $end
+$var wire 1 d# set_FC $end
+$var wire 1 e# set_FD $end
+$var wire 1 f# set_FE $end
+$var wire 1 g# set_FF $end
+$var reg 8 h# bus_out [7:0] $end
+$upscope $end
+$scope module alu $end
+$var wire 8 i# ADL_input [7:0] $end
+$var wire 1 j# carry_in $end
+$var wire 1 k# e_and $end
+$var wire 1 l# e_eor $end
+$var wire 1 m# e_or $end
+$var wire 1 n# e_shiftr $end
+$var wire 1 o# e_sum $end
+$var wire 1 p# enable_dec $end
+$var wire 1 q# lda_sb $end
+$var wire 1 r# lda_zero $end
+$var wire 1 s# ldb_adl $end
+$var wire 1 t# ldb_db $end
+$var wire 1 u# ldb_inv_db $end
+$var wire 1 '" overflow $end
+$var wire 1 v# sum_carry_out $end
+$var wire 8 w# sum [7:0] $end
+$var wire 8 x# SB_input [7:0] $end
+$var wire 8 y# DB_input [7:0] $end
+$var reg 8 z# a [7:0] $end
+$var reg 8 {# alu_out [7:0] $end
+$var reg 8 |# b [7:0] $end
+$var reg 8 }# bcd_buffer [7:0] $end
+$var reg 1 )" carry_out $end
+$var reg 4 ~# hi_nib [3:0] $end
+$var reg 4 !$ lo_nib [3:0] $end
+$var reg 7 "$ rot_buffer [6:0] $end
+$upscope $end
+$scope module aluRegister $end
+$var wire 8 #$ busInputs [7:0] $end
+$var wire 1 $$ busReadEnable $end
+$var wire 1 ] clk $end
+$var wire 8 %$ muxOutput [7:0] $end
+$var wire 1 ` nrst $end
+$var wire 1 &$ busSelectEncoded $end
+$var wire 16 '$ busOutputs [15:0] $end
+$var parameter 32 ($ BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 )$ DEFAULT_VALUE $end
+$var parameter 64 *$ INPUT_BIT_COUNT $end
+$var parameter 32 +$ INPUT_COUNT $end
+$var parameter 64 ,$ OUTPUT_BIT_COUNT $end
+$var parameter 32 -$ OUTPUT_COUNT $end
+$var parameter 32 .$ WIDTH $end
+$var reg 8 /$ currentState [7:0] $end
+$var reg 8 0$ nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 1$ i $end
+$upscope $end
+$scope module encoder $end
+$var wire 1 $$ select $end
+$var wire 1 &$ encodedSelect $end
+$var parameter 32 2$ INPUT_COUNT $end
+$var parameter 32 3$ OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 1 4$ temp $end
+$var parameter 2 5$ i $end
+$scope begin genblk1[0] $end
+$var parameter 2 6$ j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module bridge $end
+$var wire 8 7$ bus3Input [7:0] $end
+$var wire 1 8$ open1To2 $end
+$var wire 1 9$ open2To1 $end
+$var wire 1 :$ open2To3 $end
+$var wire 1 ;$ open3To2 $end
+$var wire 8 <$ bus2Input [7:0] $end
+$var wire 8 =$ bus1Input [7:0] $end
+$var reg 8 >$ bus1Output [7:0] $end
+$var reg 8 ?$ bus2Output [7:0] $end
+$var reg 8 @$ bus3Output [7:0] $end
+$upscope $end
+$scope module dataBusModule $end
+$var wire 48 A$ busInputs [47:0] $end
+$var wire 8 B$ busOutput [7:0] $end
+$var wire 6 C$ busSelect [5:0] $end
+$var wire 3 D$ busSelectEncoded [2:0] $end
+$var parameter 32 E$ BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 F$ INPUT_COUNT $end
+$var parameter 32 G$ WIDTH $end
+$scope begin genblk1[0] $end
+$var parameter 2 H$ i $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 I$ i $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 J$ i $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 K$ i $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 L$ i $end
+$upscope $end
+$scope begin genblk1[5] $end
+$var parameter 4 M$ i $end
+$upscope $end
+$scope module encoder $end
+$var wire 6 N$ select [5:0] $end
+$var wire 3 O$ encodedSelect [2:0] $end
+$var parameter 32 P$ INPUT_COUNT $end
+$var parameter 32 Q$ OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 6 R$ temp [5:0] $end
+$var parameter 2 S$ i $end
+$scope begin genblk1[0] $end
+$var parameter 2 T$ j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 U$ j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 V$ j $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 W$ j $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 X$ j $end
+$upscope $end
+$scope begin genblk1[5] $end
+$var parameter 4 Y$ j $end
+$upscope $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var wire 6 Z$ temp [5:0] $end
+$var parameter 2 [$ i $end
+$scope begin genblk1[0] $end
+$var parameter 2 \$ j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 ]$ j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 ^$ j $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 _$ j $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 `$ j $end
+$upscope $end
+$scope begin genblk1[5] $end
+$var parameter 4 a$ j $end
+$upscope $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var wire 6 b$ temp [5:0] $end
+$var parameter 3 c$ i $end
+$scope begin genblk1[0] $end
+$var parameter 2 d$ j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 e$ j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 f$ j $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 g$ j $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 h$ j $end
+$upscope $end
+$scope begin genblk1[5] $end
+$var parameter 4 i$ j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module dbPreset $end
+$var wire 1 j$ set_00 $end
+$var wire 1 k$ set_01 $end
+$var wire 1 l$ set_FA $end
+$var wire 1 m$ set_FB $end
+$var wire 1 n$ set_FC $end
+$var wire 1 o$ set_FD $end
+$var wire 1 p$ set_FE $end
+$var wire 1 q$ set_FF $end
+$var reg 8 r$ bus_out [7:0] $end
+$upscope $end
+$scope module dorRegister $end
+$var wire 8 s$ busInputs [7:0] $end
+$var wire 1 t$ busReadEnable $end
+$var wire 1 ] clk $end
+$var wire 8 u$ muxOutput [7:0] $end
+$var wire 1 ` nrst $end
+$var wire 1 v$ busSelectEncoded $end
+$var wire 8 w$ busOutputs [7:0] $end
+$var parameter 32 x$ BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 y$ DEFAULT_VALUE $end
+$var parameter 64 z$ INPUT_BIT_COUNT $end
+$var parameter 32 {$ INPUT_COUNT $end
+$var parameter 64 |$ OUTPUT_BIT_COUNT $end
+$var parameter 32 }$ OUTPUT_COUNT $end
+$var parameter 32 ~$ WIDTH $end
+$var reg 8 !% currentState [7:0] $end
+$var reg 8 "% nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 #% i $end
+$upscope $end
+$scope module encoder $end
+$var wire 1 t$ select $end
+$var wire 1 v$ encodedSelect $end
+$var parameter 32 $% INPUT_COUNT $end
+$var parameter 32 %% OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 1 &% temp $end
+$var parameter 2 '% i $end
+$scope begin genblk1[0] $end
+$var parameter 2 (% j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module externalDBToADH $end
+$var wire 1 )% enable $end
+$var wire 8 *% interfaceInput [7:0] $end
+$var reg 8 +% interfaceOutput [7:0] $end
+$upscope $end
+$scope module externalDBToADL $end
+$var wire 1 ,% enable $end
+$var wire 8 -% interfaceInput [7:0] $end
+$var reg 8 .% interfaceOutput [7:0] $end
+$upscope $end
+$scope module externalDBToDB $end
+$var wire 1 /% enable $end
+$var wire 8 0% interfaceInput [7:0] $end
+$var reg 8 1% interfaceOutput [7:0] $end
+$upscope $end
+$scope module pcIncrementor $end
+$var wire 1 2% decrement $end
+$var wire 1 3% increment $end
+$var wire 8 4% input_highbyte [7:0] $end
+$var wire 8 5% input_lowbyte [7:0] $end
+$var wire 8 6% address [7:0] $end
+$var reg 8 7% output_highbyte [7:0] $end
+$var reg 8 8% output_lowbyte [7:0] $end
+$upscope $end
+$scope module pchRegister $end
+$var wire 16 9% busInputs [15:0] $end
+$var wire 2 :% busReadEnable [1:0] $end
+$var wire 1 ] clk $end
+$var wire 8 ;% muxOutput [7:0] $end
+$var wire 1 ` nrst $end
+$var wire 1 <% busSelectEncoded $end
+$var wire 24 =% busOutputs [23:0] $end
+$var parameter 32 >% BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 ?% DEFAULT_VALUE $end
+$var parameter 64 @% INPUT_BIT_COUNT $end
+$var parameter 32 A% INPUT_COUNT $end
+$var parameter 64 B% OUTPUT_BIT_COUNT $end
+$var parameter 32 C% OUTPUT_COUNT $end
+$var parameter 32 D% WIDTH $end
+$var reg 8 E% currentState [7:0] $end
+$var reg 8 F% nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 G% i $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 H% i $end
+$upscope $end
+$scope module encoder $end
+$var wire 2 I% select [1:0] $end
+$var wire 1 <% encodedSelect $end
+$var parameter 32 J% INPUT_COUNT $end
+$var parameter 32 K% OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 2 L% temp [1:0] $end
+$var parameter 2 M% i $end
+$scope begin genblk1[0] $end
+$var parameter 2 N% j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 O% j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module pclRegister $end
+$var wire 16 P% busInputs [15:0] $end
+$var wire 2 Q% busReadEnable [1:0] $end
+$var wire 1 ] clk $end
+$var wire 8 R% muxOutput [7:0] $end
+$var wire 1 ` nrst $end
+$var wire 1 S% busSelectEncoded $end
+$var wire 24 T% busOutputs [23:0] $end
+$var parameter 32 U% BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 V% DEFAULT_VALUE $end
+$var parameter 64 W% INPUT_BIT_COUNT $end
+$var parameter 32 X% INPUT_COUNT $end
+$var parameter 64 Y% OUTPUT_BIT_COUNT $end
+$var parameter 32 Z% OUTPUT_COUNT $end
+$var parameter 32 [% WIDTH $end
+$var reg 8 \% currentState [7:0] $end
+$var reg 8 ]% nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 ^% i $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 _% i $end
+$upscope $end
+$scope module encoder $end
+$var wire 2 `% select [1:0] $end
+$var wire 1 S% encodedSelect $end
+$var parameter 32 a% INPUT_COUNT $end
+$var parameter 32 b% OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 2 c% temp [1:0] $end
+$var parameter 2 d% i $end
+$scope begin genblk1[0] $end
+$var parameter 2 e% j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 f% j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module psr $end
+$var wire 1 g% DB0_C $end
+$var wire 1 h% DB1_Z $end
+$var wire 1 i% DB2_I $end
+$var wire 1 j% DB3_D $end
+$var wire 1 k% DB6_V $end
+$var wire 1 l% DB7_N $end
+$var wire 8 m% DB_in [7:0] $end
+$var wire 1 n% DBall_Z $end
+$var wire 8 o% PSR_RCL [7:0] $end
+$var wire 1 p% break_set $end
+$var wire 1 )" carry $end
+$var wire 1 q% carry_C $end
+$var wire 1 ] clk $end
+$var wire 1 r% enableDBWrite $end
+$var wire 1 s% manual_C $end
+$var wire 1 t% manual_D $end
+$var wire 1 u% manual_I $end
+$var wire 1 v% manual_set $end
+$var wire 1 ` nrst $end
+$var wire 1 '" overflow $end
+$var wire 1 w% overflow_V $end
+$var wire 1 x% rcl_V $end
+$var wire 8 y% internalFFOutput [7:0] $end
+$var wire 8 z% internalFFInput [7:0] $end
+$var wire 8 {% PSR_DB [7:0] $end
+$scope module inputInterface $end
+$var wire 1 |% enable $end
+$var wire 8 }% interfaceInput [7:0] $end
+$var reg 8 ~% interfaceOutput [7:0] $end
+$upscope $end
+$scope module outputInterface $end
+$var wire 1 r% enable $end
+$var wire 8 !& interfaceInput [7:0] $end
+$var reg 8 "& interfaceOutput [7:0] $end
+$upscope $end
+$scope module processStatusReg $end
+$var wire 1 g% DB0_C $end
+$var wire 1 h% DB1_Z $end
+$var wire 1 i% DB2_I $end
+$var wire 1 j% DB3_D $end
+$var wire 1 k% DB6_V $end
+$var wire 1 l% DB7_N $end
+$var wire 8 #& DB_in [7:0] $end
+$var wire 1 n% DBall_Z $end
+$var wire 1 p% break_set $end
+$var wire 1 )" carry $end
+$var wire 1 q% carry_C $end
+$var wire 1 ] clk $end
+$var wire 1 s% manual_C $end
+$var wire 1 t% manual_D $end
+$var wire 1 u% manual_I $end
+$var wire 1 v% manual_set $end
+$var wire 1 ` nrst $end
+$var wire 1 '" overflow $end
+$var wire 1 w% overflow_V $end
+$var wire 1 x% rcl_V $end
+$var wire 8 $& stat_buf_nxt [7:0] $end
+$var wire 8 %& PSR_Output [7:0] $end
+$var reg 8 && status_buffer [7:0] $end
+$upscope $end
+$upscope $end
+$scope module sbPreset $end
+$var wire 1 '& set_00 $end
+$var wire 1 (& set_01 $end
+$var wire 1 )& set_FA $end
+$var wire 1 *& set_FB $end
+$var wire 1 +& set_FC $end
+$var wire 1 ,& set_FD $end
+$var wire 1 -& set_FE $end
+$var wire 1 .& set_FF $end
+$var reg 8 /& bus_out [7:0] $end
+$upscope $end
+$scope module stackBusModule $end
+$var wire 48 0& busInputs [47:0] $end
+$var wire 8 1& busOutput [7:0] $end
+$var wire 6 2& busSelect [5:0] $end
+$var wire 3 3& busSelectEncoded [2:0] $end
+$var parameter 32 4& BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 5& INPUT_COUNT $end
+$var parameter 32 6& WIDTH $end
+$scope begin genblk1[0] $end
+$var parameter 2 7& i $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 8& i $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 9& i $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 :& i $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 ;& i $end
+$upscope $end
+$scope begin genblk1[5] $end
+$var parameter 4 <& i $end
+$upscope $end
+$scope module encoder $end
+$var wire 6 =& select [5:0] $end
+$var wire 3 >& encodedSelect [2:0] $end
+$var parameter 32 ?& INPUT_COUNT $end
+$var parameter 32 @& OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 6 A& temp [5:0] $end
+$var parameter 2 B& i $end
+$scope begin genblk1[0] $end
+$var parameter 2 C& j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 D& j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 E& j $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 F& j $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 G& j $end
+$upscope $end
+$scope begin genblk1[5] $end
+$var parameter 4 H& j $end
+$upscope $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var wire 6 I& temp [5:0] $end
+$var parameter 2 J& i $end
+$scope begin genblk1[0] $end
+$var parameter 2 K& j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 L& j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 M& j $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 N& j $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 O& j $end
+$upscope $end
+$scope begin genblk1[5] $end
+$var parameter 4 P& j $end
+$upscope $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var wire 6 Q& temp [5:0] $end
+$var parameter 3 R& i $end
+$scope begin genblk1[0] $end
+$var parameter 2 S& j $end
+$upscope $end
+$scope begin genblk1[1] $end
+$var parameter 2 T& j $end
+$upscope $end
+$scope begin genblk1[2] $end
+$var parameter 3 U& j $end
+$upscope $end
+$scope begin genblk1[3] $end
+$var parameter 3 V& j $end
+$upscope $end
+$scope begin genblk1[4] $end
+$var parameter 4 W& j $end
+$upscope $end
+$scope begin genblk1[5] $end
+$var parameter 4 X& j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module stackPointerRegister $end
+$var wire 8 Y& busInputs [7:0] $end
+$var wire 1 Z& busReadEnable $end
+$var wire 1 ] clk $end
+$var wire 8 [& muxOutput [7:0] $end
+$var wire 1 ` nrst $end
+$var wire 1 \& busSelectEncoded $end
+$var wire 16 ]& busOutputs [15:0] $end
+$var parameter 32 ^& BUS_SELECT_ENCODED_SIZE $end
+$var parameter 32 _& DEFAULT_VALUE $end
+$var parameter 64 `& INPUT_BIT_COUNT $end
+$var parameter 32 a& INPUT_COUNT $end
+$var parameter 64 b& OUTPUT_BIT_COUNT $end
+$var parameter 32 c& OUTPUT_COUNT $end
+$var parameter 32 d& WIDTH $end
+$var reg 8 e& currentState [7:0] $end
+$var reg 8 f& nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 g& i $end
+$upscope $end
+$scope module encoder $end
+$var wire 1 Z& select $end
+$var wire 1 \& encodedSelect $end
+$var parameter 32 h& INPUT_COUNT $end
+$var parameter 32 i& OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 1 j& temp $end
+$var parameter 2 k& i $end
+$scope begin genblk1[0] $end
+$var parameter 2 l& j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module xRegister $end
+$var wire 8 m& busInputs [7:0] $end
+$var wire 1 n& busReadEnable $end
+$var wire 1 ] clk $end
+$var wire 8 o& muxOutput [7:0] $end
+$var wire 1 ` nrst $end
+$var wire 1 p& busSelectEncoded $end
+$var wire 8 q& busOutputs [7:0] $end
+$var parameter 32 r& BUS_SELECT_ENCODED_SIZE $end
+$var parameter 8 s& DEFAULT_VALUE $end
+$var parameter 64 t& INPUT_BIT_COUNT $end
+$var parameter 32 u& INPUT_COUNT $end
+$var parameter 64 v& OUTPUT_BIT_COUNT $end
+$var parameter 32 w& OUTPUT_COUNT $end
+$var parameter 32 x& WIDTH $end
+$var reg 8 y& currentState [7:0] $end
+$var reg 8 z& nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 {& i $end
+$upscope $end
+$scope module encoder $end
+$var wire 1 n& select $end
+$var wire 1 p& encodedSelect $end
+$var parameter 32 |& INPUT_COUNT $end
+$var parameter 32 }& OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 1 ~& temp $end
+$var parameter 2 !' i $end
+$scope begin genblk1[0] $end
+$var parameter 2 "' j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module yRegister $end
+$var wire 8 #' busInputs [7:0] $end
+$var wire 1 $' busReadEnable $end
+$var wire 1 ] clk $end
+$var wire 8 %' muxOutput [7:0] $end
+$var wire 1 ` nrst $end
+$var wire 1 &' busSelectEncoded $end
+$var wire 8 '' busOutputs [7:0] $end
+$var parameter 32 (' BUS_SELECT_ENCODED_SIZE $end
+$var parameter 8 )' DEFAULT_VALUE $end
+$var parameter 64 *' INPUT_BIT_COUNT $end
+$var parameter 32 +' INPUT_COUNT $end
+$var parameter 64 ,' OUTPUT_BIT_COUNT $end
+$var parameter 32 -' OUTPUT_COUNT $end
+$var parameter 32 .' WIDTH $end
+$var reg 8 /' currentState [7:0] $end
+$var reg 8 0' nextState [7:0] $end
+$scope begin genblk1[0] $end
+$var parameter 2 1' i $end
+$upscope $end
+$scope module encoder $end
+$var wire 1 $' select $end
+$var wire 1 &' encodedSelect $end
+$var parameter 32 2' INPUT_COUNT $end
+$var parameter 32 3' OUTPUT_SIZE $end
+$scope begin genblk1[0] $end
+$var wire 1 4' temp $end
+$var parameter 2 5' i $end
+$scope begin genblk1[0] $end
+$var parameter 2 6' j $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope task reset_dut $end
+$upscope $end
+$scope task reset_flags $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b0 6'
+b0 5'
+b1 3'
+b1 2'
+b0 1'
+b1000 .'
+b1 -'
+b1000 ,'
+b1 +'
+b1000 *'
+b0 )'
+b1 ('
+b0 "'
+b0 !'
+b1 }&
+b1 |&
+b0 {&
+b1000 x&
+b1 w&
+b1000 v&
+b1 u&
+b1000 t&
+b0 s&
+b1 r&
+b0 l&
+b0 k&
+b1 i&
+b1 h&
+b0 g&
+b1000 d&
+b10 c&
+b10000 b&
+b1 a&
+b1000 `&
+b0 _&
+b1 ^&
+b101 X&
+b100 W&
+b11 V&
+b10 U&
+b1 T&
+b0 S&
+b10 R&
+b101 P&
+b100 O&
+b11 N&
+b10 M&
+b1 L&
+b0 K&
+b1 J&
+b101 H&
+b100 G&
+b11 F&
+b10 E&
+b1 D&
+b0 C&
+b0 B&
+b11 @&
+b110 ?&
+b101 <&
+b100 ;&
+b11 :&
+b10 9&
+b1 8&
+b0 7&
+b1000 6&
+b110 5&
+b11 4&
+b1 f%
+b0 e%
+b0 d%
+b1 b%
+b10 a%
+b1 _%
+b0 ^%
+b1000 [%
+b11 Z%
+b11000 Y%
+b10 X%
+b10000 W%
+b0 V%
+b1 U%
+b1 O%
+b0 N%
+b0 M%
+b1 K%
+b10 J%
+b1 H%
+b0 G%
+b1000 D%
+b11 C%
+b11000 B%
+b10 A%
+b10000 @%
+b0 ?%
+b1 >%
+b0 (%
+b0 '%
+b1 %%
+b1 $%
+b0 #%
+b1000 ~$
+b1 }$
+b1000 |$
+b1 {$
+b1000 z$
+b0 y$
+b1 x$
+b101 i$
+b100 h$
+b11 g$
+b10 f$
+b1 e$
+b0 d$
+b10 c$
+b101 a$
+b100 `$
+b11 _$
+b10 ^$
+b1 ]$
+b0 \$
+b1 [$
+b101 Y$
+b100 X$
+b11 W$
+b10 V$
+b1 U$
+b0 T$
+b0 S$
+b11 Q$
+b110 P$
+b101 M$
+b100 L$
+b11 K$
+b10 J$
+b1 I$
+b0 H$
+b1000 G$
+b110 F$
+b11 E$
+b0 6$
+b0 5$
+b1 3$
+b1 2$
+b0 1$
+b1000 .$
+b10 -$
+b10000 ,$
+b1 +$
+b1000 *$
+b0 )$
+b1 ($
+b100 O#
+b11 N#
+b10 M#
+b1 L#
+b0 K#
+b10 J#
+b100 H#
+b11 G#
+b10 F#
+b1 E#
+b0 D#
+b1 C#
+b100 A#
+b11 @#
+b10 ?#
+b1 >#
+b0 =#
+b0 <#
+b11 :#
+b101 9#
+b100 6#
+b11 5#
+b10 4#
+b1 3#
+b0 2#
+b1000 1#
+b101 0#
+b11 /#
+b10 *#
+b1 )#
+b0 (#
+b1 '#
+b10 %#
+b1 $#
+b0 ##
+b0 "#
+b10 ~"
+b11 }"
+b10 z"
+b1 y"
+b0 x"
+b1000 w"
+b11 v"
+b10 u"
+b0 p"
+b0 o"
+b1 m"
+b1 l"
+b0 k"
+b1000 h"
+b10 g"
+b10000 f"
+b1 e"
+b1000 d"
+b0 c"
+b1 b"
+b0 \"
+b0 ["
+b1 Y"
+b1 X"
+b0 W"
+b1000 T"
+b1 S"
+b1000 R"
+b1 Q"
+b1000 P"
+b0 O"
+b1 N"
+b0 H"
+b0 G"
+b1 E"
+b1 D"
+b0 C"
+b1000 @"
+b1 ?"
+b1000 >"
+b1 ="
+b1000 <"
+b0 ;"
+b1 :"
+b10 \
+b0 H
+b0 G
+b1 E
+b1 D
+b0 C
+b1000 @
+b1 ?
+b1000 >
+b1 =
+b1000 <
+b0 ;
+b1 :
+$end
+#0
+$dumpvars
+04'
+b0 0'
+b0 /'
+b0 ''
+0&'
+b0 %'
+0$'
+b0 #'
+0~&
+b0 z&
+b0 y&
+b0 q&
+0p&
+b0 o&
+0n&
+b0 m&
+0j&
+b0 f&
+b0 e&
+b0 ]&
+0\&
+b0 [&
+0Z&
+b0 Y&
+b0 Q&
+b0 I&
+b0 A&
+b0 >&
+b0 =&
+b0 3&
+b0 2&
+b0 1&
+b0 0&
+b0 /&
+0.&
+0-&
+0,&
+0+&
+0*&
+0)&
+0(&
+0'&
+b0 &&
+b0 %&
+b0zz0000 $&
+b0 #&
+b0 "&
+b0 !&
+b0 ~%
+b0 }%
+1|%
+b0 {%
+b0 z%
+b0 y%
+0x%
+0w%
+0v%
+0u%
+0t%
+0s%
+0r%
+0q%
+0p%
+b0 o%
+0n%
+b0 m%
+0l%
+0k%
+0j%
+0i%
+0h%
+0g%
+b10 c%
+b10 `%
+bx ]%
+b0 \%
+b0 T%
+1S%
+bx R%
+b10 Q%
+bx P%
+b10 L%
+b10 I%
+bx F%
+b0 E%
+b0 =%
+1<%
+bx ;%
+b10 :%
+bx 9%
+bx 8%
+bx 7%
+b0 6%
+b0 5%
+b0 4%
+03%
+02%
+b0 1%
+bx 0%
+0/%
+b0 .%
+bx -%
+0,%
+b0 +%
+bx *%
+0)%
+0&%
+b0 "%
+b0 !%
+b0 w$
+0v$
+b0 u$
+0t$
+b0 s$
+b0 r$
+0q$
+0p$
+0o$
+0n$
+0m$
+0l$
+0k$
+0j$
+b0 b$
+b0 Z$
+b0 R$
+b0 O$
+b0 N$
+b0 D$
+b0 C$
+b0 B$
+b0xxxxxxxx00000000 A$
+b0 @$
+b0 ?$
+b0 >$
+b0 =$
+b0 <$
+0;$
+0:$
+09$
+08$
+b0 7$
+04$
+b0 0$
+b0 /$
+b0 '$
+0&$
+b0 %$
+0$$
+b0 #$
+b0 "$
+b0 !$
+b0 ~#
+b0 }#
+b0 |#
+b0 {#
+b0 z#
+b0 y#
+b0 x#
+b0 w#
+0v#
+0u#
+0t#
+0s#
+0r#
+0q#
+0p#
+0o#
+0n#
+0m#
+0l#
+0k#
+0j#
+b0 i#
+b0 h#
+0g#
+0f#
+0e#
+0d#
+0c#
+0b#
+0a#
+0`#
+bx _#
+bx ^#
+b0 ]#
+b0 \#
+b0 [#
+0Z#
+0Y#
+b0 X#
+0W#
+0V#
+0U#
+0T#
+0S#
+0R#
+0Q#
+0P#
+b0 I#
+b0 B#
+b0 ;#
+b0 8#
+b0 7#
+b0 .#
+b0 -#
+b0 ,#
+b0xxxxxxxx00000000 +#
+b0 &#
+b0 !#
+b0 |"
+b0 {"
+b0 t"
+b0 s"
+b0 r"
+b0xxxxxxxx00000000 q"
+0n"
+b0 j"
+b0 i"
+b0 a"
+b0 `"
+0_"
+b0 ^"
+0]"
+0Z"
+b0 V"
+b0 U"
+b0 M"
+b0 L"
+0K"
+b0 J"
+0I"
+0F"
+b0 B"
+b0 A"
+b0 9"
+b0 8"
+07"
+b0 6"
+05"
+b0 4"
+b0 3"
+b0 2"
+b0 1"
+b0 0"
+b0 /"
+b0 ."
+b0 -"
+bx ,"
+bx +"
+b0 *"
+0)"
+b0 ("
+0'"
+b0 &"
+b0 %"
+b0 $"
+b0 #"
+b0 ""
+b0 !"
+b0 ~
+b0 }
+0|
+b0 {
+bx z
+bx y
+b0 x
+b0 w
+b0 v
+b0 u
+b0 t
+b0 s
+b0 r
+b0 q
+b0 p
+0o
+b0 n
+b0 m
+b0 l
+b0 k
+b0 j
+b0 i
+b0 h
+b0 g
+bx f
+b0 e
+b0 d
+0c
+0b
+b101001001100101011100110110010101110100 a
+0`
+b0 _
+bx ^
+0]
+b0 [
+b0 Z
+b0 Y
+xX
+xW
+0V
+xU
+xT
+xS
+zR
+xQ
+xP
+xO
+xN
+xM
+zL
+xK
+xJ
+xI
+0F
+bx B
+bx A
+bx 9
+08
+bz 7
+bz 6
+bz 5
+z4
+bx 3
+x2
+x1
+x0
+x/
+x.
+z-
+z,
+z+
+z*
+z)
+bz (
+x'
+z&
+x%
+x$
+z#
+z"
+z!
+$end
+#100
+1]
+#200
+0]
+#300
+1]
+#400
+1`
+0]
+#500
+bx 6%
+bx s
+bx 5%
+bx t
+b0xxxxxxxxxxxxxxxx00000000 +#
+bx u
+bx v
+bx 4%
+b0xxxxxxxxxxxxxxxx00000000xxxxxxxx00000000 A$
+bx w
+bx00000000 q"
+bx x
+b0zz0000 &&
+bx T%
+bx \%
+bx =%
+bx E%
+1]
+#600
+0]
+#700
+1]
+#800
+0]
+#810
+b10011000110111101100001011001000010000001011000001000000101001001100101011001110110100101110011011101000110010101110010001000000110000101101110011001000010000001000001010000100100100000100000010100100110010101100111 a
+#900
+1]
+#1000
+b10101010 z&
+b10101010 B"
+b10101010 [&
+b10101010 o&
+b10101010 %'
+b10101010 ^"
+b10101010 n
+b10101010 a"
+b10101010 x#
+b10101010 ?$
+b10101010 Y&
+b10101010 m&
+b10101010 #'
+b10101010 ]#
+b10101010 J"
+b10101010 6"
+b10101010 0"
+b10101010 9"
+b10101010 M"
+b10101010 [#
+b10101010 \#
+b10101010 @$
+b10101010 /"
+b10101010 r"
+b10101010 7$
+b1 t"
+b1 |"
+b10 !#
+b10101010 ""
+b10101010 +%
+1n&
+1;$
+15"
+b10 s"
+b10 {"
+1)%
+b10011000110111101100001011001000010000001000001011000110110001100100000010100100110010101100111011010010111001101110100011001010111001000100000011000010110111001100100001000000110001101101100011001010110000101110010001000000100010001000010 a
+b0xxxxxxxxxxxxxxxx000000001010101000000000 A$
+b0xxxxxxxx1010101000000000 +#
+bx1010101000000000 q"
+b10101010 ^
+b10101010 f
+b10101010 *%
+b10101010 -%
+b10101010 0%
+b1000000000000000000000000000000000000000000000001001000000000000000001000 _
+b1000000000000000000000000000000000000000000000001001000000000000000001000 h
+0]
+#1100
+b101010100000000000000000000000000000000000000000 0&
+b10101010 j
+b10101010 q&
+b10101010 y&
+b10101010 [
+b10101010 d
+b10101010 4"
+b10101010 8"
+b10101010 A"
+1]
+#1200
+b10101010 j"
+b10101010 m
+b10101010 <$
+b10101010 1&
+b100000 A&
+b101 3&
+b101 >&
+b100000 Q&
+b0 t"
+b0 |"
+b0 !#
+b0 ]#
+b0 J"
+b0 6"
+b0 0"
+b0 9"
+b0 M"
+b0 [#
+b0 \#
+b0 @$
+b10101010 [&
+b10101010 o&
+b10101010 %'
+b10101010 ^"
+b10101010 n
+b10101010 a"
+b10101010 x#
+b10101010 ?$
+b10101010 Y&
+b10101010 m&
+b10101010 #'
+1]"
+b100000 2&
+b100000 =&
+b0 /"
+b0 r"
+b0 7$
+b0 ""
+b0 +%
+0;$
+b0 s"
+b0 {"
+0n&
+05"
+0)%
+b100110001101111011000010110010000100000010001000100111101010010001000000110011001110010011011110110110100100000010000010100001101000011 a
+b0xxxxxxxxxxxxxxxx000000000000000000000000 A$
+b0xxxxxxxx0000000000000000 +#
+bx0000000000000000 q"
+b0 ^
+b0 f
+b0 *%
+b0 -%
+b0 0%
+b1000000000000100000000000000 _
+b1000000000000100000000000000 h
+0]
+#1300
+b101010100000000000000000000000001010101000000000 0&
+b10101010 1"
+b0xxxxxxxxxxxxxxxx101010100000000000000000 A$
+b10101010 2"
+b1010101010101010 `"
+b10101010 i"
+1]
+#1400
+b10101010 "%
+b10101010 z%
+b10101010 ~%
+b0 [&
+b0 o&
+b0 %'
+b0 ^"
+b0 n
+b0 a"
+b0 x#
+b0 ?$
+b0 Y&
+b0 m&
+b0 #'
+b10101010 u$
+b10101010 $"
+b10101010 y#
+b10101010 >$
+b10101010 s$
+b10101010 m%
+b10101010 }%
+b10101010 #&
+b10101010 #"
+b10101010 =$
+b10101010 B$
+b10 D$
+b10 O$
+b100 Z$
+b0 m
+b0 <$
+b0 1&
+b0 A&
+b0 3&
+b0 >&
+b0 Q&
+1t$
+b100 C$
+b100 N$
+b0 2&
+b0 =&
+0]"
+b10000000001000000000000000000000000000000000 _
+b10000000001000000000000000000000000000000000 h
+0]
+#1500
+b10101010 Y
+b10101010 g
+b10101010 {
+b10101010 w$
+b10101010 !%
+1]
+#1600
+b0 z%
+b0 ~%
+b0 u$
+b0 $"
+b0 y#
+b0 >$
+b0 s$
+b0 m%
+b0 }%
+b0 #&
+b0 #"
+b0 =$
+b0 B$
+b0 D$
+b0 O$
+b0 Z$
+b0 C$
+b0 N$
+0t$
+b0 _
+b0 h
+0]
+#1700
+1]
+#1800
+0]
+#1900
+1]
+#2000

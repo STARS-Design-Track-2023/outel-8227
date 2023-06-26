@@ -1,5 +1,20 @@
 `default_nettype none
 
+
+`include "source/constants.sv"
+
+// `include "source/dataflow/alu.sv"
+// `include "source/dataflow/bridge.sv"
+// `include "source/dataflow/bus_interface.sv"
+// `include "source/dataflow/bus_preset_logic.sv"
+// // `include "source/dataflow/bus2.sv"
+// `include "source/dataflow/internal_bus.sv"
+// `include "source/dataflow/internal_dataflow.sv"
+// `include "source/dataflow/process_status_register_wrapper.sv"
+// `include "source/dataflow/process_status_register.sv"
+// `include "source/dataflow/program_counter_logic.sv"
+// `include "source/dataflow/register.sv"
+
 module top 
 (
   // I/O ports
@@ -16,6 +31,69 @@ module top
   input  logic txready, rxready
 );
 
+  logic [100:0] flags;
+  logic [7:0] psrRegCurrentState;
+  logic nrst;
+  logic synchronizedLoad, edgeDetectLoad;
+  logic synchronizedFinishInterrupt, edgeDetectFinishInterrupt;
+  logic [7:0] externalDBRead;
+  logic setIFlag;
+
+  assign nrst = ~pb[19];
+  assign externalDBRead = 8'b11001010;
+
+  synchronizer loadSync(
+    .nrst(nrst),
+    .clk(hwclk),
+    .in(pb[2]),
+    .out(synchronizedLoad)
+  ); 
+
+  edgeDetector loadEdgeDetector(
+    .clk(hwclk),
+    .nrst(nrst),
+    .in(synchronizedLoad),
+    .out(edgeDetectLoad)
+  );
+
+  synchronizer finishInterruptSync(
+    .nrst(nrst),
+    .clk(hwclk),
+    .in(pb[3]),
+    .out(synchronizedFinishInterrupt)
+  ); 
+
+  edgeDetector finishInterruptEdgeDetector(
+    .clk(hwclk),
+    .nrst(nrst),
+    .in(synchronizedFinishInterrupt),
+    .out(edgeDetectFinishInterrupt)
+  );
+
+  internalDataflow dataflow(
+    .nrst(nrst), 
+    .clk(hwclk),
+    .flags(flags),
+    .externalDBRead(externalDBRead),
+    .externalAddressBusLowOutput(),
+    .externalAddressBusHighOutput(), 
+    .externalDBWrite(),
+    .psrRegToLogicController(psrRegCurrentState)
+  );
+
+  instructionLoader instructionLoader(
+    .clk(hwclk),
+    .nrst(nrst),
+    .nonMaskableInterrupt(pb[0]),
+    .interruptRequest(pb[1]),
+    .processStatusRegIFlag(psrRegCurrentState[2]),
+    .loadNextInstruction(edgeDetectLoad),
+    .externalDB(externalDBRead),
+    .currentInstruction(right),
+    .enableIFlag(setIFlag),
+    .nmiRunning(left[7]),
+    .resetRunning(left[6])
+  );
 
     timing_generator u1(.clk(pb[0]), .addressTimingCode(3'b100), .opTimingCode(3'b001), .rst(pb[4]), .timeOut(right[2:0]), .isAddressing(red) );
 
