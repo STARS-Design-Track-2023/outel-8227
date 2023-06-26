@@ -7,6 +7,7 @@
 // `include "source/dataflow/bridge.sv"
 // `include "source/dataflow/bus_interface.sv"
 // `include "source/dataflow/bus_preset_logic.sv"
+// // `include "source/dataflow/bus2.sv"
 // `include "source/dataflow/internal_bus.sv"
 // `include "source/dataflow/internal_dataflow.sv"
 // `include "source/dataflow/process_status_register_wrapper.sv"
@@ -30,40 +31,16 @@ module top
   input  logic txready, rxready
 );
 
-  // logic [1:0] o1, o2, o3, o4;
-  // logic [1:0] i1, i2, i3, i4;
-  // logic [1:0] select; 
-
-  // internalBus #(4, 2) bus (
-  //   .bus_select(select),
-  //   .bus_inputs({i1, i2, i3, i4}),
-  //   .bus_outputs({o1, o2, o3, o4})
-  // );
-
-  // assign left[1:0] = o1;
-  // assign left[3:2] = o2;
-  // assign left[5:4] = o3;
-  // assign left[7:6] = o4;
-
-  // assign i1 = pb[1:0];
-  // assign i2 = pb[3:2];
-  // assign i3 = pb[5:4];
-  // assign i4 = pb[7:6];
-
-  // assign select = pb[9:8];
-
   logic [100:0] flags;
 
-  assign flags[SET_ADH_TO_DATA] = pb[0];
-  assign flags[LOAD_ABH] = pb[1];
-  assign flags[SET_ADH_FF] = pb[2];
-
-  assign flags[SET_SB_TO_ADH] = pb[3];
   always_comb begin
     flags = 101'b0;
 
-    
-    
+    flags[SET_ADH_TO_DATA] = pb[0];
+    flags[LOAD_ABH] = pb[1];
+    flags[SET_ADH_FF] = pb[2];
+
+     flags[SET_SB_TO_ADH] = pb[3];
     // flags[LOAD_X] = pb[2];
 
     // flags[SET_SB_TO_X] = pb[3];
@@ -79,8 +56,21 @@ module top
     .flags(flags),
     .externalDBRead(8'b10101010),
     .externalAddressBusLowOutput(),
-    .externalAddressBusHighOutput(left), 
+    .externalAddressBusHighOutput(), 
     .externalDBWrite()
+  );
+
+  interruptInjector interruptInjector(
+    .clk(hwclk),
+    .nrst(~pb[19]),
+    .nonMaskableInterrupt(),
+    .interruptRequest(), //Inputs from exterior (could be buttons outside IC)
+    .processStatusRegIFlag(),
+    .interruptAcknowleged(), //Should be high going into the clock cycle when the Instruction Register is loaded
+    .irqGenerated(),
+    .nmiGenerated(),
+    .nmiRunning(),
+    .resetRunning() //output signals that state whether an interrupt has been generated and whether a nonmaskable interrupt is running
   );
 
 endmodule
