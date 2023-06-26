@@ -5,7 +5,8 @@ module programCounterLogic (
     output logic [7:0] output_lowbyte, output_highbyte      //address output of the PC
 );
 
-    logic [15:0] address = {input_highbyte, input_lowbyte}; //inputs are operated on as a whole
+    logic [15:0] address; //inputs are operated on as a whole
+    assign address  = {input_highbyte, input_lowbyte};
     always_comb begin
         if(increment) address = address + 1;
         else if(decrement) address = address - 1;

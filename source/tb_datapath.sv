@@ -1,11 +1,12 @@
 `timescale 1ns/10ps
 
-module tb_shift_reg ();
+module tb_internalDataflow ();
 
   localparam CLK_PERIOD        = 2;
 
   // Information signals
   logic [1024:0]       test_name;
+  logic tb_mismatch;
 
   // Declare DUT Connection Signals
   logic                tb_clk;
@@ -55,6 +56,28 @@ module tb_shift_reg ();
     assign tb_flags = 101'b0;
   end
   endtask
+
+    //   task check_outputs_4;
+    // input logic[7:0] exp_xreg, exp_yreg, exp_acc; 
+    // begin
+    //     tb_mismatch = 0;
+    //     @(negedge tb_clk); 
+    //     if(exp_xreg != tb) begin
+    //         tb_mismatch = 1;
+    //         $error("Incorrect tb_count_4 value. Actual: %0d, Expected: %0d.", tb_count_4, exp_count); 
+    //     end 
+    //     else 
+    //         $info("Correct tb_count_4 value."); 
+        
+    //     if(exp_at_max != tb_at_max_4) begin 
+    //         tb_mismatch = 1;
+    //         $error("Incorrect tb_at_max_4 value. Actual: %0d, Expected: %0d.", tb_at_max_4, exp_at_max); 
+    //     end 
+    //     else 
+    //         $info("Correct tb_at_max_4 value.");
+
+    // end
+    // endtask 
 
   // DUT Portmap
   internalDataflow dataflow(
@@ -106,6 +129,130 @@ module tb_shift_reg ();
     reset_flags();
     assign tb_flags[SET_DB_TO_ACC] = 1;
     assign tb_flags[LOAD_DOR] = 1;
+
+    assign test_name = "Load Y from ACC";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[SET_SB_TO_ACC] = 1;
+    assign tb_flags[LOAD_Y] = 1;
+
+    assign test_name = "Load ACC from Y";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[SET_SB_TO_Y] = 1;
+    assign tb_flags[LOAD_ACC] = 1;
+
+
+
+    assign test_name = "Increment Program Counter"; 
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[PC_INC] = 1;
+
+    assign test_name = "Decrement Program Counter";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[PC_DEC] = 1;
+
+    assign test_name = "Load into Program Counter from Input";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_externalDBRead = 8'b00000000;
+    assign tb_flags[LOAD_PC] = 1;
+    assign tb_flags[SET_ADL_TO_DATA] = 1;
+    assign tb_flags[SET_ADH_TO_DATA] = 1;
+
+    assign test_name = "Load and Increment PC";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[LOAD_PC] = 1;
+    assign tb_flags[PC_INC] = 1;
+    assign tb_flags[SET_ADL_TO_DATA] = 1;
+    assign tb_flags[SET_ADH_TO_DATA] = 1;
+
+    assign test_name = "Load and Decrement PC";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[LOAD_PC] = 1;
+    assign tb_flags[PC_DEC] = 1;
+    assign tb_flags[SET_ADL_TO_DATA] = 1;
+    assign tb_flags[SET_ADH_TO_DATA] = 1;
+
+    assign test_name = "Load ABH and ADH from PC";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[SET_ADH_TO_PCH] = 1;
+    assign tb_flags[SET_ADL_TO_PCL] = 1;
+    assign tb_flags[LOAD_ABH] = 1;
+    assign tb_flags[LOAD_ABL] = 1;
+
+    assign test_name = "Preset ADH";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[SET_ADH_FF] = 1;
+
+    assign test_name = "Store PCH in Stack";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[SET_ADH_TO_PCH] = 1;
+    assign tb_flags[SET_SB_TO_ADH] = 1;
+    assign tb_flags[LOAD_SP] = 1;
+
+    assign test_name = "Add Data with ALU";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_externalDBRead = 8'b00000001;
+    assign tb_flags[SET_DB_TO_DATA] = 1;
+    assign tb_flags[SET_INPUT_B_TO_DB] = 1;
+    assign tb_flags[SET_INPUT_A_TO_SB] = 1;
+    assign tb_flags[SET_SB_TO_ACC] = 1;
+    assign tb_flags[ALU_ADD] = 1;
+    assign tb_flags[LOAD_ALU] = 1;
+
+    assign test_name = "Process Reg from DB";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[SET_PSR_C_TO_DB0] = 1;
+    assign tb_flags[SET_PSR_Z_TO_DB1] = 1;
+    assign tb_flags[SET_PSR_I_TO_DB2] = 1;
+    assign tb_flags[SET_PSR_D_TO_DB3] = 1;
+    assign tb_flags[SET_PSR_V_TO_DB6] = 1;
+    assign tb_flags[SET_PSR_N_TO_DB7] = 1;
+    assign tb_flags[SET_SB_TO_ALU] = 1;
+    assign tb_flags[SET_DB_TO_SB] = 1;
+
+    assign test_name = "Process Reg zeros";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_externalDBRead = 8'b00000000;
+    assign tb_flags[SET_DB_TO_DATA] = 1;
+    assign tb_flags[SET_PSR_C_TO_DB0] = 1;
+    assign tb_flags[SET_PSR_Z_TO_DB1] = 1;
+    assign tb_flags[SET_PSR_I_TO_DB2] = 1;
+    assign tb_flags[SET_PSR_D_TO_DB3] = 1;
+    assign tb_flags[SET_PSR_V_TO_DB6] = 1;
+    assign tb_flags[SET_PSR_N_TO_DB7] = 1;
+
+    assign test_name = "Process Reg interrupt and manual sets";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_flags[PSR_DATA_TO_LOAD] = 1;
+    assign tb_flags[LOAD_CARRY_PSR_FLAG] = 1;
+    assign tb_flags[LOAD_DECIMAL_PSR_FLAG] = 1;
+    assign tb_flags[LOAD_INTERUPT_PSR_FLAG] = 1;
+    assign tb_flags[LOAD_OVERFLOW_PSR_FLAG] = 1;
+
+    assign test_name = "Process Reg zeros";
+    @(negedge tb_clk);
+    reset_flags();
+    assign tb_externalDBRead = 8'b00000000;
+    assign tb_flags[SET_DB_TO_DATA] = 1;
+    assign tb_flags[SET_PSR_C_TO_DB0] = 1;
+    assign tb_flags[SET_PSR_Z_TO_DB1] = 1;
+    assign tb_flags[SET_PSR_I_TO_DB2] = 1;
+    assign tb_flags[SET_PSR_D_TO_DB3] = 1;
+    assign tb_flags[SET_PSR_V_TO_DB6] = 1;
+    assign tb_flags[SET_PSR_N_TO_DB7] = 1;
 
     @(negedge tb_clk);
     reset_flags();
