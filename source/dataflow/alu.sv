@@ -45,7 +45,7 @@ module alu(
     assign {sum_carry_out, sum} = a + b + {7'b0000000, carry_in};
     
     //Set the overflow flag (right now it is only set in sum, it might need to be selected later)
-    assign overflow = sum[8] ^ sum[7];
+    assign overflow = sum_carry_out ^ sum[7];
     
 
     always_comb begin

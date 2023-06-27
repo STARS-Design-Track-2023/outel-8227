@@ -20,10 +20,12 @@ TOP_FILE         := dataflow/internal_dataflow.sv
 # List internal component/block files here (separate the filenames with spaces)
 # NOTE: YOU WILL NEED TO SET THIS VARIABLE'S VALUE WHEN WORKING WITH HEIRARCHICAL DESIGNS
 COMPONENT_FILES  := dataflow/* constants.sv 
+COMPONENT_FILES  := dataflow/* control_logic/* register.sv constants.sv
 
 # Specify the filepath of the test bench you want to use (ie. tb_top_level.sv)
 # (do not include the source folder in the name)
 TB               :=  tb_datapath.sv
+TB               := tb_datapath.sv
 
 # Get the top level design and test_bench module names
 TB_MODULE		 := $(notdir $(basename $(TB)))
