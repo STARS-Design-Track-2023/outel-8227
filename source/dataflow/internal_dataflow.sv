@@ -231,7 +231,7 @@ module internalDataflow(
 
     //ADL/ADH Incrementor
     programCounterLogic adlADHIncrementor (
-        .input_lowbyte(addressHighBus), 
+        .input_lowbyte(addressLowBus), 
         .input_highbyte(addressHighBus),
         .increment(flags[PC_INC]), 
         .decrement(flags[PC_DEC]),
