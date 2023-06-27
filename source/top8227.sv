@@ -1,11 +1,13 @@
 module top8227 (
     input  logic clk, nrst, nonMaskableInterrupt, interruptRequest, 
-    input  logic [7:0] dataBusInput,
-    output logic [7:0] dataBusOutput,
+    inout [7:0] dataBusGPIO,
     output logic [7:0] AddressBusHigh,
-    output logic [7:0] AddressBusLow
+    output logic [7:0] AddressBusLow,
+    output logic readNotWrite
 );
 
+    logic [7:0] dataBusInput;
+    logic [7:0] dataBusOutput;
     logic [7:0] PSRCurrentValue;
     logic [7:0] opcodeCurrentValue;
     logic [3:0] addressingCode;
@@ -16,6 +18,9 @@ module top8227 (
     logic [NUMFLAGS-1:0] flags;
     logic getInstructionPreInjection, getInstructionPostInjection;
 
+    assign readNotWrite = flags[SET_WRITE_FLAG];
+    assign dataBusInput = dataBusGPIO;
+    assign dataBusGPIO = (~readNotWrite) ? dataBusOutput: 'z;
 
     internalDataflow internalDataflow(
         .nrst(nrst),

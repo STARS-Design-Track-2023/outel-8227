@@ -12,8 +12,7 @@ module tb_8227_template ();
   logic                tb_nrst;
   logic                tb_nonMaskableInterrupt;
   logic                tb_interruptRequest;
-  logic [7:0]          tb_dataBusInput;
-  logic [7:0]          tb_dataBusOutput;
+  logic [7:0]          tb_dataBusGPIO;
   logic [7:0]          tb_AddressBusHigh;
   logic [7:0]          tb_AddressBusLow;
 
@@ -41,10 +40,17 @@ module tb_8227_template ();
     // Wait until safely away from rising edge of the clock before releasing
     @(negedge tb_clk);
     tb_nrst = 1'b1;
+    assign tb_nonMaskableInterrupt = 0;
+    assign tb_interruptRequest = 0;
+    assign tb_dataBusGPIO = 8'h00;
 
     // Leave out of reset for a couple cycles before allowing other stimulus
     // Wait for negative clock edges, 
     // since inputs to DUT should normally be applied away from rising clock edges
+    @(negedge tb_clk);
+    @(negedge tb_clk); 
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(negedge tb_clk);
     @(negedge tb_clk);
   end
@@ -56,8 +62,7 @@ module tb_8227_template ();
     .nrst(tb_nrst), 
     .nonMaskableInterrupt(tb_nonMaskableInterrupt), 
     .interruptRequest(tb_interruptRequest),
-    .dataBusInput(tb_dataBusInput),
-    .dataBusOutput(tb_dataBusOutput),
+    .dataBusGPIO(dataBusGPIO),
     .AddressBusHigh(tb_AddressBusHigh),
     .AddressBusLow(tb_AddressBusLow)
   );
@@ -87,15 +92,14 @@ module tb_8227_template ();
     assign test_name = "Example Test";
 
     //Clock Cycle 1
-    assign tb_nonMaskableInterrupt = 1'b0;
-    assign tb_interruptRequest = 1'b0;
-    assign tb_dataBusInput = 8'b0;
+    
+    assign tb_dataBusGPIO = 8'hA9;
     @(negedge tb_clk);
-
-    //Clock Cycle 2
-    assign tb_nonMaskableInterrupt = 1'b0;
-    assign tb_interruptRequest = 1'b0;
-    assign tb_dataBusInput = 8'b0;
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(negedge tb_clk);
 
 //--------------------------------------------------------------------------------------------
