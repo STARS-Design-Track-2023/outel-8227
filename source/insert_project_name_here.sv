@@ -9,14 +9,14 @@ module insert_project_name_here (
 );
 
   top8227 top8227(
-    .clk(hwclk), 
-    .nrst(~pb[19]), 
+    .clk(clk), 
+    .nrst(nrst), 
     .nonMaskableInterrupt(pb[18]), 
-    .interruptRequest(pb[17]), 
-    .dataBusInput(pb[7:0]),
-    .dataBusOutput({ss7[7], ss6[7], ss5[7], ss4[7], ss3[7], ss2[7], ss1[7], ss0[7]}),
-    .AddressBusHigh(left),
-    .AddressBusLow(right),
+    .interruptRequest(gpio[7:0]), 
+    .dataBusInput(gpio[7:0]),
+    .dataBusOutput(gpio[7:0]),
+    .AddressBusHigh(gpio[7:0]),
+    .AddressBusLow(gpio[7:0]),
   );
 
 endmodule

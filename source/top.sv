@@ -42,7 +42,7 @@ module top
     .dataBusInput(pb[7:0]),
     .dataBusOutput({ss7[7], ss6[7], ss5[7], ss4[7], ss3[7], ss2[7], ss1[7], ss0[7]}),
     .AddressBusHigh(left),
-    .AddressBusLow(right),
+    .AddressBusLow(right)
   );
     
 endmodule

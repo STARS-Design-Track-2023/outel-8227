@@ -4,12 +4,11 @@ module instructionLoader (
     input logic [7:0] externalDB,
     // output logic [7:0] currentInstruction,
     output logic enableIFlag,
-    output logic nmiRunning, resetRunning, instructionRegReadEnable,
+    output logic nmiRunning, resetRunning, instructionRegReadEnable, //instructionRegReadEnable: Normally the same as 'loadNextInstruction' but needs to go high if a reset is detected
     output logic [7:0] nextInstruction 
 );
 
     logic resetDetected, irqGenerated, nmiGenerated;
-    logic instructionRegReadEnable; //Normally the same as 'loadNextInstruction' but needs to go high if a reset is detected
 
 
     //Interrupt

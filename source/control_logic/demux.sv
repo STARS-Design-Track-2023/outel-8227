@@ -47,7 +47,11 @@ state_machine state_machine(
 
 
 always_comb begin : blockName
-    
+
+IS_STORE_ACC_INSTRUCT = 1'b0;
+IS_STORE_X_INSTRUCT = 1'b0;
+IS_STORE_Y_INSTRUCT = 1'b0;
+
 case(instructionCode) 
     STA: IS_STORE_ACC_INSTRUCT = 1'b1;
     STY: IS_STORE_X_INSTRUCT = 1'b1;
@@ -585,6 +589,7 @@ case(instructionCode)
     end
     BCC, BCS, BEQ, BMI, BNE, BPL, BVC, BVS: begin       // code BCC                  BRANCH CHECKING ONE THAT IS HARD
     
+    outflags = 0;
     case (state)
         T0: begin
             //Increment PC
@@ -896,7 +901,7 @@ case(instructionCode)
     end
     CLD: begin                                          // code CLD
 
-  outflags = 0;
+    outflags = 0;
     case (state)
         T0: begin
             //Set FLAG
@@ -1699,7 +1704,7 @@ case(instructionCode)
     end
     LSR: begin                                          // code LSR
 
-        outflags = 0;
+    outflags = 0;
     case (state)
         T0: begin
             //Set A to DATA

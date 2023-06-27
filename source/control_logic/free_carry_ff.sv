@@ -12,7 +12,7 @@ always_comb begin : comb_free_carry_ff
 end
 
 always_ff @( posedge clk, negedge nrst ) begin : ff_free_carry_ff
-    if(nrst == 0'b1)         // resets to 0
+    if(nrst == 1'b0)         // resets to 0
         freeCarry = 1'b0;
     else
         freeCarry = freeCarryNext;
