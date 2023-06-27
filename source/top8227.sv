@@ -1,11 +1,11 @@
 module top8227 (
-    input  logic clk, nrst, nonMaskableInterrupt, interruptRequest, 
+    input  logic clk, nrst, nonMaskableInterrupt, interruptRequest, dataBusEnable 
     input  logic [7:0] dataBusInput,
     output logic [7:0] dataBusOutput,
     output logic [7:0] AddressBusHigh,
-    output logic [7:0] AddressBusLow
+    output logic [7:0] AddressBusLow,
+    output logic sync, readNotWrite
 );
-
     logic [7:0] PSRCurrentValue;
     logic [7:0] opcodeCurrentValue;
     logic [3:0] addressingCode;
@@ -17,6 +17,7 @@ module top8227 (
     logic getInstructionPreInjection, getInstructionPostInjection;
     logic setIFlag;
 
+    assign readNotWrite = ~flags[SET_WRITE_FLAG];
 
     internalDataflow internalDataflow(
         .nrst(nrst),
@@ -39,12 +40,11 @@ module top8227 (
         .loadNextInstruction(getInstructionPreInjection),
         .externalDB(dataBusInput),
         .nextInstruction(opcodeCurrentValue),
-        .enableIFlag(),
+        .enableIFlag(setIFlag),
         .nmiRunning(nmiRunning), 
         .resetRunning(resetRunning),
         .instructionRegReadEnable(getInstructionPostInjection)
     );
-
 
     decoder decoder(
         .opcode(opcodeCurrentValue),
@@ -67,7 +67,8 @@ module top8227 (
         .PSR_Z(PSRCurrentValue[1]),
         .getInstructionPostInjection(getInstructionPostInjection),
         .getInstructionPreInjection(getInstructionPreInjection),
-        .outflags(flags)
+        .outflags(flags),
+        .setInterruptFlag(setIFlag)
     );
 
     free_carry_ff free_carry_ff (
