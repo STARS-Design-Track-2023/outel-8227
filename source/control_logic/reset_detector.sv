@@ -12,9 +12,7 @@ module resetDetector (
             state = nextState;
     end
 
-    always_comb begin : nextStateLogic
-        nextState = 1'b0;
-    end
+    assign nextState = 1'b0;
 
     always_comb begin : outputLogic
         resetInection = state;

@@ -1,99 +1,16 @@
-
-parameter ADC =  6'd1; // INSTRUCTION PARAMATERS
-parameter AND =  6'd2;
-parameter ASL =  6'd3;
-parameter BCC =  6'd4;
-parameter BCS =  6'd5;
-parameter BEQ =  6'd6;
-parameter BIT =  6'd7;
-parameter BMI =  6'd8;
-parameter BNE =  6'd9;
-parameter BPL = 6'd10;
-parameter BRK = 6'd11;
-parameter BVC = 6'd12;
-parameter BVS = 6'd13;
-parameter CLC = 6'd14;
-parameter CLD = 6'd15;
-parameter CLI = 6'd16;
-parameter CLV = 6'd17;
-parameter CMP = 6'd18;
-parameter CPX = 6'd19;
-parameter CPY = 6'd20;
-parameter DEC = 6'd21;
-parameter DEX = 6'd22;
-parameter DEY = 6'd23;
-parameter EOR = 6'd24;
-parameter INC = 6'd25;
-parameter INX = 6'd26;
-parameter INY = 6'd27;
-parameter JMP = 6'd28;
-parameter JSR = 6'd29;
-parameter LDA = 6'd30;
-parameter LDX = 6'd31;
-parameter LDY = 6'd32;
-parameter LSR = 6'd33;
-parameter NOP = 6'd34;
-parameter ORA = 6'd35;
-parameter PHA = 6'd36;
-parameter PHP = 6'd37;
-parameter PLA = 6'd38;
-parameter PLP = 6'd39;
-parameter ROL = 6'd40;
-parameter ROR = 6'd41;
-parameter RTI = 6'd42;
-parameter RTS = 6'd43;
-parameter SBC = 6'd44;
-parameter SEC = 6'd44;
-parameter SED = 6'd45;
-parameter SEI = 6'd46;
-parameter STA = 6'd47;
-parameter STX = 6'd48;
-parameter STY = 6'd49;
-parameter TAX = 6'd50;
-parameter TAY = 6'd51;
-parameter TSX = 6'd52;
-parameter TXA = 6'd53;
-parameter TXS = 6'd54;
-parameter ASLA = 6'd55; // Start of instructions that were forgot
-parameter ROLA = 6'd56;
-parameter LSRA = 6'd57;
-parameter RORA = 6'd58;
-parameter TYA = 6'd59; // END OF INSTRUCTION PARAMETERS
-
-parameter A = 4'd0;
-parameter abs = 4'd1; // ADDRESSING PARAMETERS
-parameter absX = 4'd2;
-parameter absY = 4'd3;
-parameter IMMEDIATE = 4'd4;
-parameter impl = 4'd5;
-parameter ind = 4'd6;
-parameter Xind = 4'd7;
-parameter indY= 4'd8;
-parameter rel = 4'd9;
-parameter zpg = 4'd10;
-parameter zpgX = 4'd11;
-parameter zpgY = 4'd12; 
-parameter implied = 4'd13; // END OF ADDRESSING PARAMETERS
-
-parameter T1 = 3'd1;
-parameter T2 = 3'd2;
-parameter T3 = 3'd3;
-parameter T4 = 3'd4;
-parameter T5 = 3'd5;
-parameter T6 = 3'd6;
-parameter T7 = 3'd7;
-
-
 module decoder (
     input  logic [7:0] opcode,
-    output logic [2:0] addressTimingCode, opTimingCode,
     output logic [5:0] CMD,
     output logic [3:0] ADDRESS
 );
 
-    logic [2:0] a = opcode[7:5];
-    logic [2:0] b = opcode[4:2];
-    logic [1:0] c = opcode[1:0];
+    logic [2:0] a;
+    logic [2:0] b;
+    logic [1:0] c;
+
+    assign a = opcode[7:5];
+    assign b = opcode[4:2];
+    assign c = opcode[1:0];
 
     logic storeA;
     logic storeX;
@@ -104,8 +21,6 @@ module decoder (
     
     CMD = 6'b0;
     ADDRESS = 4'b0;
-    addressTimingCode = 3'b000;
-    opTimingCode = 3'b000;
     
     casez(c)
         2'b00: begin
