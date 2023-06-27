@@ -641,9 +641,7 @@ begin
                     outflags[SET_ADL_TO_PCL] = 1;
                     outflags[LOAD_ABL] = 1;
 
-                    //Get ready to read next instruction
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
-            end
                 end
             end
             T2: begin
@@ -667,9 +665,7 @@ begin
                     outflags[SET_ADL_TO_PCL] = 1;
                     outflags[LOAD_ABL] = 1;
 
-                    //Get ready to read next instruction
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
-            end
                 end
             end
             T3: begin
