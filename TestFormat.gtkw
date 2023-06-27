@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Tue Jun 27 13:48:11 2023
+[*] Tue Jun 27 14:12:47 2023
 [*]
 [dumpfile] "/home/shay/c/ecng005/Desktop/STARS/RTL Stuff/outel-8227/dump.vcd"
-[dumpfile_mtime] "Tue Jun 27 13:44:46 2023"
-[dumpfile_size] 48659
+[dumpfile_mtime] "Tue Jun 27 14:09:44 2023"
+[dumpfile_size] 54281
 [savefile] "/home/shay/c/ecng005/Desktop/STARS/RTL Stuff/outel-8227/TestFormat.gtkw"
 [timestart] 34020
 [size] 1846 1016
 [pos] -1 -1
-*-12.000000 42970 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-12.000000 46530 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb_internalDataflow.
 [treeopen] tb_internalDataflow.dataflow.
 [sst_width] 233

@@ -6,7 +6,6 @@ module tb_internalDataflow ();
 
   // Information signals
   logic [1024:0]       test_name;
-  logic tb_mismatch;
 
   // Declare DUT Connection Signals
   logic                tb_clk;
@@ -56,28 +55,6 @@ module tb_internalDataflow ();
     assign tb_flags = 101'b0;
   end
   endtask
-
-    //   task check_outputs_4;
-    // input logic[7:0] exp_xreg, exp_yreg, exp_acc; 
-    // begin
-    //     tb_mismatch = 0;
-    //     @(negedge tb_clk); 
-    //     if(exp_xreg != tb) begin
-    //         tb_mismatch = 1;
-    //         $error("Incorrect tb_count_4 value. Actual: %0d, Expected: %0d.", tb_count_4, exp_count); 
-    //     end 
-    //     else 
-    //         $info("Correct tb_count_4 value."); 
-        
-    //     if(exp_at_max != tb_at_max_4) begin 
-    //         tb_mismatch = 1;
-    //         $error("Incorrect tb_at_max_4 value. Actual: %0d, Expected: %0d.", tb_at_max_4, exp_at_max); 
-    //     end 
-    //     else 
-    //         $info("Correct tb_at_max_4 value.");
-
-    // end
-    // endtask 
 
   // DUT Portmap
   internalDataflow dataflow(
@@ -240,9 +217,9 @@ module tb_internalDataflow ();
     assign tb_flags[LOAD_OVERFLOW_PSR_FLAG] = 1;
     @(negedge tb_clk);
 
-    assign test_name = "Process Reg 1";
+    assign test_name = "Process Reg 0";
     reset_flags();
-    assign tb_externalDBRead = 8'b00000001;
+    assign tb_externalDBRead = 8'b00000000;
     assign tb_flags[SET_DB_TO_DATA] = 1;
     assign tb_flags[SET_PSR_C_TO_DB0] = 1;
     assign tb_flags[SET_PSR_Z_TO_DB1] = 1;
@@ -254,7 +231,7 @@ module tb_internalDataflow ();
 
     assign test_name = "ROL (simulated addressing mode)";  //T0
     reset_flags();
-    assign tb_externalDBRead = 8'b10101010;
+    assign tb_externalDBRead = 8'b00000001;
     assign tb_flags[SET_DB_TO_DATA] = 1;
     assign tb_flags[SET_SB_TO_DB] = 1;
     assign tb_flags[SET_INPUT_A_TO_SB] = 1;
