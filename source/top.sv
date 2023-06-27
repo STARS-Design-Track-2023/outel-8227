@@ -35,7 +35,7 @@ module top
 );
 
   top8227 top8227(
-    .clk(hwclk), 
+    .clk(pb[16]), 
     .nrst(~pb[19]), 
     .nonMaskableInterrupt(pb[18]), 
     .interruptRequest(pb[17]), 

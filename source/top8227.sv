@@ -64,7 +64,7 @@ module top8227 (
         .PSR_V(PSRCurrentValue[6]), 
         .PSR_Z(PSRCurrentValue[1]),
         .getInstructionPostInjection(getInstructionPostInjection),
-        .getInstructionPreInjection(getInstructionPostInjection),
+        .getInstructionPreInjection(getInstructionPreInjection),
         .outflags(flags)
     );
 
