@@ -1,29 +1,42 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Mon Jun 26 20:32:39 2023
+[*] Tue Jun 27 13:22:42 2023
 [*]
 [dumpfile] "/home/shay/c/ecng005/Desktop/STARS/RTL Stuff/outel-8227/dump.vcd"
-[dumpfile_mtime] "Mon Jun 26 20:30:06 2023"
-[dumpfile_size] 44020
+[dumpfile_mtime] "Tue Jun 27 13:13:59 2023"
+[dumpfile_size] 46737
 [savefile] "/home/shay/c/ecng005/Desktop/STARS/RTL Stuff/outel-8227/TestFormat.gtkw"
-[timestart] 14520
+[timestart] 30020
 [size] 1846 1016
-[pos] -39 -39
-*-12.000000 28840 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -1 -1
+*-12.000000 38080 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb_internalDataflow.
 [treeopen] tb_internalDataflow.dataflow.
 [sst_width] 233
-[signals_width] 166
+[signals_width] 198
 [sst_expanded] 1
 [sst_vpaned_height] 289
 @28
 tb_internalDataflow.tb_clk
 @820
 tb_internalDataflow.test_name[1024:0]
-@22
-tb_internalDataflow.dataflow.pclRegister.currentState[7:0]
 @28
 tb_internalDataflow.dataflow.pcIncrementor.decrement
 tb_internalDataflow.dataflow.pcIncrementor.increment
+@22
++{x reg} tb_internalDataflow.dataflow.xRegister.currentState[7:0]
+@28
++{x reg read} tb_internalDataflow.dataflow.xRegister.busReadEnable
+@22
++{acc} tb_internalDataflow.dataflow.accumulatorRegister.currentState[7:0]
++{psr} tb_internalDataflow.dataflow.psr.internalFFOutput[7:0]
++{y reg} tb_internalDataflow.dataflow.yRegister.currentState[7:0]
++{alu reg} tb_internalDataflow.dataflow.aluRegister.currentState[7:0]
++{dor} tb_internalDataflow.dataflow.dorRegister.currentState[7:0]
+@28
+tb_internalDataflow.dataflow.alu.carry_out
+tb_internalDataflow.dataflow.psr.carry_C
+@29
+tb_internalDataflow.dataflow.psr.carry
 [pattern_trace] 1
 [pattern_trace] 0
