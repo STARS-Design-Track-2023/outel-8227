@@ -1,10 +1,11 @@
 module internalDataflow(
     input logic nrst, clk,
-    input logic [100:0] flags,
+    input logic [NUMFLAGS-1:0] flags,
     input logic [7:0] externalDBRead,
     output logic [7:0] externalDBWrite,
     output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput,
-    output logic [7:0] psrRegToLogicController
+    output logic [7:0] psrRegToLogicController,
+    output logic aluCarryOut
 );
     //outputs from registers
     //ABL = address bus low
@@ -31,7 +32,7 @@ module internalDataflow(
                 sbToDB, dbToSB,//SB/DB Bridge Outputs
                 dataToDB, dataToADL, dataToADH;//External DB Interface Outputs
 
-    logic aluCarryOut, aluOverflowOut;
+    logic aluOverflowOut;
 
     logic dbPresetWriteEnable, adhPresetWriteEnable, adlPresetWriteEnable, sbPresetWriteEnable;
 

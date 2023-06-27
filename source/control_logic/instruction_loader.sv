@@ -2,15 +2,14 @@ module instructionLoader (
     input logic clk, nrst,
     input logic nonMaskableInterrupt, interruptRequest, processStatusRegIFlag, loadNextInstruction,
     input logic [7:0] externalDB,
-    output logic [7:0] currentInstruction,
+    // output logic [7:0] currentInstruction,
     output logic enableIFlag,
-    output logic nmiRunning, resetRunning
+    output logic nmiRunning, resetRunning, instructionRegReadEnable, //instructionRegReadEnable: Normally the same as 'loadNextInstruction' but needs to go high if a reset is detected
+    output logic [7:0] nextInstruction 
 );
 
     logic resetDetected, irqGenerated, nmiGenerated;
-    logic instructionRegReadEnable; //Normally the same as 'loadNextInstruction' but needs to go high if a reset is detected
 
-    logic [7:0] nextInstruction;
 
     //Interrupt
     interruptInjector interruptInjector(
@@ -49,16 +48,16 @@ module instructionLoader (
     assign enableIFlag = resetDetected | ((irqGenerated | nmiGenerated) & instructionRegReadEnable);
 
     //Instruction Register
-    register #(
-        .INPUT_COUNT(1),
-        .OUTPUT_COUNT(1),
-        .DEFAULT_VALUE(8'b0)
-    ) instructionRegister (
-        .nrst(nrst),
-        .clk(clk),
-        .busInputs(nextInstruction),
-        .busOutputs(currentInstruction),
-        .busReadEnable(instructionRegReadEnable)
-    );
+    // register #(
+    //     .INPUT_COUNT(1),
+    //     .OUTPUT_COUNT(1),
+    //     .DEFAULT_VALUE(8'b0)
+    // ) instructionRegister (
+    //     .nrst(nrst),
+    //     .clk(clk),
+    //     .busInputs(nextInstruction),
+    //     .busOutputs(currentInstruction),
+    //     .busReadEnable(instructionRegReadEnable)
+    // );
 
 endmodule
