@@ -136,7 +136,7 @@ module internalDataflow(
     ) ablRegister (
         .nrst(nrst),
         .clk(clk), 
-        .busInputs(addressHighBus), 
+        .busInputs(addressLowBus), 
         .busOutputs(ablRegToExternalADL), 
         .busReadEnable(flags[LOAD_ABL])
     );
