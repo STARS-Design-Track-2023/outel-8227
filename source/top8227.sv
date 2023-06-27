@@ -15,6 +15,7 @@ module top8227 (
     logic       nmiRunning, resetRunning;
     logic [NUMFLAGS-1:0] flags;
     logic getInstructionPreInjection, getInstructionPostInjection;
+    logic setIFlag;
 
 
     internalDataflow internalDataflow(
@@ -43,6 +44,7 @@ module top8227 (
         .resetRunning(resetRunning),
         .instructionRegReadEnable(getInstructionPostInjection)
     );
+
 
     decoder decoder(
         .opcode(opcodeCurrentValue),

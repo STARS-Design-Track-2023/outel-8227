@@ -95,12 +95,6 @@ module tb_8227_template ();
     @(negedge tb_clk);
     @(negedge tb_clk);
 
-    //Clk 0
-    @(negedge tb_clk);
-    tb_nrst = 1'b1;
-    @(posedge tb_clk);
-    test_name = "Boot Seq clk 0";
-
     //Clk 1
     @(negedge tb_clk);
     tb_nrst = 1'b1;
@@ -121,9 +115,21 @@ module tb_8227_template ();
 
     //Clk 4
     @(negedge tb_clk);
-
+    tb_dataBusInput = 8'HCC;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 4";
+
+    //Clk 5
+    @(negedge tb_clk);
+    tb_dataBusInput = 8'HDD;
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 5";
+
+    //Clk 6
+    @(negedge tb_clk);
+
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 6";
     
     //Clock Cycle 1
     tb_nonMaskableInterrupt = 1'b0;

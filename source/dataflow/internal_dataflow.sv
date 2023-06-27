@@ -145,7 +145,7 @@ module internalDataflow(
     register #(
         .INPUT_COUNT(2), 
         .OUTPUT_COUNT(3),
-        .DEFAULT_VALUE(0)
+        .DEFAULT_VALUE(8'HAA)
     ) pchRegister (
         .nrst(nrst),
         .clk(clk), 
@@ -158,7 +158,7 @@ module internalDataflow(
     register #(
         .INPUT_COUNT(2), 
         .OUTPUT_COUNT(3),
-        .DEFAULT_VALUE(0)
+        .DEFAULT_VALUE(8'HBB)
     ) pclRegister (
         .nrst(nrst),
         .clk(clk), 
