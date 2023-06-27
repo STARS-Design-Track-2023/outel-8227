@@ -5,7 +5,8 @@
 VCD info: dumpfile dump.vcd opened for output.
 VCD warning: $dumpvars: Package ($unit) is not dumpable with VCD.
 Simulation complete
+source/TestBenches/tb_thomas.sv:143: $stop called at 3200 (10ps)
 ** VVP Stop(0) **
 ** Flushing output streams.
-** Current simulation time is 4400 ticks.
+** Current simulation time is 3200 ticks.
 ** Continue **
