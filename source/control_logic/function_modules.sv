@@ -29,7 +29,7 @@ always_comb begin
             flags[LOAD_ALU] = 1;
             
             //SET FLAGS
-            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+            flags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
         end
         T1: begin
             //Increment PC and set ABH and ABL to PC
@@ -74,7 +74,7 @@ always_comb begin
             flags[ALU_ADD] = 1;
             flags[LOAD_ALU] = 1;
             //SET FLAGS
-            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+            flags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
         end
         T1: begin
             //Increment PC and set ABH and ABL to PC
@@ -118,7 +118,7 @@ always_comb begin
             flags[LOAD_ALU] = 1;
             
             //SET FLAGS
-            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+            flags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
         end
         T1: begin
             //Increment PC and set ABH and ABL to PC
@@ -161,7 +161,7 @@ always_comb begin
             flags[LOAD_ALU] = 1;
             
             //SET FLAGS
-            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+            flags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
         end
         T1: begin
             //Increment PC and set ABH and ABL to PC
@@ -1449,7 +1449,7 @@ always_comb begin
             flags[LOAD_ALU] = 1;
             
             //SET FLAGS
-            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+            flags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
         end
         T1: begin
             //Move ALU to DOR
@@ -1513,7 +1513,7 @@ always_comb begin
             flags[ALU_ADD] = 1;
             flags[LOAD_ALU] = 1;
             //SET FLAGS
-            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+            flags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
         end
         T1: begin
             //Move ALU to DOR
@@ -1577,7 +1577,7 @@ always_comb begin
             flags[LOAD_ALU] = 1;
             
             //SET FLAGS
-            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+            flags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
         end
         T1: begin
             //Move ALU to DOR
@@ -1640,7 +1640,7 @@ always_comb begin
             flags[LOAD_ALU] = 1;
             
             //SET FLAGS
-            flags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+            flags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
         end
         T1: begin
             //Move ALU to DOR
@@ -2485,7 +2485,7 @@ endmodule
 
 module BCC(
     input logic [2:0] state,
-    input logic breek, free_carry,
+    input logic breek, 
     output logic [NUMFLAGS-1:0] flags
 );
 

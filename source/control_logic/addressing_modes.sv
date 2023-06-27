@@ -23,6 +23,7 @@ always_comb begin
         flags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
         flags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
         flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+        flags[END_ADDRESSING] = 1;
     end
 end
 endmodule
@@ -59,6 +60,7 @@ always_comb begin
         flags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
         flags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
         flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+        flags[END_ADDRESSING] = 1;
     end
 end
 endmodule
@@ -105,6 +107,7 @@ always_comb begin
         //funky store stuff
         flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
         flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
+        flags[END_ADDRESSING] = 1;
     end 
 end
 endmodule
@@ -151,6 +154,7 @@ always_comb begin
         //funky store stuff
         flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
         flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
+        flags[END_ADDRESSING] = 1;
     end
 end
 endmodule
@@ -185,6 +189,7 @@ always_comb begin
         flags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
         flags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
         flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+        flags[END_ADDRESSING] = 1;
     end
 end
 endmodule
@@ -219,6 +224,7 @@ always_comb begin
         flags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
         flags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
         flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+        flags[END_ADDRESSING] = 1;
     end 
 end
 endmodule
@@ -279,6 +285,7 @@ always_comb begin
         //funky store stuff
         flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
         flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
+        flags[END_ADDRESSING] = 1;
     end
 end
 endmodule
@@ -352,6 +359,7 @@ always_comb begin
         //funky store stuff
         flags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
         flags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
+        flags[END_ADDRESSING] = 1;
     end
 end
 endmodule
