@@ -642,7 +642,8 @@ begin
                     outflags[LOAD_ABL] = 1;
 
                     //Get ready to read next instruction
-                    outflags[LOAD_INSTRUCT] = 1;
+                    outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
+            end
                 end
             end
             T2: begin
@@ -667,7 +668,8 @@ begin
                     outflags[LOAD_ABL] = 1;
 
                     //Get ready to read next instruction
-                    outflags[LOAD_INSTRUCT] = 1;
+                    outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
+            end
                 end
             end
             T3: begin
@@ -681,8 +683,6 @@ begin
                 outflags[LOAD_ABL] = 1;
 
                 //Get ready to read next instruction
-                outflags[LOAD_INSTRUCT] = 1;
-
                 outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
             end
             default: outflags = 0;
