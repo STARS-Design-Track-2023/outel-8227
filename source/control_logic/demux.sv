@@ -1,95 +1,14 @@
-`include "timing_generator.sv" 
-`include "param_file.sv" 
-
-parameter ADC = 6'd1; // INSTRUCTION PARAMATERS
-parameter AND = 6'd2;
-parameter ASL = 6'd3;
-parameter BCC = 6'd4;
-parameter BCS = 6'd5;
-parameter BEQ = 6'd6;
-parameter BIT = 6'd7;
-parameter BMI = 6'd8;
-parameter BNE = 6'd9;
-parameter BPL = 6'd10;
-parameter BRK = 6'd11;
-parameter BVC = 6'd12;
-parameter BVS = 6'd13;
-parameter CLC = 6'd14;
-parameter CLD = 6'd15;
-parameter CLI = 6'd16;
-parameter CLV = 6'd17;
-parameter CMP = 6'd18;
-parameter CPX = 6'd19;
-parameter CPY = 6'd20;
-parameter DEC = 6'd21;
-parameter DEX = 6'd22;
-parameter DEY = 6'd23;
-parameter EOR = 6'd24;
-parameter INC = 6'd25;
-parameter INX = 6'd26;
-parameter INY = 6'd27;
-parameter JMP = 6'd28;
-parameter JSR = 6'd29;
-parameter LDA = 6'd30;
-parameter LDX = 6'd31;
-parameter LDY = 6'd32;
-parameter LSR = 6'd33;
-parameter NOP = 6'd34;
-parameter ORA = 6'd35;
-parameter PHA = 6'd36;
-parameter PHP = 6'd37;
-parameter PLA = 6'd38;
-parameter PLP = 6'd39;
-parameter ROL = 6'd40;
-parameter ROR = 6'd41;
-parameter RTI = 6'd42;
-parameter RTS = 6'd43;
-parameter SBC = 6'd44;
-parameter SEC = 6'd45;
-parameter SED = 6'd46;
-parameter SEI = 6'd47;
-parameter STA = 6'd48;
-parameter STO = 6'd49;
-parameter STX = 6'd50;
-parameter STY = 6'd51;
-parameter TAX = 6'd52;
-parameter TAY = 6'd53;
-parameter TSX = 6'd54;
-parameter TXA = 6'd55;
-parameter TXS = 6'd56;
-parameter ASLA =6'd57; // Start of instructions that were forgot
-parameter ROLA = 6'd58;
-parameter LSRA = 6'd59;
-parameter RORA = 6'd60;
-parameter TYA = 6'd61; // END OF INSTRUCTION PARAMETERS
-
-parameter A = 4'd0;
-parameter abs = 4'd1; // ADDRESSING PARAMETERS
-parameter absX = 4'd2;
-parameter absY = 4'd3;
-parameter IMMEDIATE = 4'd4;
-parameter impl = 4'd5;
-parameter ind = 4'd6;
-parameter Xind = 4'd7;
-parameter indY= 4'd8;
-parameter rel = 4'd9;
-parameter zpg = 4'd10;
-parameter zpgX = 4'd11;
-parameter zpgY = 4'd12; 
-parameter implied = 4'd13; // END OF ADDRESSING PARAMETERS
-
-parameter NUMoutflags = 127; // taken from Thomas
-
-module setoutflags(
-input logic [5:0] instructionCode,
-input logic [3:0] addressingCode,
-input logic [2:0] addressTimingCode, opTimingCode,
-input logic rst, clk, free_carry, nmi, irq, reset, PSR_C, PSR_N, PSR_V, PSR_Z,
-output logic [NUMoutflags - 1:0] outflags
+module demux(
+    input logic [5:0] preFFInstructionCode,
+    input logic [3:0] preFFAddressingCode,
+    input logic nrst, clk, free_carry, nmi, irq, reset, PSR_C, PSR_N, PSR_V, PSR_Z,
+    input logic getInstructionPostInjection,
+    output logic getInstructionPreInjection,
+    output logic [NUMFLAGS - 1:0] outflags
 );
 
-logic  [NUMoutflags - 1:0] outputListAddressing [13:0] ;
-logic  [NUMoutflags - 1:0] outputListInstruction [61:0];
+logic  [NUMFLAGS - 1:0] outputListAddressing [13:0] ;
+logic  [NUMFLAGS - 1:0] outputListInstruction [61:0];
 logic [2:0] state;
 logic isAddressing;
 logic IS_STORE_ACC_INSTRUCT;
@@ -97,8 +16,10 @@ logic IS_STORE_X_INSTRUCT;
 logic IS_STORE_Y_INSTRUCT;
 logic passAddressing;
 logic jump; // to be fixed later // was kind of fixed later
+logic [5:0] instructionCode;
+logic [3:0] addressingCode;
 
-
+assign getInstructionPreInjection = outflags[END_INSTRUCTION]; // output flag to handle reset injection
 
 assign jump = ((instructionCode == BCC) & (!PSR_C)) | // eww
               ((instructionCode == BCS) & (PSR_C))  |
@@ -110,8 +31,20 @@ assign jump = ((instructionCode == BCC) & (!PSR_C)) | // eww
               ((instructionCode == BVS) & (PSR_V));
 
 
+state_machine state_machine(
+    .clk(clk),
+    .nrst(nrst),
+    .noAddressing(passAddressing),
+    .getInstruction(getInstructionPostInjection),
+    .endAddressing(outflags[END_ADDRESSING]),
+    .decodedInstruction(preFFInstructionCode),
+    .decodedAddress(preFFAddressingCode),
+    .currentInstruction(instructionCode),
+    .currentAddress(addressingCode),
+    .timeState(state),
+    .mode(isAddressing)
+);
 
-timing_generator u1(.timeOut(state), .clk(clk), .addressTimingCode(addressTimingCode), .opTimingCode(opTimingCode), .rst(rst), .isAddressing(isAddressing), .passAddressing(passAddressing) );
 
 always_comb begin : blockName
     
@@ -157,6 +90,8 @@ case(addressingCode)
                 outflags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
                 outflags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
                 outflags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+                outflags[END_ADDRESSING] = 1'b1;
+
             end
 
     end
@@ -196,6 +131,8 @@ case(addressingCode)
                 //funky store stuff
                 outflags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
                 outflags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
+
+                outflags[END_ADDRESSING] = 1'b1; // signal to end addressing
             end 
 
     end
@@ -235,6 +172,8 @@ case(addressingCode)
                 //funky store stuff
                 outflags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
                 outflags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
+
+                outflags[END_ADDRESSING] = 1'b1; // signal to end addressing
             end
 
     end
@@ -264,6 +203,8 @@ case(addressingCode)
                 //load ABL with ALU
                 outflags[SET_ADL_TO_ALU] = 1;
                 outflags[LOAD_ABL] = 1;
+
+                outflags[END_ADDRESSING] = 1'b1; // signal to end addressing
             end
 
     end
@@ -317,6 +258,8 @@ case(addressingCode)
                 //funky store stuff
                 outflags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
                 outflags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
+
+                outflags[END_ADDRESSING] = 1'b1; // signal to end addressing
             end
 
     end
@@ -383,6 +326,8 @@ case(addressingCode)
                 //funky store stuff
                 outflags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
                 outflags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
+
+                outflags[END_ADDRESSING] = 1'b1; // signal to end addressing
             end
 
     end
@@ -401,6 +346,8 @@ case(addressingCode)
                 outflags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
                 outflags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
                 outflags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+
+                outflags[END_ADDRESSING] = 1'b1; // signal to end addressing
             end
     end
     zpgX: begin                                        // addressing instruction zpgX
@@ -426,6 +373,8 @@ case(addressingCode)
                 outflags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
                 outflags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
                 outflags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+
+                outflags[END_ADDRESSING] = 1'b1; // signal to end addressing
             end
 
     end
@@ -452,6 +401,8 @@ case(addressingCode)
                 outflags[SET_SB_TO_X] = IS_STORE_X_INSTRUCT;
                 outflags[SET_SB_TO_Y] = IS_STORE_Y_INSTRUCT;
                 outflags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT | IS_STORE_X_INSTRUCT | IS_STORE_Y_INSTRUCT;
+
+                outflags[END_ADDRESSING] = 1'b1; // signal to end addressing
             end 
 
     end
@@ -514,7 +465,7 @@ case(instructionCode)
             
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
-
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -566,6 +517,7 @@ case(instructionCode)
             
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -624,6 +576,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -723,6 +677,8 @@ case(instructionCode)
 
             //Get ready to read next instruction
             outflags[LOAD_INSTRUCT] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -769,6 +725,8 @@ case(instructionCode)
             outflags[SET_PSR_N_TO_DB7] = 1;
             outflags[SET_PSR_V_TO_DB6] = 1;
             outflags[WRITE_ZERO_FLAG] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -905,6 +863,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -927,6 +887,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -949,6 +911,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -971,6 +935,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -993,6 +959,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1045,6 +1013,8 @@ case(instructionCode)
             
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
 
         end
         default: outflags = 0;
@@ -1099,6 +1069,8 @@ case(instructionCode)
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
 
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
+
         end
         default: outflags = 0;
     endcase
@@ -1151,6 +1123,8 @@ case(instructionCode)
             
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
 
         end
         default: outflags = 0;
@@ -1210,6 +1184,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1242,6 +1218,8 @@ case(instructionCode)
             //Move ALU to X
             outflags[SET_SB_TO_ALU] = 1;
             outflags[LOAD_X] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1274,6 +1252,8 @@ case(instructionCode)
             //Move ALU to Y
             outflags[SET_SB_TO_ALU] = 1;
             outflags[LOAD_Y] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1325,6 +1305,8 @@ case(instructionCode)
             
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1380,6 +1362,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1411,6 +1395,8 @@ case(instructionCode)
             //Move ALU to X
             outflags[SET_SB_TO_ALU] = 1;
             outflags[LOAD_X] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1442,6 +1428,8 @@ case(instructionCode)
             //Move ALU to Y
             outflags[SET_SB_TO_ALU] = 1;
             outflags[LOAD_Y] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1473,6 +1461,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1580,6 +1570,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1618,6 +1610,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1656,6 +1650,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1694,6 +1690,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1751,6 +1749,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1771,6 +1771,7 @@ case(instructionCode)
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
             
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1822,6 +1823,8 @@ case(instructionCode)
             
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1884,6 +1887,8 @@ case(instructionCode)
             //Set SP to SP-1
             outflags[SET_SB_TO_ALU] = 1;
             outflags[LOAD_SP] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -1946,6 +1951,8 @@ case(instructionCode)
             //Set SP to SP-1
             outflags[SET_SB_TO_ALU] = 1;
             outflags[LOAD_SP] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2009,6 +2016,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2071,6 +2080,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2129,6 +2140,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2187,6 +2200,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2289,6 +2304,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2370,6 +2387,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2428,6 +2447,8 @@ case(instructionCode)
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
 
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
+
         end
         default: outflags = 0;
     endcase
@@ -2450,6 +2471,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2472,6 +2495,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2494,6 +2519,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2515,6 +2542,8 @@ case(instructionCode)
             outflags[LOAD_ABH] = 1;
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2539,6 +2568,7 @@ case(instructionCode)
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
             
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2563,6 +2593,7 @@ case(instructionCode)
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
             
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2587,6 +2618,7 @@ case(instructionCode)
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
             
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2611,6 +2643,7 @@ case(instructionCode)
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
             
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2635,12 +2668,52 @@ case(instructionCode)
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
             
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
 
     end
     ASLA: begin                                          // code ASLA
+
+        outflags = 0;
+    case (state)
+        T0:  begin
+            //Set B and A to input data
+            outflags[SET_DB_TO_ACC] = 1;
+            outflags[SET_SB_TO_ACC] = 1;
+            outflags[SET_INPUT_A_TO_SB] = 1;
+            outflags[SET_INPUT_B_TO_DB] = 1;
+            
+            //Add them together
+            outflags[ALU_ADD] = 1;
+            outflags[LOAD_ALU] = 1;
+            
+            //SET FLAGS
+            outflags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+        end
+        T1: begin
+            //Increment PC and set ABH and ABL to PC
+            outflags[PC_INC] = 1;
+            outflags[SET_ADH_TO_PCH] = 1;
+            outflags[LOAD_ABH] = 1;
+            outflags[SET_ADL_TO_PCL] = 1;
+            outflags[LOAD_ABL] = 1;
+            
+            //Move ALU to ACC
+            outflags[SET_SB_TO_ALU] = 1;
+            outflags[LOAD_ACC] = 1;
+
+            //Set PSR FLAGS
+            outflags[SET_DB_TO_SB] = 1;
+            outflags[WRITE_ZERO_FLAG] = 1;
+            outflags[WRITE_NEGATIVE_FLAG] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
+        end
+        default: outflags = 0;
+    endcase
+
     end
     ROLA: begin                                          // code ROLA
         outflags = 0;
@@ -2675,6 +2748,8 @@ case(instructionCode)
             outflags[SET_DB_TO_SB] = 1;
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2711,6 +2786,8 @@ case(instructionCode)
             outflags[SET_DB_TO_SB] = 1;
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
             end
         default: outflags = 0;
     endcase
@@ -2750,6 +2827,8 @@ case(instructionCode)
             outflags[SET_DB_TO_SB] = 1;
             outflags[WRITE_ZERO_FLAG] = 1;
             outflags[WRITE_NEGATIVE_FLAG] = 1;
+
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase
@@ -2774,6 +2853,7 @@ case(instructionCode)
             outflags[SET_ADL_TO_PCL] = 1;
             outflags[LOAD_ABL] = 1;
             
+            outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
         end
         default: outflags = 0;
     endcase

@@ -1,7 +1,10 @@
 `default_nettype none
 
 
-`include "source/constants.sv"
+// `include "source/control_logic/state_machine.sv" 
+// `include "source/param_file.sv" 
+
+//`include "source/constants.sv"
 
 // `include "source/dataflow/alu.sv"
 // `include "source/dataflow/bridge.sv"
@@ -31,122 +34,67 @@ module top
   input  logic txready, rxready
 );
 
-  logic [100:0] flags;
-  logic [7:0] psrRegCurrentState;
-  logic nrst;
-  logic synchronizedLoad, edgeDetectLoad;
-  logic synchronizedFinishInterrupt, edgeDetectFinishInterrupt;
-  logic [7:0] externalDBRead;
-  logic setIFlag;
-
-  assign nrst = ~pb[19];
-  assign externalDBRead = 8'b11001010;
-
-  synchronizer loadSync(
-    .nrst(nrst),
-    .clk(hwclk),
-    .in(pb[2]),
-    .out(synchronizedLoad)
-  ); 
-
-  edgeDetector loadEdgeDetector(
-    .clk(hwclk),
-    .nrst(nrst),
-    .in(synchronizedLoad),
-    .out(edgeDetectLoad)
+  top8227 top8227(
+    .clk(hwclk), 
+    .nrst(~pb[19]), 
+    .nonMaskableInterrupt(pb[18]), 
+    .interruptRequest(pb[17]), 
+    .dataBusInput(pb[7:0]),
+    .dataBusOutput({ss7[7], ss6[7], ss5[7], ss4[7], ss3[7], ss2[7], ss1[7], ss0[7]}),
+    .AddressBusHigh(left),
+    .AddressBusLow(right),
   );
-
-  synchronizer finishInterruptSync(
-    .nrst(nrst),
-    .clk(hwclk),
-    .in(pb[3]),
-    .out(synchronizedFinishInterrupt)
-  ); 
-
-  edgeDetector finishInterruptEdgeDetector(
-    .clk(hwclk),
-    .nrst(nrst),
-    .in(synchronizedFinishInterrupt),
-    .out(edgeDetectFinishInterrupt)
-  );
-
-  internalDataflow dataflow(
-    .nrst(nrst), 
-    .clk(hwclk),
-    .flags(flags),
-    .externalDBRead(externalDBRead),
-    .externalAddressBusLowOutput(),
-    .externalAddressBusHighOutput(), 
-    .externalDBWrite(),
-    .psrRegToLogicController(psrRegCurrentState)
-  );
-
-  instructionLoader instructionLoader(
-    .clk(hwclk),
-    .nrst(nrst),
-    .nonMaskableInterrupt(pb[0]),
-    .interruptRequest(pb[1]),
-    .processStatusRegIFlag(psrRegCurrentState[2]),
-    .loadNextInstruction(edgeDetectLoad),
-    .externalDB(externalDBRead),
-    .currentInstruction(right),
-    .enableIFlag(setIFlag),
-    .nmiRunning(left[7]),
-    .resetRunning(left[6])
-  );
-
-    timing_generator u1(.clk(pb[0]), .addressTimingCode(3'b100), .opTimingCode(3'b001), .rst(pb[4]), .timeOut(right[2:0]), .isAddressing(red) );
-
+    
 endmodule
 
 
-module timing_generator (
-    input logic clk, rst,
-    input logic [2:0] addressTimingCode, opTimingCode,
-    output logic [2:0] timeOut,
-    output logic isAddressing
-);
+// module timing_generator (
+//   input logic clk, rst,
+//   input logic [2:0] addressTimingCode, opTimingCode,
+//   output logic [2:0] timeOut,
+//   output logic isAddressing
+// );
 
-logic [2:0] negTime, nextTime;
+// logic [2:0] negTime, nextTime;
 
-always_comb begin : comb_timingGenerator
-    nextTime = 3'b000;
-    timeOut = 3'b000;
-    if(negTime == 3'b000) begin
+// always_comb begin : comb_timingGenerator
+//     nextTime = 3'b000;
+//     timeOut = 3'b000;
+//     if(negTime == 3'b000) begin
 
-        if(isAddressing)
-            nextTime = opTimingCode; // goes from addressing to operations
-        else
-            nextTime = addressTimingCode; // goes from operations to addressing
+//       if(isAddressing)
+//         nextTime = opTimingCode; // goes from addressing to operations
+//       else
+//         nextTime = addressTimingCode; // goes from operations to addressing
 
-    end
-    else 
-        nextTime = negTime - 3'b001; // default behavior, decrements the next time
+//     end
+//     else 
+//         nextTime = negTime - 3'b001; // default behavior, decrements the next time
 
 
-    if(isAddressing)
-        timeOut = addressTimingCode - negTime; // conversion for addressing, adapts to count up behavior
-    else
-        timeOut = opTimingCode - negTime; // conversion for operations, see above
-end
+//     if(isAddressing)
+//         timeOut = addressTimingCode - negTime; // conversion for addressing, adapts to count up behavior
+//     else
+//         timeOut = opTimingCode - negTime; // conversion for operations, see above
+// end
 
-always_ff @( posedge clk, negedge rst ) begin : ff_timingGenerator
-        if(rst == 1'b0) begin
-            negTime = addressTimingCode;
-        end
-        else
-            negTime = nextTime; // sets the next time
+// always_ff @( posedge clk, negedge rst ) begin : ff_timingGenerator
+//         if(rst == 1'b0) begin
+//             negTime = addressTimingCode;
+//         end
+//         else
+//             negTime = nextTime; // sets the next time
         
-end 
+// end 
 
-always_ff @( posedge clk, negedge rst ) begin : ff_start_timingGenerator
-    if(rst == 1'b0) 
-        isAddressing = 1'b1;
-    else if(negTime == 3'b000)
-        isAddressing = ~isAddressing; // transition from addressing to operations and vice versa
-end
+// always_ff @( posedge clk, negedge rst ) begin : ff_start_timingGenerator
+//     if(rst == 1'b0) 
+//         isAddressing = 1'b1;
+//     else if(negTime == 3'b000)
+//         isAddressing = ~isAddressing; // transition from addressing to operations and vice versa
+// end
 
-endmodule
+// endmodule
 
 // module timingGenerator (
 //     input logic clk, rst,

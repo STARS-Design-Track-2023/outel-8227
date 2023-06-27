@@ -1,27 +1,11 @@
-parameter A0 = 2'b00;
-parameter A1 = 2'b01;
-parameter A2 = 2'b10;
-parameter A3 = 2'b11;
-
-parameter T0 = 3'b000;
-parameter T1 = 3'b001;
-parameter T2 = 3'b010;
-parameter T3 = 3'b011;
-parameter T4 = 3'b100;
-parameter T5 = 3'b101;
-parameter T6 = 3'b110; // DONT FORGET TO REPLACE THIS WITH A #include param_file in the future
-
-parameter INSTRUCTION = 1'b1;
-parameter ADDRESS= 1'b0;
-
-module newTimingGenerator(
-input logic clk, rst, noAddressing, getInstruction, endAddressing,
-input logic [5:0] decodedInstruction,
-input logic [3:0] decodedAddress,
-output logic [5:0] currentInstruction,
-output logic [3:0] currentAddress,
-output logic [2:0] timeState,
-output logic mode
+module state_machine(
+    input logic clk, nrst, noAddressing, getInstruction, endAddressing,
+    input logic [5:0] decodedInstruction,
+    input logic [3:0] decodedAddress,
+    output logic [5:0] currentInstruction,
+    output logic [3:0] currentAddress,
+    output logic [2:0] timeState,
+    output logic mode
 );
 
 logic nextMode;
@@ -65,23 +49,24 @@ always_comb begin : comb_OPCode
     end
 end
 
-always_ff @( posedge clk, negedge rst) begin : ff_timingGeneration_mode
-    if(rst == 1'b0)
+always_ff @( posedge clk, negedge nrst) begin : ff_timingGeneration_mode
+    if(nrst == 1'b0)
         mode = ADDRESS;
     else
         mode = nextMode;
 end
 
-always_ff @( posedge clk, negedge rst) begin : ff_timingGeneration_timeState
-    if(rst == 1'b0)
+always_ff @( posedge clk, negedge nrst) begin : ff_timingGeneration_timeState
+    if(nrst == 1'b0)
         timeState = T0;
     else
         timeState = nextTime;
 end
 
-always_ff @( posedge clk, negedge rst) begin : ff_OPCode
-    if(rst == 1'b0) begin
-    // DO RESET BEHAVIOR: THIS HASN'T BEEN DETERMINED QUITE YET
+always_ff @( posedge clk, negedge nrst) begin : ff_OPCode
+    if(nrst == 1'b0) begin
+        currentInstruction = 0;
+        currentAddress = 0; 
     end
     else begin
         currentInstruction = nextInstruction;
