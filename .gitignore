@@ -1,1 +1,4 @@
 source/top.sv
+TestFormat.gtkw
+dump.vcd
+sim_build/sim_source.vvp
