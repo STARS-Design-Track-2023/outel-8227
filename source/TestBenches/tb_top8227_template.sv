@@ -17,6 +17,9 @@ module tb_8227_template ();
   logic [7:0]          tb_AddressBusHigh;
   logic [7:0]          tb_AddressBusLow;
 
+  logic [7:0]          targetLowAddress;
+  logic [7:0]          targetHighAddress;
+
   // Clock generation block
   always begin
     // Start with clock low to avoid false rising edge events at t=0
@@ -70,7 +73,7 @@ module tb_8227_template ();
   
   // Test Cases
   initial begin
-    assign test_name = "Reset";
+    test_name = "Reset";
     reset_dut();
 
     // Initialize all of the test inputs
@@ -79,29 +82,78 @@ module tb_8227_template ();
     // Wait some time before starting first test case
     #(0.1);
     @(negedge tb_clk);
-
+    targetLowAddress = 8'bx;
+    targetHighAddress = 8'bx;
 //--------------------------------------------------------------------------------------------
-//----------------------------------------Example Test----------------------------------------
+//-----------------------------------------RESET SEQUENCE-------------------------------------
 //--------------------------------------------------------------------------------------------
 
-    assign test_name = "Example Test";
+    @(posedge tb_clk);
+    test_name = "Boot Up sequence Reset";
 
-    //Clock Cycle 1
-    assign tb_nonMaskableInterrupt = 1'b0;
-    assign tb_interruptRequest = 1'b0;
-    assign tb_dataBusInput = 8'b0;
+    tb_nrst = 1'b0;
+    @(negedge tb_clk);
     @(negedge tb_clk);
 
-    //Clock Cycle 2
-    assign tb_nonMaskableInterrupt = 1'b0;
-    assign tb_interruptRequest = 1'b0;
-    assign tb_dataBusInput = 8'b0;
+    //Clk 1
     @(negedge tb_clk);
+    tb_nrst = 1'b1;
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 1";
+
+    //Clk 2
+    @(negedge tb_clk);
+
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 2";
+
+    //Clk 3
+    @(negedge tb_clk);
+
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 3";
+
+    //Clk 4
+    @(negedge tb_clk);
+
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 4";
+
+    //Clk 5
+    @(negedge tb_clk);
+    
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 5";
+
+    //Clk 6
+    @(negedge tb_clk);
+    tb_dataBusInput = 8'HDD;
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 6";
+
+    //Clk 7
+    @(negedge tb_clk);
+    tb_dataBusInput = 8'HCC;
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 7";
+
+//--------------------------------------------------------------------------------------------
+//----------------------------------------Next Instruction------------------------------------
+//--------------------------------------------------------------------------------------------
+
+    @(posedge tb_clk);
+    test_name = "Next Opcode";
+
+    //Clk 0
+    @(negedge tb_clk);
+    tb_dataBusInput = 8'H00;//Put the opcode for the next instruction here
+    @(posedge tb_clk);
 
 //--------------------------------------------------------------------------------------------
 //------------------------------------End Example Test----------------------------------------
 //--------------------------------------------------------------------------------------------
 
+    test_name = "Finishing";
     @(negedge tb_clk);
 
     //Wait a bit and end the simulation
