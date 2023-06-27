@@ -240,9 +240,9 @@ module tb_internalDataflow ();
     assign tb_flags[LOAD_OVERFLOW_PSR_FLAG] = 1;
     @(negedge tb_clk);
 
-    assign test_name = "Process Reg zeros";
+    assign test_name = "Process Reg 1";
     reset_flags();
-    assign tb_externalDBRead = 8'b00000000;
+    assign tb_externalDBRead = 8'b00000001;
     assign tb_flags[SET_DB_TO_DATA] = 1;
     assign tb_flags[SET_PSR_C_TO_DB0] = 1;
     assign tb_flags[SET_PSR_Z_TO_DB1] = 1;
@@ -254,7 +254,7 @@ module tb_internalDataflow ();
 
     assign test_name = "ROL (simulated addressing mode)";  //T0
     reset_flags();
-    assign tb_externalDBRead = 8'b10000001;
+    assign tb_externalDBRead = 8'b10101010;
     assign tb_flags[SET_DB_TO_DATA] = 1;
     assign tb_flags[SET_SB_TO_DB] = 1;
     assign tb_flags[SET_INPUT_A_TO_SB] = 1;
@@ -289,6 +289,35 @@ module tb_internalDataflow ();
     assign tb_flags[LOAD_ABH] = 1;
     assign tb_flags[SET_ADL_TO_PCL] = 1;
     assign tb_flags[LOAD_ABL] = 1;
+    @(negedge tb_clk);
+
+    assign test_name = "CMP";
+    reset_flags();           //T0
+    assign tb_flags[PC_INC] = 1;
+    assign tb_flags[SET_ADH_TO_PCH] = 1;
+    assign tb_flags[LOAD_ABH] = 1;
+    assign tb_flags[SET_ADL_TO_PCL] = 1;
+    assign tb_flags[LOAD_ABL] = 1;
+    assign tb_flags[SET_DB_TO_DATA] = 1;
+    assign tb_flags[SET_INPUT_B_TO_NOT_DB] = 1;
+    assign tb_flags[SET_ALU_CARRY_HIGH] = 1;
+    assign tb_flags[SET_SB_TO_ACC] = 1;
+    assign tb_flags[SET_INPUT_A_TO_SB] = 1;
+    assign tb_flags[ALU_ADD] = 1;
+    assign tb_flags[LOAD_ALU] = 1;
+    assign tb_flags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
+    @(negedge tb_clk);
+
+    reset_flags();
+    assign tb_flags[PC_INC] = 1;
+    assign tb_flags[SET_ADH_TO_PCH] = 1;
+    assign tb_flags[LOAD_ABH] = 1;
+    assign tb_flags[SET_ADL_TO_PCL] = 1;
+    assign tb_flags[LOAD_ABL] = 1;
+    assign tb_flags[SET_SB_TO_ALU] = 1;
+    assign tb_flags[SET_DB_TO_SB] = 1;
+    assign tb_flags[WRITE_ZERO_FLAG] = 1;
+    assign tb_flags[WRITE_NEGATIVE_FLAG] = 1;
     @(negedge tb_clk);
 
     @(negedge tb_clk);

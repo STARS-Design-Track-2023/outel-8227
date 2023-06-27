@@ -248,7 +248,7 @@ module internalDataflow(
         .lda_sb(flags[SET_INPUT_A_TO_SB]),
         .lda_zero(flags[SET_INPUT_A_TO_LOW]),
         .enable_dec(flags[SET_ALU_DEC_TO_PSR_DEC]),
-        .carry_in(flags[SET_ALU_CARRY_HIGH]),
+        .carry_in(flags[SET_ALU_CARRY_HIGH] || flags[SET_ALU_CARRY_TO_PSR_CARRY]),
         .e_sum(flags[ALU_ADD]),
         .e_and(flags[ALU_AND]),
         .e_eor(flags[ALU_XOR]),
