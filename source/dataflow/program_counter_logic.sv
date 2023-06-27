@@ -4,20 +4,17 @@ module programCounterLogic (
     output logic [7:0] output_lowbyte, output_highbyte      //address output of the PC
 );
 
-    logic [7:0] address;
-    assign address = {input_lowbyte}; //inputs are operated on as a whole
-    
-    // logic [15:0] address;
-    // assign address = {input_highbyte, input_lowbyte}; //inputs are operated on as a whole
+    logic [15:0] address;
+    assign address = {input_highbyte, input_lowbyte}; //inputs are operated on as a whole
     
 
-    // logic [15:0] nextAddress;
-    // always_comb begin
-    //     if(increment) nextAddress = address + 1;
-    //     else if(decrement) nextAddress = address - 1;
-    //     else nextAddress = address;
-    // end
+    logic [15:0] nextAddress;
+    always_comb begin
+        if(increment) nextAddress = address + 1;
+        else if(decrement) nextAddress = address - 1;
+        else nextAddress = address;
+    end
 
-    // assign output_lowbyte = nextAddress[7:0];
-    // assign output_highbyte = nextAddress[15:8];
+    assign output_lowbyte = nextAddress[7:0];
+    assign output_highbyte = nextAddress[15:8];
 endmodule

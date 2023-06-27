@@ -4,9 +4,13 @@ module decoder (
     output logic [3:0] ADDRESS
 );
 
-    logic [2:0] a = opcode[7:5];
-    logic [2:0] b = opcode[4:2];
-    logic [1:0] c = opcode[1:0];
+    logic [2:0] a;
+    logic [2:0] b;
+    logic [1:0] c;
+
+    assign a = opcode[7:5];
+    assign b = opcode[4:2];
+    assign c = opcode[1:0];
 
     logic storeA;
     logic storeX;

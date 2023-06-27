@@ -17,6 +17,7 @@ module top8227 (
     logic       nmiRunning, resetRunning;
     logic [NUMFLAGS-1:0] flags;
     logic getInstructionPreInjection, getInstructionPostInjection;
+    logic setIFlag;
 
     assign readNotWrite = flags[SET_WRITE_FLAG];
     assign dataBusInput = dataBusGPIO;
@@ -48,6 +49,7 @@ module top8227 (
         .resetRunning(resetRunning),
         .instructionRegReadEnable(getInstructionPostInjection)
     );
+
 
     decoder decoder(
         .opcode(opcodeCurrentValue),
