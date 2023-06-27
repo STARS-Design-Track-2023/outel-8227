@@ -58,7 +58,6 @@ case(instructionCode)
     STX: IS_STORE_Y_INSTRUCT = 1'b1;
     default: IS_STORE_ACC_INSTRUCT = 1'b0;
 endcase
-jump = 0; // THIS IS WHERE WE STOPPED FRIDAY
 if(addressingCode == IMMEDIATE | addressingCode == implied | addressingCode == A) // bypasses Addressing
     passAddressing = 1'b1;
 else
