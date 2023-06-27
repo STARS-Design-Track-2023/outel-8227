@@ -115,58 +115,65 @@ module tb_8227_template ();
 
     //Clk 4
     @(negedge tb_clk);
-    tb_dataBusInput = 8'HCC;
+
     @(posedge tb_clk);
     test_name = "Boot Seq clk 4";
 
     //Clk 5
     @(negedge tb_clk);
-    tb_dataBusInput = 8'HDD;
+    
     @(posedge tb_clk);
     test_name = "Boot Seq clk 5";
 
     //Clk 6
     @(negedge tb_clk);
-
+    tb_dataBusInput = 8'HDD;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 6";
-    
-    //Clock Cycle 1
-    tb_nonMaskableInterrupt = 1'b0;
-    tb_interruptRequest = 1'b0;
-    tb_dataBusInput = 8'Hxx;
-    @(negedge tb_clk);
-    targetLowAddress = 8'bx;
-    targetHighAddress = 8'b00;
 
+    //Clk 7
     @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-
+    tb_dataBusInput = 8'HCC;
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 7";
 
 //--------------------------------------------------------------------------------------------
 //----------------------------------------LDA, ZPG--------------------------------------------
-//--------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------    
 
-    @(posedge tb_clk);
-    test_name = "Example Test";
-
-    //Clock Cycle 1
-    tb_nonMaskableInterrupt = 1'b0;
-    tb_interruptRequest = 1'b0;
-    tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
+    //Clk 0
     @(negedge tb_clk);
+    tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
+    @(posedge tb_clk);
+    test_name = "LDA, ZPG";
     targetLowAddress = 8'bx;
     targetHighAddress = 8'b00;
 
-    //Clock Cycle 2
-    tb_nonMaskableInterrupt = 1'b0;
-    tb_interruptRequest = 1'b0;
-    tb_dataBusInput = 8'H99;//Put the address of the word onto the data bus
+    //Clk 1
+    @(negedge tb_clk);
+    tb_dataBusInput = 8'H99;//Put goal address on ZPG
+    @(posedge tb_clk);
     targetLowAddress = 8'H99;
     targetHighAddress = 8'H00;
+
+    //Clk 1
     @(negedge tb_clk);
+    tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
+    @(posedge tb_clk);
+    targetLowAddress = 8'H99;
+    targetHighAddress = 8'H00;
+
+//--------------------------------------------------------------------------------------------
+//----------------------------------------Next Instruction------------------------------------
+//--------------------------------------------------------------------------------------------
+
+    @(posedge tb_clk);
+    test_name = "Next Opcode";
+
+    //Clk 0
+    @(negedge tb_clk);
+    tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
+    @(posedge tb_clk);
 
 //--------------------------------------------------------------------------------------------
 //------------------------------------End Example Test----------------------------------------
