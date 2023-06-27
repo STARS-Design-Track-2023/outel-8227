@@ -200,5 +200,5 @@ parameter zpgX = 4'd11;
 parameter zpgY = 4'd12; 
 parameter implied = 4'd13; // END OF ADDRESSING PARAMETERS
 
-parameter INSTRUCTION = 1'b1;
-parameter ADDRESS= 1'b0;
+parameter INSTRUCTION = 1'b0;
+parameter ADDRESS= 1'b1;
