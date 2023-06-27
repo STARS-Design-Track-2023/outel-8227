@@ -5,7 +5,8 @@ module demux(
     input logic getInstructionPostInjection,
     output logic getInstructionPreInjection,
     output logic [NUMFLAGS - 1:0] outflags,
-    input logic setInterruptFlag
+    input logic setInterruptFlag,
+    input logic enableFFs
 );
 
 logic  [NUMFLAGS - 1:0] outputListAddressing [13:0] ;
@@ -35,6 +36,7 @@ assign jump = ((instructionCode == BCC) & (!PSR_C)) | // eww
 state_machine state_machine(
     .clk(clk),
     .nrst(nrst),
+    .enableFFs(enableFFs),
     .noAddressing(passAddressing),
     .getInstruction(getInstructionPostInjection),
     .endAddressing(outflags[END_ADDRESSING]),
@@ -59,7 +61,7 @@ always_comb begin : blockName
         STX: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
-    if(addressingCode == IMMEDIATE | addressingCode == impl | addressingCode == A) // bypasses Addressing (impl from param_file)
+    if(preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == A) // bypasses Addressing (impl from param_file)
         passAddressing = 1'b1;
     else
         passAddressing = 1'b0;
@@ -642,8 +644,7 @@ always_comb begin : blockName
                         outflags[SET_ADL_TO_PCL] = 1;
                         outflags[LOAD_ABL] = 1;
 
-                        //Get ready to read next instruction
-                        outflags[LOAD_INSTRUCT] = 1;
+                        outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                     end
                 end
                 T2: begin
@@ -666,9 +667,7 @@ always_comb begin : blockName
                         outflags[LOAD_ABH] = 1;
                         outflags[SET_ADL_TO_PCL] = 1;
                         outflags[LOAD_ABL] = 1;
-
-                        //Get ready to read next instruction
-                        outflags[LOAD_INSTRUCT] = 1;
+                        outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                     end
                 end
                 T3: begin
@@ -681,8 +680,6 @@ always_comb begin : blockName
                     outflags[SET_ADL_TO_PCL] = 1;
                     outflags[LOAD_ABL] = 1;
 
-                    //Get ready to read next instruction
-                    outflags[LOAD_INSTRUCT] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end

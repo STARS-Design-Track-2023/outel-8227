@@ -16,6 +16,11 @@ module tb_8227_template ();
   logic [7:0]          tb_dataBusOutput;
   logic [7:0]          tb_AddressBusHigh;
   logic [7:0]          tb_AddressBusLow;
+  logic                tb_dataBusEnable;
+  logic                tb_ready;
+  logic                tb_sync; 
+  logic                tb_readNotWrite;  
+  logic                tb_tb_setOverflow;
 
   logic [7:0]          targetLowAddress;
   logic [7:0]          targetHighAddress;
@@ -62,7 +67,12 @@ module tb_8227_template ();
     .dataBusInput(tb_dataBusInput),
     .dataBusOutput(tb_dataBusOutput),
     .AddressBusHigh(tb_AddressBusHigh),
-    .AddressBusLow(tb_AddressBusLow)
+    .AddressBusLow(tb_AddressBusLow),
+    .dataBusEnable(tb_dataBusEnable), 
+    .ready(tb_ready),
+    .sync(tb_sync), 
+    .readNotWrite(tb_readNotWrite),
+    .setOverflow(tb_setOverflow)
   );
 
   // Signal Dump
@@ -84,6 +94,9 @@ module tb_8227_template ();
     @(negedge tb_clk);
     targetLowAddress = 8'bx;
     targetHighAddress = 8'bx;
+
+    tb_ready = 1'b1;
+    tb_setOverflow = 1'b0;
 //--------------------------------------------------------------------------------------------
 //-----------------------------------------RESET SEQUENCE-------------------------------------
 //--------------------------------------------------------------------------------------------
