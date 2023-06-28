@@ -1,6 +1,11 @@
 source/top.sv
+<<<<<<< HEAD
 source/top8227.sv
 Makefile
 TestFormat.gtkw
 xt
+=======
+TestFormat.gtkw
+dump.vcd
+>>>>>>> 9f4aabda964631b18e0edb33bdaf4d63fdbf45c8
 sim_build/sim_source.vvp

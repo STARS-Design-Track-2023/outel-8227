@@ -1,5 +1,5 @@
 module nmiGeneratedFF (
-    input logic clk, nrst,
+    input logic clk, nrst, enableFFs,
     input logic processStatusRegIFlag,
     input logic synchronizedNMI,
     input logic interruptAcknowleged,
@@ -31,6 +31,8 @@ module nmiGeneratedFF (
         begin
             nextNMIGenerated = nmiGenerated;
         end
+        if(~enableFFs)
+            nextNMIGenerated = nmiGenerated;
     end
 
     always_ff @(posedge clk, negedge nrst) begin : nmiAssignment

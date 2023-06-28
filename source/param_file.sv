@@ -104,10 +104,17 @@ parameter SET_BREAK_HIGH = 74;
 parameter SET_NEGATIVE_FLAG_LOW = 75;
 parameter SET_SB_TO_ADH = 76;
 parameter SET_ADH_TO_ONE = 77;
+<<<<<<< HEAD
 parameter END_INSTRUCTION = 78;
 parameter SET_FREE_CARRY_FLAG_TO_ALU = 79;
 parameter SET_ALU_CARRY_TO_FREE_CARRY = 80;
 parameter END_ADDRESSING = 81;
+=======
+parameter SET_FREE_CARRY_FLAG_TO_ALU = 79;
+parameter SET_ALU_CARRY_TO_FREE_CARRY = 80;
+parameter END_ADDRESSING = 81;
+parameter END_INSTRUCTION = 78;
+>>>>>>> 9f4aabda964631b18e0edb33bdaf4d63fdbf45c8
 
 parameter A0 = 3'b00;
 parameter A1 = 3'b01;

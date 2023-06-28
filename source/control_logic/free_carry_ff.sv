@@ -1,5 +1,5 @@
 module free_carry_ff (
-input logic clk, nrst, ALUcarry, en,
+input logic clk, nrst, ALUcarry, en, enableFFs,
 output logic freeCarry
 );
 
@@ -9,6 +9,8 @@ always_comb begin : comb_free_carry_ff
         freeCarryNext = ALUcarry;
     else 
         freeCarryNext = freeCarry;      // do not update
+    if(~enableFFs)
+        freeCarryNext = freeCarry;
 end
 
 always_ff @( posedge clk, negedge nrst ) begin : ff_free_carry_ff
