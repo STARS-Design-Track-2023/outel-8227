@@ -55,6 +55,7 @@ processStatusReg processStatusReg(
 
 //Output Logic:  PSR_RCL always has the signal.  PSR_DB can be disabled (but will write to the internal data bus when enabled)
 assign PSR_RCL = internalFFOutput;
-busInterface outputInterface(.interfaceInput(internalFFOutput), .enable(enableDBWrite), .interfaceOutput(PSR_DB));
+assign PSR_DB = internalFFOutput;
+//busInterface outputInterface(.interfaceInput(internalFFOutput), .enable(enableDBWrite), .interfaceOutput(PSR_DB));
 
 endmodule
