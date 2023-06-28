@@ -5,7 +5,8 @@ module state_machine(
     output logic [5:0] currentInstruction,
     output logic [3:0] currentAddress,
     output logic [2:0] timeState,
-    output logic mode
+    output logic mode,
+    input logic enableFFs
 );
 
 logic nextMode;
@@ -32,6 +33,11 @@ always_comb begin : comb_timingGeneration
         default: nextTime = T0;
         endcase
     end
+    if(~enableFFs)
+    begin
+        nextTime = timeState;
+        nextMode = mode;
+    end
 
 end
 
@@ -47,6 +53,11 @@ always_comb begin : comb_OPCode
     else begin
         nextInstruction = currentInstruction; 
         nextAddress = currentAddress; 
+    end
+    if(~enableFFs)
+    begin
+        nextInstruction = currentInstruction;
+        nextAddress = currentAddress;
     end
 end
 
