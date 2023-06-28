@@ -17,7 +17,7 @@ always_comb begin : comb_timingGeneration
         nextTime = T0;
     end
     else if(getInstruction) begin // it is on the last stage of the instruction
-        nextMode = ADDRESS; 
+        nextMode = ADDRESS;
         nextTime = T0;
     end
     else begin
@@ -43,6 +43,7 @@ end
 
 logic [5:0] nextInstruction;
 logic [3:0] nextAddress;
+
 always_comb begin : comb_OPCode
 
     if(getInstruction) begin
@@ -53,7 +54,8 @@ always_comb begin : comb_OPCode
         nextInstruction = currentInstruction; 
         nextAddress = currentAddress; 
     end
-    if(~enableFFs)
+    
+    if(~enableFFs) // code that disables the state machine when unready
     begin
         nextInstruction = currentInstruction;
         nextAddress = currentAddress;
