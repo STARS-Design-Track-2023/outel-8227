@@ -361,10 +361,15 @@ always_comb begin : blockName
                         
                     end else if(state == A3)begin
                         //Load data values:Data2+C,Data1+Y
-                        outflags[SET_ADH_TO_DATA] = 1;
+
+                        outflags[SET_SB_TO_ALU] = 1;
+                        outflags[SET_ADH_TO_SB] = 1;
                         outflags[LOAD_ABH] = 1;
-                        outflags[SET_ADL_TO_ALU] = 1;
-                        outflags[LOAD_ABL] = 1;
+                        
+                        // outflags[SET_ADH_TO_DATA] = 1;
+                        // outflags[LOAD_ABH] = 1;
+                        // outflags[SET_ADL_TO_ALU] = 1;
+                        // outflags[LOAD_ABL] = 1;
                         //funky store stuff
                         outflags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
                         outflags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;

@@ -259,7 +259,8 @@ module internalDataflow(
         .e_shiftr(flags[ALU_R_SHIFT]),
         .carry_out(aluCarryOut),
         .overflow(aluOverflowOut),
-        .alu_out(aluOutput)
+        .alu_out(aluOutput),
+        .subtracting(flags[SET_ALU_DEC_TO_PSR_DEC]&flags[SET_INPUT_B_TO_NOT_DB])
     );
 
     // Process Status Register
