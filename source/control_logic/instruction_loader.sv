@@ -1,5 +1,5 @@
 module instructionLoader (
-    input logic clk, nrst,
+    input logic clk, nrst, enableFFs,
     input logic nonMaskableInterrupt, interruptRequest, processStatusRegIFlag, loadNextInstruction,
     input logic [7:0] externalDB,
     // output logic [7:0] currentInstruction,
@@ -15,6 +15,7 @@ module instructionLoader (
     interruptInjector interruptInjector(
         .clk(clk),
         .nrst(nrst),
+        .enableFFs(enableFFs),
         .nonMaskableInterrupt(nonMaskableInterrupt),
         .interruptRequest(interruptRequest), //Inputs from exterior (could be buttons outside IC)
         .processStatusRegIFlag(processStatusRegIFlag),

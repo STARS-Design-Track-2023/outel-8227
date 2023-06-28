@@ -1,5 +1,5 @@
 module nmiRunningFF (
-    input logic clk, nrst,
+    input logic clk, nrst, enableFFs,
     input logic processStatusRegIFlag,
     input logic synchronizedNMI,
     input logic interruptAcknowleged,
@@ -31,6 +31,8 @@ module nmiRunningFF (
         begin
             nextNMIRunning = nmiRunning;
         end
+        if(~enableFFs)
+            nextNMIRunning = nmiRunning;
     end
 
     always_ff @(posedge clk, negedge nrst) begin : nmiAssignment
