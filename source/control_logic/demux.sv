@@ -2536,6 +2536,12 @@ always_comb begin : blockName
                 T0: begin
                     //Set FLAG
                     outflags[SET_WRITE_FLAG] = 1;
+                    
+                    outflags[PC_INC] = 1;
+                    outflags[SET_ADH_TO_PCH] = 1;
+                    outflags[LOAD_ABH] = 1;
+                    outflags[SET_ADL_TO_PCL] = 1;
+                    outflags[LOAD_ABL] = 1;
                 
                 end
                 T1: begin
