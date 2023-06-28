@@ -17,9 +17,10 @@ module top8227 (
     logic getInstructionPreInjection, getInstructionPostInjection;
     logic setIFlag;
     logic enableFFs;
+    logic slow_pulse; // used to slow down the cpu so it can access memory
 
     assign readNotWrite = ~preFlags[SET_WRITE_FLAG];
-    assign enableFFs = ready | ~readNotWrite;
+    assign enableFFs = (ready | ~readNotWrite) & slow_pulse;
     
     assign sync = flags[END_INSTRUCTION];
 
@@ -33,6 +34,12 @@ module top8227 (
         else
             flags = 0;
     end
+
+ pulse_slower pulse_slower(
+.clk(clk), 
+.nrst(nrst), 
+.slow_pulse(slow_pulse)
+);
 
     internalDataflow internalDataflow(
         .nrst(nrst),

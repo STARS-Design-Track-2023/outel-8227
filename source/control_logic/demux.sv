@@ -2879,6 +2879,9 @@ always_comb begin : blockName
         outflags[PSR_DATA_TO_LOAD] = 1'b1;
     end
 
+
+if(~enableFFs) // VERY IMPORTANT: THIS HALTS 2/3RDS OF CLOCK CYCLES
+    outflags = 0;
 end
 
 endmodule

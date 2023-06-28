@@ -54,7 +54,8 @@ always_comb begin : comb_OPCode
         nextInstruction = currentInstruction; 
         nextAddress = currentAddress; 
     end
-    if(~enableFFs)
+    
+    if(~enableFFs) // code that disables the state machine when unready
     begin
         nextInstruction = currentInstruction;
         nextAddress = currentAddress;
