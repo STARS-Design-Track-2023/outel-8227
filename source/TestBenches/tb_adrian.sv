@@ -141,13 +141,7 @@ module tb_8227_template ();
 //----------------------------------------Next Instruction------------------------------------
 //--------------------------------------------------------------------------------------------
 
-    @(posedge tb_clk);
-    test_name = "Next Opcode";
 
-    //Clk 0
-    @(negedge tb_clk);
-    tb_dataBusInput = 8'H00;//Put the opcode for the next instruction here
-    @(posedge tb_clk);
 
 //--------------------------------------------------------------------------------------------
 //------------------------------------End Example Test----------------------------------------
@@ -162,18 +156,22 @@ module tb_8227_template ();
     test_name = "Get CMP opcode";
 
     @(negedge tb_clk);                  //T1
+    tb_dataBusInput = 8'hAA;
     @(posedge tb_clk);
-    test_name = "fetching address"
+    test_name = "fetching address";
 
     @(negedge tb_clk);                  //T2
+    tb_dataBusInput = 8'hAA;
     @(posedge tb_clk);
-    test_name = "fetching address"
+    test_name = "fetching address";
 
-    @(negedge tb_clk);
-    
-
+    @(negedge tb_clk);                  //T3
+    tb_dataBusInput = 8'h01;
+    @(posedge tb_clk);
+    test_name = "get data";
     //end adrian's testing
 
+    @(posedge tb_clk);
     test_name = "Finishing";
     @(negedge tb_clk);
 
