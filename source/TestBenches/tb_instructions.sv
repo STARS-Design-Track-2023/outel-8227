@@ -12,42 +12,13 @@ module tb_8227_template ();
   logic                tb_nrst;
   logic                tb_nonMaskableInterrupt;
   logic                tb_interruptRequest;
-  logic [7:0]          tb_dataBusGPIO;
+  logic [7:0]          tb_dataBusInput;
+  logic [7:0]          tb_dataBusOutput;
   logic [7:0]          tb_AddressBusHigh;
   logic [7:0]          tb_AddressBusLow;
-  logic                tb_dataBusEnable;
-  logic                tb_ready;
-  logic                tb_sync; 
-  logic                tb_readNotWrite;
-  logic                tb_setOverflow;
 
   logic [7:0]          targetLowAddress;
   logic [7:0]          targetHighAddress;
-
-  logic [524287:0]          memory;
-
-  always_comb begin : memoryAssignment
-    memory = 0;
-    memory[8*16'HFFFC+:8] = 8'HDD;//ADL of reset pointer
-    memory[8*16'HFFFD+:8] = 8'HCC;//ADH of reset Pointer
-    
-    memory[8*16'H0099+:8] = 8'H73;//memory to test lda,zpg      (30, 10)
-    memory[8*16'HCCDD+:8] = 8'HA5;//program start
-    memory[8*16'HCCDE+:8] = 8'H99;
-
-    memory[8*16'HCCDF+:8] = 8'H85;//STA, ZPG (50)               (48, 10)
-    memory[8*16'HCCE0+:8] = 8'H50;
-
-  end
-
-  //Memory loop
-  always_ff @(negedge tb_clk) begin
-    //Update the memory and databuses on negative clock edges
-    if(tb_readNotWrite)
-      tb_dataBusInput = memory[8*(256*tb_AddressBusHigh + tb_AddressBusLow) +:8];//8*(8*(tb_AddressBusHigh) + tb_AddressBusLow) +:8];
-    else
-      memory[8*(256*tb_AddressBusHigh + tb_AddressBusLow) +:8] = tb_dataBusOutput;
-  end
 
   // Clock generation block
   always begin
@@ -73,17 +44,10 @@ module tb_8227_template ();
     // Wait until safely away from rising edge of the clock before releasing
     @(negedge tb_clk);
     tb_nrst = 1'b1;
-    assign tb_nonMaskableInterrupt = 0;
-    assign tb_interruptRequest = 0;
-    assign tb_dataBusGPIO = 8'h00;
 
     // Leave out of reset for a couple cycles before allowing other stimulus
     // Wait for negative clock edges, 
     // since inputs to DUT should normally be applied away from rising clock edges
-    @(negedge tb_clk);
-    @(negedge tb_clk); 
-    @(negedge tb_clk);
-    @(negedge tb_clk);
     @(negedge tb_clk);
     @(negedge tb_clk);
   end
@@ -95,14 +59,10 @@ module tb_8227_template ();
     .nrst(tb_nrst), 
     .nonMaskableInterrupt(tb_nonMaskableInterrupt), 
     .interruptRequest(tb_interruptRequest),
-    .dataBusGPIO(dataBusGPIO),
+    .dataBusInput(tb_dataBusInput),
+    .dataBusOutput(tb_dataBusOutput),
     .AddressBusHigh(tb_AddressBusHigh),
-    .AddressBusLow(tb_AddressBusLow),
-    .dataBusEnable(tb_dataBusEnable), 
-    .ready(tb_ready),
-    .sync(tb_sync), 
-    .readNotWrite(tb_readNotWrite),
-    .setOverflow(tb_setOverflow)
+    .AddressBusLow(tb_AddressBusLow)
   );
 
   // Signal Dump
@@ -124,10 +84,6 @@ module tb_8227_template ();
     @(negedge tb_clk);
     targetLowAddress = 8'bx;
     targetHighAddress = 8'bx;
-
-    tb_ready = 1'b1;
-    tb_setOverflow = 1'b0;
-    
 //--------------------------------------------------------------------------------------------
 //-----------------------------------------RESET----------------------------------------------
 //--------------------------------------------------------------------------------------------
@@ -151,17 +107,9 @@ module tb_8227_template ();
     @(posedge tb_clk);
     test_name = "Boot Seq clk 2";
 
-    @(negedge tb_clk);
-    tb_ready = 1'b0;
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    
-
     //Clk 3
     @(negedge tb_clk);
-    tb_ready = 1'b1;
+
     @(posedge tb_clk);
     test_name = "Boot Seq clk 3";
 
@@ -179,13 +127,13 @@ module tb_8227_template ();
 
     //Clk 6
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HDD;
+    tb_dataBusInput = 8'HDD;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 6";
 
     //Clk 7
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HCC;
+    tb_dataBusInput = 8'HCC;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 7";
 
@@ -195,22 +143,25 @@ module tb_8227_template ();
 
     //Clk 0
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
+    tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
     @(posedge tb_clk);
-    test_name = "Program Start";
+    test_name = "LDA, ZPG";
+    targetLowAddress = 8'bx;
+    targetHighAddress = 8'b00;
 
     //Clk 1
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'H99;//Put goal address on ZPG
+    tb_dataBusInput = 8'H99;//Put goal address on ZPG
     @(posedge tb_clk);
+    targetLowAddress = 8'H99;
+    targetHighAddress = 8'H00;
 
-    for(int i = 0; i < 100; i++)
-    begin
-      //Clk 1
-      @(negedge tb_clk);
-      //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
-      @(posedge tb_clk);
-    end
+    //Clk 1
+    @(negedge tb_clk);
+    tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
+    @(posedge tb_clk);
+    targetLowAddress = 8'H99;
+    targetHighAddress = 8'H00;
 
 //--------------------------------------------------------------------------------------------
 //----------------------------------------Next Instruction------------------------------------
@@ -221,7 +172,7 @@ module tb_8227_template ();
 
     //Clk 0
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
+    tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
     @(posedge tb_clk);
 
 //--------------------------------------------------------------------------------------------

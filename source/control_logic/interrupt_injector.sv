@@ -1,5 +1,5 @@
 module interruptInjector (
-    input logic clk, nrst,
+    input logic clk, nrst, enableFFs,
     input logic nonMaskableInterrupt, interruptRequest, //Inputs from exterior (could be buttons outside IC)
     input logic processStatusRegIFlag,
     input logic interruptAcknowleged, //Should be high going into the clock cycle when the Instruction Register is loaded
@@ -11,6 +11,7 @@ module interruptInjector (
     synchronizer nmiSync(
         .nrst(nrst),
         .clk(clk),
+        .enableFFs(enableFFs),
         .in(nonMaskableInterrupt),
         .out(synchronizedNMI)
     );
@@ -18,6 +19,7 @@ module interruptInjector (
     synchronizer irqSync(
         .nrst(nrst),
         .clk(clk),
+        .enableFFs(enableFFs),
         .in(interruptRequest),
         .out(synchronizedIRQ)
     );
@@ -28,6 +30,7 @@ module interruptInjector (
     nmiGeneratedFF nmiGeneratedFF(
         .clk(clk),
         .nrst(nrst),
+        .enableFFs(enableFFs),
         .processStatusRegIFlag(processStatusRegIFlag),
         .synchronizedNMI(synchronizedNMI),
         .interruptAcknowleged(interruptAcknowleged),
@@ -39,6 +42,7 @@ module interruptInjector (
     nmiRunningFF nmiRunningFF(
         .clk(clk),
         .nrst(nrst),
+        .enableFFs(enableFFs),
         .processStatusRegIFlag(processStatusRegIFlag),
         .synchronizedNMI(synchronizedNMI),
         .interruptAcknowleged(interruptAcknowleged),
@@ -50,6 +54,7 @@ module interruptInjector (
     irqGeneratedFF irqGeneratedFF(
         .clk(clk),
         .nrst(nrst),
+        .enableFFs(enableFFs),
         .processStatusRegIFlag(processStatusRegIFlag),
         .synchronizedIRQ(synchronizedIRQ),
         .interruptAcknowleged(interruptAcknowleged),
@@ -60,6 +65,7 @@ module interruptInjector (
     resetDetector resetDetector(
         .nrst(nrst),
         .clk(clk),
+        .enableFFs(enableFFs),
         .resetInection(resetDetected)
     );
 
@@ -67,6 +73,7 @@ module interruptInjector (
     resetRunningFF resetRunningFF(
         .clk(clk),
         .nrst(nrst),
+        .enableFFs(enableFFs),
         .processStatusRegIFlag(processStatusRegIFlag),
         .resetInitiated(resetDetected),
         .resetRunning(resetRunning)
