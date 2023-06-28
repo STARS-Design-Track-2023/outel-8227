@@ -83,6 +83,10 @@ always_comb begin : blockName
                         //save lower address to ALU
                         outflags[SET_DB_TO_DATA] = 1;
                         outflags[SET_INPUT_B_TO_DB] = 1;
+                        //DATA+0 = ALU'
+                        outflags[SET_INPUT_A_TO_LOW] = 1;
+                        outflags[ALU_ADD] = 1;
+                        outflags[LOAD_ALU] = 1;
                     end else if(state == A1)begin
                         //set low address
                         outflags[LOAD_ABL] = 1;
