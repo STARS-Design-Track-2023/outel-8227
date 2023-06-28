@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
 
-module tb_andrew ();
+module tb_8227_template ();
 
   localparam CLK_PERIOD        = 2;
 
@@ -16,9 +16,39 @@ module tb_andrew ();
   logic [7:0]          tb_dataBusOutput;
   logic [7:0]          tb_AddressBusHigh;
   logic [7:0]          tb_AddressBusLow;
+  logic                tb_dataBusEnable;
+  logic                tb_ready;
+  logic                tb_sync; 
+  logic                tb_readNotWrite;
+  logic                tb_setOverflow;
 
   logic [7:0]          targetLowAddress;
   logic [7:0]          targetHighAddress;
+
+  logic [524287:0]          memory;
+
+  always_comb begin : memoryAssignment
+    memory = 0;
+    memory[8*16'HFFFC+:8] = 8'HDD;//ADL of reset pointer
+    memory[8*16'HFFFD+:8] = 8'HCC;//ADH of reset Pointer
+    
+    memory[8*16'H0099+:8] = 8'H73;//memory to test lda,zpg      (30, 10)
+    memory[8*16'HCCDD+:8] = 8'HA5;//program start
+    memory[8*16'HCCDE+:8] = 8'H99;
+
+    memory[8*16'HCCDF+:8] = 8'H85;//STA, ZPG (50)               (48, 10)
+    memory[8*16'HCCE0+:8] = 8'H50;
+
+  end
+
+  //Memory loop
+  always_ff @(negedge tb_clk) begin
+    //Update the memory and databuses on negative clock edges
+    if(tb_readNotWrite)
+      tb_dataBusInput = memory[8*(256*tb_AddressBusHigh + tb_AddressBusLow) +:8];//8*(8*(tb_AddressBusHigh) + tb_AddressBusLow) +:8];
+    else
+      memory[8*(256*tb_AddressBusHigh + tb_AddressBusLow) +:8] = tb_dataBusOutput;
+  end
 
   // Clock generation block
   always begin
@@ -62,7 +92,12 @@ module tb_andrew ();
     .dataBusInput(tb_dataBusInput),
     .dataBusOutput(tb_dataBusOutput),
     .AddressBusHigh(tb_AddressBusHigh),
-    .AddressBusLow(tb_AddressBusLow)
+    .AddressBusLow(tb_AddressBusLow),
+    .dataBusEnable(tb_dataBusEnable), 
+    .ready(tb_ready),
+    .sync(tb_sync), 
+    .readNotWrite(tb_readNotWrite),
+    .setOverflow(tb_setOverflow)
   );
 
   // Signal Dump
@@ -84,6 +119,10 @@ module tb_andrew ();
     @(negedge tb_clk);
     targetLowAddress = 8'bx;
     targetHighAddress = 8'bx;
+
+    tb_ready = 1'b1;
+    tb_setOverflow = 1'b0;
+    
 //--------------------------------------------------------------------------------------------
 //-----------------------------------------RESET----------------------------------------------
 //--------------------------------------------------------------------------------------------
@@ -94,12 +133,6 @@ module tb_andrew ();
     tb_nrst = 1'b0;
     @(negedge tb_clk);
     @(negedge tb_clk);
-
-    //Clk 0
-    @(negedge tb_clk);
-    tb_nrst = 1'b1;
-    @(posedge tb_clk);
-    test_name = "Boot Seq clk 0";
 
     //Clk 1
     @(negedge tb_clk);
@@ -113,9 +146,17 @@ module tb_andrew ();
     @(posedge tb_clk);
     test_name = "Boot Seq clk 2";
 
+    @(negedge tb_clk);
+    tb_ready = 1'b0;
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    
+
     //Clk 3
     @(negedge tb_clk);
-
+    tb_ready = 1'b1;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 3";
 
@@ -124,62 +165,78 @@ module tb_andrew ();
 
     @(posedge tb_clk);
     test_name = "Boot Seq clk 4";
+
+    //Clk 5
+    @(negedge tb_clk);
     
-    //Clock Cycle 1
-    tb_nonMaskableInterrupt = 1'b0;
-    tb_interruptRequest = 1'b0;
-    tb_dataBusInput = 8'Hxx;
-    @(negedge tb_clk);
-    targetLowAddress = 8'bx;
-    targetHighAddress = 8'b00;
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 5";
 
+    //Clk 6
     @(negedge tb_clk);
-    // @(negedge tb_clk);
-    // @(negedge tb_clk);
-    // @(negedge tb_clk);
+    //tb_dataBusInput = 8'HDD;
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 6";
 
+    //Clk 7
+    @(negedge tb_clk);
+    //tb_dataBusInput = 8'HCC;
+    @(posedge tb_clk);
+    test_name = "Boot Seq clk 7";
 
 //--------------------------------------------------------------------------------------------
-//----------------------------------------EOR, ABSX--------------------------------------------
+//----------------------------------------INX, impl--------------------------------------------
+//--------------------------------------------------------------------------------------------    
+    //Clk 0
+    @(negedge tb_clk);
+    tb_dataBusInput = 8'HE8;//Put the opcode for INX, impl on the data bus
+    @(posedge tb_clk);
+    test_name = "INX impl";
+
+    //Clk 1
+    @(negedge tb_clk);
+    // wait, nothing is required here 
+    @(posedge tb_clk);
+
+    for(int i = 0; i < 100; i++)
+    begin
+      //Clk 1
+      @(negedge tb_clk);
+      tb_dataBusInput = 8'HA5;// loads in the next instruction
+      @(posedge tb_clk);
+    end
+//--------------------------------------------------------------------------------------------
+//----------------------------------------LDA, ZPG--------------------------------------------
+//--------------------------------------------------------------------------------------------   
+    //Clk 0
+    @(negedge tb_clk);
+    tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
+    @(posedge tb_clk);
+    test_name = "Program Start";
+
+    //Clk 1
+    @(negedge tb_clk);
+    //tb_dataBusInput = 8'H99;//Put goal address on ZPG
+    @(posedge tb_clk);
+
+    for(int i = 0; i < 100; i++)
+    begin
+      //Clk 1
+      @(negedge tb_clk);
+      //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
+      @(posedge tb_clk);
+    end
+
+//--------------------------------------------------------------------------------------------
+//----------------------------------------Next Instruction------------------------------------
 //--------------------------------------------------------------------------------------------
 
     @(posedge tb_clk);
-    test_name = "EOR ABS,X";
+    test_name = "Next Opcode";
 
-    //Clock Cycle 1
-    tb_nonMaskableInterrupt = 1'b0;
-    tb_interruptRequest = 1'b0;
-    tb_dataBusInput = 8'h5D;//Put the opcode for EOR ABS,X on the data bus
-    // targetLowAddress = 8'bx;
-    // targetHighAddress = 8'b00;
-    @(posedge tb_clk);
-    //Clock Cycle 2
-    tb_nonMaskableInterrupt = 1'b0;
-    tb_interruptRequest = 1'b0;
-    tb_dataBusInput = 8'h42;//Put the low address of the absolute address onto the data bus
-    targetLowAddress = 8'h00;
-    targetHighAddress = 8'h00;
-    @(posedge tb_clk);
-    //Clock Cycle 3
-    tb_nonMaskableInterrupt = 1'b0;
-    tb_interruptRequest = 1'b0;
-    tb_dataBusInput = 8'h53;//Put the page of the absolute address onto the data bus
-    targetLowAddress = 8'h42;
-    targetHighAddress = 8'h00;
-    @(posedge tb_clk);
-    //Clock Cycle 4
-    tb_nonMaskableInterrupt = 1'b0;
-    tb_interruptRequest = 1'b0;
-    tb_dataBusInput = 8'hF0;//Put the value to be XOR'd onto the data bus
-    targetLowAddress = 8'h42;
-    targetHighAddress = 8'h53;
-    @(posedge tb_clk);
-    //Clock Cycle 5
-    tb_nonMaskableInterrupt = 1'b0;
-    tb_interruptRequest = 1'b0;
-    //_interruptRequest = 1'b0;
-    targetLowAddress = 8'h42;
-    targetHighAddress = 8'h53;
+    //Clk 0
+    @(negedge tb_clk);
+    //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
     @(posedge tb_clk);
 
 //--------------------------------------------------------------------------------------------
