@@ -16,7 +16,7 @@ module insert_project_name_here (
     .dataBusInput(gpio[7:0]),
     .dataBusOutput(gpio[7:0]),
     .AddressBusHigh(gpio[7:0]),
-    .AddressBusLow(gpio[7:0]),
+    .AddressBusLow(gpio[7:0])
   );
 
 endmodule

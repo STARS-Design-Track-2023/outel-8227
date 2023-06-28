@@ -55,18 +55,6 @@ always_comb begin : blockName
     IS_STORE_X_INSTRUCT = 1'b0;
     IS_STORE_Y_INSTRUCT = 1'b0;
 
-<<<<<<< HEAD
-case(instructionCode) 
-    STA: IS_STORE_ACC_INSTRUCT = 1'b1;
-    STY: IS_STORE_X_INSTRUCT = 1'b1;
-    STX: IS_STORE_Y_INSTRUCT = 1'b1;
-    default: IS_STORE_ACC_INSTRUCT = 1'b0;
-endcase
-if(preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == A) // bypasses Addressing (impl from param_file)
-    passAddressing = 1'b1;
-else
-    passAddressing = 1'b0;
-=======
     case(instructionCode) 
         STA: IS_STORE_ACC_INSTRUCT = 1'b1;
         STY: IS_STORE_X_INSTRUCT = 1'b1;
@@ -77,7 +65,6 @@ else
         passAddressing = 1'b1;
     else
         passAddressing = 1'b0;
->>>>>>> 9f4aabda964631b18e0edb33bdaf4d63fdbf45c8
 
 
     if(isAddressing & ~passAddressing) begin
@@ -1160,29 +1147,10 @@ else
                     //What to decrement
                     outflags[SET_ADH_TO_DATA] = 1;
                     outflags[SET_SB_TO_ADH] = 1;
-<<<<<<< HEAD
-                    outflags[SET_DB_TO_SB] = 1;
-                    outflags[SET_INPUT_A_TO_LOW] = 1;
-                    outflags[SET_INPUT_B_TO_DB] = 1;
-                    outflags[SET_FREE_CARRY_FLAG_TO_ALU] = 1;
-
-                end else begin
-                    //Increment PC
-                    outflags[PC_INC] = 1;
-
-                    //set ABH and ABL to PC
-                    outflags[SET_ADH_TO_PCH] = 1;
-                    outflags[LOAD_ABH] = 1;
-                    outflags[SET_ADL_TO_PCL] = 1;
-                    outflags[LOAD_ABL] = 1;
-
-                    outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
-=======
                     
                     //Add them together
                     outflags[ALU_ADD] = 1;
                     outflags[LOAD_ALU] = 1;
->>>>>>> 9f4aabda964631b18e0edb33bdaf4d63fdbf45c8
                 end
                 T1: begin
                     //Move ALU to DOR
@@ -1222,264 +1190,8 @@ else
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
-<<<<<<< HEAD
-            end
-            T3: begin
-                //Increment PC
-                outflags[PC_INC] = 1;
-
-                //set ABH and ABL to PC
-                outflags[SET_ADH_TO_PCH] = 1;
-                outflags[LOAD_ABH] = 1;
-                outflags[SET_ADL_TO_PCL] = 1;
-                outflags[LOAD_ABL] = 1;
-
-                //Get ready to read next instruction
-                outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
-            end
-            default: outflags = 0;
-        endcase
-
-        end
-        BIT: begin                                          // code BIT
-        
-        outflags = 0;
-        case (state)
-            T0: begin
-                //Increment PC
-                outflags[PC_INC] = 1;
-
-                //set ABH and ABL to PC
-                outflags[SET_ADH_TO_PCH] = 1;
-                outflags[LOAD_ABH] = 1;
-                outflags[SET_ADL_TO_PCL] = 1;
-                outflags[LOAD_ABL] = 1;
-
-                //Set input b
-                outflags[SET_DB_TO_DATA] = 1;
-                outflags[SET_INPUT_B_TO_DB] = 1;
-
-                //set input a
-                outflags[SET_SB_TO_ACC] = 1;
-                outflags[SET_INPUT_A_TO_SB] = 1;
-
-                //And ACC&M
-                outflags[ALU_AND] = 1;
-                outflags[LOAD_ALU] = 1;
-            
-            end
-            T1: begin
-                //Increment PC
-                outflags[PC_INC] = 1;
-
-                //set ABH and ABL to PC
-                outflags[SET_ADH_TO_PCH] = 1;
-                outflags[LOAD_ABH] = 1;
-                outflags[SET_ADL_TO_PCL] = 1;
-                outflags[LOAD_ABL] = 1;
-
-                //Set PSR from ALU outflags
-                outflags[SET_PSR_N_TO_DB7] = 1;
-                outflags[SET_PSR_V_TO_DB6] = 1;
-                outflags[WRITE_ZERO_FLAG] = 1;
-
-                outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
-            end
-            default: outflags = 0;
-        endcase
-
-        end
-        BRK: begin                                          // code BRK
-
-        outflags = 0;
-        case (state)
-            T0: begin
-                //Go to Stack
-                outflags[SET_ADH_TO_ONE] = 1;
-                outflags[LOAD_ABH] = 1;
-                outflags[SET_ADL_TO_SP] = 1;
-                outflags[LOAD_ABL] = 1;
-                
-                //Set input A to FF
-                outflags[SET_SB_HIGH] = 1;
-                outflags[SET_INPUT_A_TO_SB] = 1;
-
-                //Set input B to SP
-                outflags[SET_INPUT_B_TO_ADL] = 1;
-
-                //Add SP+FF = SP-1
-                outflags[ALU_ADD] = 1;
-                outflags[LOAD_ALU] = 1;
-
-                //Get PCH to DOR
-                outflags[SET_DB_TO_PCH] = 1;
-                outflags[LOAD_DOR] = 1;
-                
-            end
-            T1: begin
-                //Write DOR
-                outflags[SET_WRITE_FLAG] = ~reset;
-
-                //Go to next Stack
-                outflags[SET_ADL_TO_ALU] = 1;
-                outflags[LOAD_ABL] = 1;
-                
-                //Set input A to FF
-                outflags[SET_SB_HIGH] = 1;
-                outflags[SET_INPUT_A_TO_SB] = 1;
-
-                //Set input B to SP
-                outflags[SET_INPUT_B_TO_ADL] = 1;
-
-                //Add SP+FF = SP-1
-                outflags[ALU_ADD] = 1;
-                outflags[LOAD_ALU] = 1;
-
-                //Get PCL to DOR
-                outflags[SET_DB_TO_PCL] = 1;
-                outflags[LOAD_DOR] = 1;
-                
-            end
-            T2: begin
-                //Write DOR
-                outflags[SET_WRITE_FLAG] = ~reset;
-
-                //Go to next Stack
-                outflags[SET_ADL_TO_ALU] = 1;
-                outflags[LOAD_ABL] = 1;
-                
-                //Set input A to FF
-                outflags[SET_SB_HIGH] = 1;
-                outflags[SET_INPUT_A_TO_SB] = 1;
-
-                //Set input B to SP
-                outflags[SET_INPUT_B_TO_ADL] = 1;
-
-                //Add SP+FF = SP-1
-                outflags[ALU_ADD] = 1;
-                outflags[LOAD_ALU] = 1;
-
-                //Get PSR to DOR
-                outflags[SET_DB_TO_PSR] = 1;
-                outflags[SET_PSR_OUTPUT_BRK_HIGH] = ~(nmi|irq|reset);
-                outflags[LOAD_DOR] = 1;
-            end
-            T3: begin
-                //Write DOR
-                outflags[SET_WRITE_FLAG] = ~reset;
-
-                //set ABH and ABL to presets
-                outflags[SET_ADH_FF] = 1;
-                outflags[LOAD_ABH] = 1;
-                outflags[SET_ADL_FA] = nmi;
-                outflags[SET_ADL_FC] = reset;
-                outflags[SET_ADL_FE] = ~(nmi|reset);
-                outflags[LOAD_ABL] = 1;
-
-                //Get ALU ouput to SP Reg
-                outflags[SET_SB_TO_ALU] = 1;    
-                outflags[LOAD_SP] = 1;    
-            end
-            T4: begin
-                //set ABH and ABL to presets
-                outflags[SET_ADH_FF] = 1;
-                outflags[LOAD_ABH] = 1;
-                outflags[SET_ADL_FB] = nmi;
-                outflags[SET_ADL_FD] = reset;
-                outflags[SET_ADL_FF] = ~(nmi|reset);
-                outflags[LOAD_ABL] = 1;
-
-                //set B to Data
-                outflags[SET_DB_TO_DATA] = 1;
-                outflags[SET_INPUT_B_TO_DB] = 1;
-
-                //add data + 0
-                outflags[SET_INPUT_A_TO_LOW] = 1;
-                outflags[ALU_ADD] = 1;
-                outflags[LOAD_ALU] = 1;
-            end
-            T5: begin
-                //Update ABL
-                outflags[SET_ADL_TO_ALU] = 1;
-                outflags[LOAD_ABL] = 1;
-
-                //Update ABH
-                outflags[SET_ADH_TO_DATA] = 1;
-                outflags[LOAD_ABH] = 1;
-
-                //Update PC
-                outflags[LOAD_PC] = 1;
-                outflags[PC_INC] = 1;
-            end
-            T6:  begin
-                //Increment PC
-                outflags[PC_INC] = 1;
-
-                //set ABH and ABL to PC
-                outflags[SET_ADH_TO_PCH] = 1;
-                outflags[LOAD_ABH] = 1;
-                outflags[SET_ADL_TO_PCL] = 1;
-                outflags[LOAD_ABL] = 1;
-
-                outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
-            end
-            default: outflags = 0;
-        endcase
-
-        end
-        CLC: begin                                          // code CLC
-
-        outflags = 0;
-        case (state)
-            T0: begin
-                //Set FLAG
-                outflags[PSR_DATA_TO_LOAD] = 1;
-                outflags[LOAD_CARRY_PSR_FLAG] = 0;
-            
-            end
-            T1: begin
-                //Increment PC and set ABH and ABL to PC
-                outflags[PC_INC] = 1;
-                outflags[SET_ADH_TO_PCH] = 1;
-                outflags[LOAD_ABH] = 1;
-                outflags[SET_ADL_TO_PCL] = 1;
-                outflags[LOAD_ABL] = 1;
-
-                outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
-            end
-            default: outflags = 0;
-        endcase
-
-        end
-        CLD: begin                                          // code CLD
-
-        outflags = 0;
-        case (state)
-            T0: begin
-                //Set FLAG
-                outflags[PSR_DATA_TO_LOAD] = 1;
-                outflags[LOAD_DECIMAL_PSR_FLAG] = 0;
-            
-            end
-            T1: begin
-                //Increment PC and set ABH and ABL to PC
-                outflags[PC_INC] = 1;
-                outflags[SET_ADH_TO_PCH] = 1;
-                outflags[LOAD_ABH] = 1;
-                outflags[SET_ADL_TO_PCL] = 1;
-                outflags[LOAD_ABL] = 1;
-
-                outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
-            end
-            default: outflags = 0;
-        endcase
-
-        end
-        CLI: begin                                          // code CLI
-=======
                 default: outflags = 0;
             endcase
->>>>>>> 9f4aabda964631b18e0edb33bdaf4d63fdbf45c8
 
             end
             DEX: begin                                          // code DEX

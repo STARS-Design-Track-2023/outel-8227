@@ -15,11 +15,8 @@ module top8227 (
     logic       nmiRunning, resetRunning;
     logic [NUMFLAGS-1:0] flags, preFlags;
     logic getInstructionPreInjection, getInstructionPostInjection;
-<<<<<<< HEAD
-=======
     logic setIFlag;
     logic enableFFs;
->>>>>>> 9f4aabda964631b18e0edb33bdaf4d63fdbf45c8
 
     assign readNotWrite = ~preFlags[SET_WRITE_FLAG];
     assign enableFFs = ready | ~readNotWrite;

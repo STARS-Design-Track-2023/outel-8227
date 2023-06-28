@@ -82,7 +82,6 @@ module tb_8227_template ();
     tb_dataBusInput = 8'HCC;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 7";
-<<<<<<< HEAD
     @(negedge tb_clk);
   end
   endtask
@@ -92,7 +91,7 @@ module tb_8227_template ();
     @(posedge tb_clk);
     test_name = "Get data";
     @(negedge tb_clk);
-    tb_dataBusInput = 8'H410; //Put the opcode for the next instruction here
+    tb_dataBusInput = 8'H10; //Put the opcode for the next instruction here
     @(posedge tb_clk);
     test_name = "store and Next Opcode";
     @(negedge tb_clk);
@@ -108,11 +107,6 @@ module tb_8227_template ();
     
   endtask
 
-=======
-  end
-  endtask
-
->>>>>>> a92b417e31973da506eaf68423389a6b22ef9b2a
   // DUT Portmap
   top8227 top8227 (
     .clk(tb_clk), 
@@ -135,37 +129,8 @@ module tb_8227_template ();
   initial begin
     test_name = "Reset";
     reset_dut();
-<<<<<<< HEAD
     StoreACC();
     PushACC();
-=======
-
-    // Initialize all of the test inputs
-    tb_nrst             = 1'b1; // Initialize to be inactive
-
-    // Wait some time before starting first test case
-    #(0.1);
-    @(negedge tb_clk);
-    targetLowAddress = 8'bx;
-    targetHighAddress = 8'bx;
-
-//--------------------------------------------------------------------------------------------
-//----------------------------------------Next Instruction------------------------------------
-//--------------------------------------------------------------------------------------------
-
-    test_name = "Next Opcode";
-
-    //Clk 0
-    tb_dataBusInput = 8'H48; //Put the opcode for the next instruction here
-    @(posedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-
-//--------------------------------------------------------------------------------------------
-//------------------------------------End Example Test----------------------------------------
-//--------------------------------------------------------------------------------------------
->>>>>>> a92b417e31973da506eaf68423389a6b22ef9b2a
 
     test_name = "Finishing";
     @(negedge tb_clk);
