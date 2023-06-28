@@ -473,7 +473,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
                 default: outflags = 0;
@@ -525,7 +525,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
                 default: outflags = 0;
@@ -558,7 +558,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -1017,7 +1017,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
 
@@ -1072,7 +1072,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
 
@@ -1127,7 +1127,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
 
@@ -1162,7 +1162,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -1309,7 +1309,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -1340,7 +1340,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -1603,7 +1603,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                 end
                 T1: begin
@@ -1643,7 +1643,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                 end
                 T1: begin
@@ -1683,7 +1683,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                 end
                 T1: begin
@@ -1727,7 +1727,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -1827,7 +1827,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -2118,7 +2118,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -2178,7 +2178,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -2450,7 +2450,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
 
@@ -2718,7 +2718,7 @@ always_comb begin : blockName
                     //Set PSR FLAGS
                     outflags[SET_DB_TO_SB] = 1;
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -2758,7 +2758,7 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[SET_DB_TO_SB] = 1;
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -2796,7 +2796,7 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[SET_DB_TO_SB] = 1;
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                     end
@@ -2837,7 +2837,7 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[SET_DB_TO_SB] = 1;
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end

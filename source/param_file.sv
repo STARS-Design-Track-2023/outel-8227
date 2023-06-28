@@ -69,7 +69,6 @@ parameter SET_ADL_TO_SP = 44;
 parameter LOAD_PC = 45; //load from ADL else it just loads from itself
 parameter SET_PSR_CARRY_TO_ALU_CARRY = 46;
 parameter SET_PSR_OVERFLOW_TO_ALU_OVERFLOW = 47;
-parameter WRITE_NEGATIVE_FLAG = 48;
 parameter WRITE_ZERO_FLAG = 49;
 parameter SET_ALU_DEC_TO_PSR_DEC = 50;
 parameter SET_INPUT_B_TO_NOT_DB = 51;
