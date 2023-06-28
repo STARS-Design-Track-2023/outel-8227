@@ -1,5 +1,6 @@
 module internalDataflow(
     input logic nrst, clk,
+    input logic freeCarry, psrCarry,
     input logic [NUMFLAGS-1:0] flags,
     input logic [7:0] externalDBRead,
     output logic [7:0] externalDBWrite,
@@ -250,7 +251,7 @@ module internalDataflow(
         .lda_sb(flags[SET_INPUT_A_TO_SB]),
         .lda_zero(flags[SET_INPUT_A_TO_LOW]),
         .enable_dec(flags[SET_ALU_DEC_TO_PSR_DEC]),
-        .carry_in(flags[SET_ALU_CARRY_HIGH]),
+        .carry_in(flags[SET_ALU_CARRY_HIGH] | (flags[SET_ALU_CARRY_TO_FREE_CARRY] & freeCarry) | (flags[SET_ALU_CARRY_TO_PSR_CARRY] & psrCarry)),
         .e_sum(flags[ALU_ADD]),
         .e_and(flags[ALU_AND]),
         .e_eor(flags[ALU_XOR]),

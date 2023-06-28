@@ -38,6 +38,8 @@ module top8227 (
         .nrst(nrst),
         .clk(clk),
         .flags(flags),
+        .freeCarry(freeCarry),
+        .psrCarry(PSRCurrentValue[0]),
         .externalDBRead(dataBusInput),
         .externalDBWrite(dataBusOutput),
         .externalAddressBusLowOutput(AddressBusLow),
