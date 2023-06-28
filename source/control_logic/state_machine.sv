@@ -17,7 +17,7 @@ always_comb begin : comb_timingGeneration
         nextTime = T0;
     end
     else if(getInstruction) begin // it is on the last stage of the instruction
-        nextMode = ADDRESS; 
+        nextMode = ADDRESS;
         nextTime = T0;
     end
     else begin
