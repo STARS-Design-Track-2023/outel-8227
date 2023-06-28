@@ -222,8 +222,6 @@ always_comb begin : blockName
 
                     outflags = 0;
                     if(state == A0)begin
-                        //Increment PC
-                        outflags[PC_INC] = 1;
                         //Add data to X
                         outflags[LOAD_ALU] = 1;
                         outflags[ALU_ADD] = 1;

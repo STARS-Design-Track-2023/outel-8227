@@ -39,6 +39,13 @@ module tb_8227_template ();
     memory[8*16'HCCDF+:8] = 8'H85;//STA, ZPG (50)               (48, 10)
     memory[8*16'HCCE0+:8] = 8'H50;
 
+    memory[8*16'H0098+:8] = 8'H98;//memory to test lda,zpg      (30, 10)
+    memory[8*16'HCCDF+:8] = 8'HA5;//LDA, ZPG (98)               (30, 10)
+    memory[8*16'HCCE0+:8] = 8'H98;
+
+    memory[8*16'HCCDF+:8] = 8'HA5;//LDA, ZPG (50)               (30, 10)
+    memory[8*16'HCCE0+:8] = 8'H50;
+
   end
 
   //Memory loop
