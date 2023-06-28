@@ -12,7 +12,8 @@ module tb_8227_template ();
   logic                tb_nrst;
   logic                tb_nonMaskableInterrupt;
   logic                tb_interruptRequest;
-  logic [7:0]          tb_dataBusGPIO;
+  logic [7:0]          tb_dataBusInput;
+  logic [7:0]          tb_dataBusOutput;
   logic [7:0]          tb_AddressBusHigh;
   logic [7:0]          tb_AddressBusLow;
   logic                tb_dataBusEnable;
@@ -36,13 +37,6 @@ module tb_8227_template ();
     memory[8*16'HCCDE+:8] = 8'H99;
 
     memory[8*16'HCCDF+:8] = 8'H85;//STA, ZPG (50)               (48, 10)
-    memory[8*16'HCCE0+:8] = 8'H50;
-
-    memory[8*16'H0098+:8] = 8'H98;//memory to test lda,zpg      (30, 10)
-    memory[8*16'HCCDF+:8] = 8'HA5;//LDA, ZPG (98)               (30, 10)
-    memory[8*16'HCCE0+:8] = 8'H98;
-
-    memory[8*16'HCCDF+:8] = 8'HA5;//LDA, ZPG (50)               (30, 10)
     memory[8*16'HCCE0+:8] = 8'H50;
 
   end
@@ -80,17 +74,10 @@ module tb_8227_template ();
     // Wait until safely away from rising edge of the clock before releasing
     @(negedge tb_clk);
     tb_nrst = 1'b1;
-    assign tb_nonMaskableInterrupt = 0;
-    assign tb_interruptRequest = 0;
-    assign tb_dataBusGPIO = 8'h00;
 
     // Leave out of reset for a couple cycles before allowing other stimulus
     // Wait for negative clock edges, 
     // since inputs to DUT should normally be applied away from rising clock edges
-    @(negedge tb_clk);
-    @(negedge tb_clk); 
-    @(negedge tb_clk);
-    @(negedge tb_clk);
     @(negedge tb_clk);
     @(negedge tb_clk);
   end
@@ -102,7 +89,8 @@ module tb_8227_template ();
     .nrst(tb_nrst), 
     .nonMaskableInterrupt(tb_nonMaskableInterrupt), 
     .interruptRequest(tb_interruptRequest),
-    .dataBusGPIO(dataBusGPIO),
+    .dataBusInput(tb_dataBusInput),
+    .dataBusOutput(tb_dataBusOutput),
     .AddressBusHigh(tb_AddressBusHigh),
     .AddressBusLow(tb_AddressBusLow),
     .dataBusEnable(tb_dataBusEnable), 
@@ -197,12 +185,32 @@ module tb_8227_template ();
     test_name = "Boot Seq clk 7";
 
 //--------------------------------------------------------------------------------------------
-//----------------------------------------LDA, ZPG--------------------------------------------
+//----------------------------------------INX, impl--------------------------------------------
 //--------------------------------------------------------------------------------------------    
-
     //Clk 0
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
+    tb_dataBusInput = 8'HE8;//Put the opcode for INX, impl on the data bus
+    @(posedge tb_clk);
+    test_name = "INX impl";
+
+    //Clk 1
+    @(negedge tb_clk);
+    // wait, nothing is required here 
+    @(posedge tb_clk);
+
+    for(int i = 0; i < 100; i++)
+    begin
+      //Clk 1
+      @(negedge tb_clk);
+      tb_dataBusInput = 8'HA5;// loads in the next instruction
+      @(posedge tb_clk);
+    end
+//--------------------------------------------------------------------------------------------
+//----------------------------------------LDA, ZPG--------------------------------------------
+//--------------------------------------------------------------------------------------------   
+    //Clk 0
+    @(negedge tb_clk);
+    tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
     @(posedge tb_clk);
     test_name = "Program Start";
 

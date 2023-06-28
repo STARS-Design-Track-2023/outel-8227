@@ -43,6 +43,7 @@ end
 
 logic [5:0] nextInstruction;
 logic [3:0] nextAddress;
+
 always_comb begin : comb_OPCode
 
     if(getInstruction) begin
@@ -53,7 +54,8 @@ always_comb begin : comb_OPCode
         nextInstruction = currentInstruction; 
         nextAddress = currentAddress; 
     end
-    if(~enableFFs)
+    
+    if(~enableFFs) // code that disables the state machine when unready
     begin
         nextInstruction = currentInstruction;
         nextAddress = currentAddress;
