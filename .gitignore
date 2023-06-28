@@ -1,1 +1,6 @@
 source/top.sv
+source/top8227.sv
+Makefile
+TestFormat.gtkw
+xt
+sim_build/sim_source.vvp

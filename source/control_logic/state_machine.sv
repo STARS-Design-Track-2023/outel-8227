@@ -11,12 +11,12 @@ module state_machine(
 logic nextMode;
 logic [2:0] nextTime;
 always_comb begin : comb_timingGeneration
-    if(endAddressing | (noAddressing & mode == ADDRESS)) begin // it is on the last stage of addressing
+    if(endAddressing | (noAddressing & getInstruction)) begin // it is on the last stage of addressing
         nextMode = INSTRUCTION;
         nextTime = T0;
     end
     else if(getInstruction) begin // it is on the last stage of the instruction
-        nextMode = ADDRESS; 
+        nextMode = ADDRESS;
         nextTime = T0;
     end
     else begin

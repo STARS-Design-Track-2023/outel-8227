@@ -58,7 +58,7 @@ case(instructionCode)
     STX: IS_STORE_Y_INSTRUCT = 1'b1;
     default: IS_STORE_ACC_INSTRUCT = 1'b0;
 endcase
-if(addressingCode == IMMEDIATE | addressingCode == impl | addressingCode == A) // bypasses Addressing (impl from param_file)
+if(preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == A) // bypasses Addressing (impl from param_file)
     passAddressing = 1'b1;
 else
     passAddressing = 1'b0;
