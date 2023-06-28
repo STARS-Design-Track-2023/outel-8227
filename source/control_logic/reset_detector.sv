@@ -1,5 +1,5 @@
 module resetDetector (
-    input logic clk, nrst,
+    input logic clk, nrst, enableFFs,
     output logic resetInection
 );
 
@@ -12,7 +12,11 @@ module resetDetector (
             state = nextState;
     end
 
-    assign nextState = 1'b0;
+    always_comb begin : nextStateLogic
+        nextState = 1'b0;
+        if(~enableFFs)
+            nextState = state;
+    end
 
     always_comb begin : outputLogic
         resetInection = state;

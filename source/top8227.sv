@@ -1,11 +1,11 @@
 module top8227 (
-    input  logic clk, nrst, nonMaskableInterrupt, interruptRequest, 
+    input  logic clk, nrst, nonMaskableInterrupt, interruptRequest, dataBusEnable, ready, setOverflow,
     input  logic [7:0] dataBusInput,
     output logic [7:0] dataBusOutput,
     output logic [7:0] AddressBusHigh,
-    output logic [7:0] AddressBusLow
+    output logic [7:0] AddressBusLow,
+    output logic sync, readNotWrite
 );
-
     logic [7:0] PSRCurrentValue;
     logic [7:0] opcodeCurrentValue;
     logic [3:0] addressingCode;
@@ -13,15 +13,33 @@ module top8227 (
     logic       getInstruction;
     logic       aluCarryOut, freeCarry;
     logic       nmiRunning, resetRunning;
-    logic [NUMFLAGS-1:0] flags;
+    logic [NUMFLAGS-1:0] flags, preFlags;
     logic getInstructionPreInjection, getInstructionPostInjection;
     logic setIFlag;
+    logic enableFFs;
 
+    assign readNotWrite = ~preFlags[SET_WRITE_FLAG];
+    assign enableFFs = ready | ~readNotWrite;
+    
+    assign sync = flags[END_INSTRUCTION];
+
+    //Disable all flags
+    always_comb begin
+        if(enableFFs)
+        begin
+            flags = preFlags;
+            flags[LOAD_OVERFLOW_PSR_FLAG] = setOverflow;
+        end
+        else
+            flags = 0;
+    end
 
     internalDataflow internalDataflow(
         .nrst(nrst),
         .clk(clk),
         .flags(flags),
+        .freeCarry(freeCarry),
+        .psrCarry(PSRCurrentValue[0]),
         .externalDBRead(dataBusInput),
         .externalDBWrite(dataBusOutput),
         .externalAddressBusLowOutput(AddressBusLow),
@@ -33,18 +51,18 @@ module top8227 (
     instructionLoader instructionLoader(
         .clk(clk), 
         .nrst(nrst),
+        .enableFFs(enableFFs),
         .nonMaskableInterrupt(nonMaskableInterrupt), 
         .interruptRequest(interruptRequest), 
         .processStatusRegIFlag(PSRCurrentValue[2]), 
         .loadNextInstruction(getInstructionPreInjection),
         .externalDB(dataBusInput),
         .nextInstruction(opcodeCurrentValue),
-        .enableIFlag(),
+        .enableIFlag(setIFlag),
         .nmiRunning(nmiRunning), 
         .resetRunning(resetRunning),
         .instructionRegReadEnable(getInstructionPostInjection)
     );
-
 
     decoder decoder(
         .opcode(opcodeCurrentValue),
@@ -57,6 +75,7 @@ module top8227 (
         .preFFAddressingCode(addressingCode),
         .nrst(nrst), 
         .clk(clk), 
+        .enableFFs(enableFFs),
         .free_carry(freeCarry), 
         .nmi(nmiRunning), 
         .irq(PSRCurrentValue[2] & ~resetRunning), //High I flag in PSR, reset not running
@@ -67,12 +86,14 @@ module top8227 (
         .PSR_Z(PSRCurrentValue[1]),
         .getInstructionPostInjection(getInstructionPostInjection),
         .getInstructionPreInjection(getInstructionPreInjection),
-        .outflags(flags)
+        .outflags(preFlags),
+        .setInterruptFlag(setIFlag)
     );
 
     free_carry_ff free_carry_ff (
         .clk(clk),
         .nrst(nrst),
+        .enableFFs(enableFFs),
         .ALUcarry(aluCarryOut),
         .en(flags[SET_FREE_CARRY_FLAG_TO_ALU]),
         .freeCarry(freeCarry)

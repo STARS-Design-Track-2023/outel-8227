@@ -1,5 +1,5 @@
 module irqGeneratedFF (
-    input logic clk, nrst,
+    input logic clk, nrst, enableFFs,
     input logic processStatusRegIFlag,
     input logic synchronizedIRQ,
     input logic interruptAcknowleged,
@@ -29,6 +29,8 @@ module irqGeneratedFF (
         begin
             nextIRQGenerated = irqGenerated;
         end
+        if(~enableFFs)
+            nextIRQGenerated = irqGenerated;
     end
 
     always_ff @(posedge clk, negedge nrst) begin : nmiAssignment

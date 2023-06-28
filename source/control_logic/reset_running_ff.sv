@@ -1,5 +1,5 @@
 module resetRunningFF (
-    input logic clk, nrst,
+    input logic clk, nrst, enableFFs,
     input logic processStatusRegIFlag,
     input logic resetInitiated,
     output logic resetRunning
@@ -14,7 +14,8 @@ module resetRunningFF (
             nextResetRunning = 1'b0; //Once the I flag drives low, clear this control FF
         else
             nextResetRunning = resetRunning; //Otherwise hold the current value
-
+        if(~enableFFs)
+            nextResetRunning = resetRunning;
     end
 
     always_ff @(posedge clk, negedge nrst) begin : nmiAssignment
