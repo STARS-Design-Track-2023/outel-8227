@@ -77,8 +77,7 @@ module alu(
             alu_out = a | b;
         end
         if(e_shiftr) begin
-            {rot_buffer, carry_out} = a >> 1;
-            alu_out = {carry_in, rot_buffer};
+            {alu_out, carry_out} = {carry_in, a};
         end
 
         if(enable_dec && e_sum) begin                            //handle add/subtract in bcd
