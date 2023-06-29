@@ -6,7 +6,8 @@ module demux(
     output logic getInstructionPreInjection,
     output logic [NUMFLAGS - 1:0] outflags,
     input logic setInterruptFlag,
-    input logic enableFFs
+    input logic enableFFs,
+    input logic branchForwardFF, branchBackwardFF
 );
 
 logic  [NUMFLAGS - 1:0] outputListAddressing [13:0] ;
@@ -365,7 +366,7 @@ always_comb begin : blockName
                         outflags[SET_SB_TO_ALU] = 1;
                         outflags[SET_ADH_TO_SB] = 1;
                         outflags[LOAD_ABH] = 1;
-                        
+
                         // outflags[SET_ADH_TO_DATA] = 1;
                         // outflags[LOAD_ABH] = 1;
                         // outflags[SET_ADL_TO_ALU] = 1;
@@ -657,11 +658,15 @@ always_comb begin : blockName
                     outflags[ALU_ADD] = 1;
                     outflags[LOAD_ALU] = 1;
                     outflags[SET_FREE_CARRY_FLAG_TO_ALU] = 1;
+
+                    //Update the jump forward/backward flip flops
+                    outflags[SET_BRANCH_PAGE_CROSS_FLAGS] = 1;
                 end
                 T1: begin
                     if(jump) begin
-                        //Increment PC
-                        outflags[PC_INC] = 1;
+                        //Increment PC if there is not a page crossing
+                        if(~branchForwardFF & ~branchBackwardFF)
+                            outflags[PC_INC] = 1;
 
                         //Move ALU to ABL/PCL
                         outflags[SET_ADL_TO_ALU] = 1;
@@ -670,10 +675,26 @@ always_comb begin : blockName
                         outflags[LOAD_PC] = 1;
 
                         //ADD carry
-                        outflags[SET_DB_TO_PCH] = 1;
-                        outflags[SET_INPUT_A_TO_LOW] = 1;
-                        outflags[SET_INPUT_B_TO_DB] = 1;
-                        outflags[SET_ALU_CARRY_TO_FREE_CARRY] = 1;
+                        // outflags[SET_DB_TO_PCH] = 1;
+                        // outflags[SET_INPUT_A_TO_LOW] = 1;
+                        // outflags[SET_INPUT_B_TO_DB] = 1;
+                        // outflags[SET_ALU_CARRY_TO_FREE_CARRY] = 1;
+
+                        //If branchForwardFF, incrementPCH
+                        if(branchForwardFF) begin
+                            outflags[SET_DB_TO_PCH] = 1;
+                            outflags[SET_INPUT_A_TO_LOW] = 1;
+                            outflags[SET_INPUT_B_TO_DB] = 1;
+                            outflags[SET_ALU_CARRY_HIGH] = 1;
+                        end
+
+                        //If branchBackwardFF, decrementPCH
+                        if(branchBackwardFF) begin
+                            outflags[SET_SB_TO_ADH] = 1;//ADH has PCH
+                            outflags[SET_INPUT_A_TO_SB] = 1;//Put PCH on the ALU A input
+                            outflags[SET_DB_HIGH] = 1; //SET the DB to FF
+                            outflags[SET_INPUT_B_TO_DB] = 1; //Put FF on the ALU
+                        end
 
                         //A+B=PCH+C
                         outflags[ALU_ADD] = 1;
@@ -692,7 +713,8 @@ always_comb begin : blockName
                     end
                 end
                 T2: begin
-                    if(free_carry) begin
+                    if(branchBackwardFF | branchForwardFF) begin
+                        
                         outflags[PC_INC] = 1;
                         //Move ALU to ABH/PCH
                         outflags[SET_SB_TO_ALU] = 1;
