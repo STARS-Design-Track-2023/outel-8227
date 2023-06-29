@@ -1,22 +1,22 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Tue Jun 27 19:04:36 2023
+[*] Thu Jun 29 15:07:58 2023
 [*]
-[dumpfile] "/mnt/c/Users/draid/Documents/GitHub/outel-8227/dump.vcd"
-[dumpfile_mtime] "Tue Jun 27 19:02:27 2023"
-[dumpfile_size] 57237
-[savefile] "/mnt/c/Users/draid/Documents/GitHub/outel-8227/TestFormat.gtkw"
-[timestart] 21370
-[size] 1908 997
+[dumpfile] "/home/shay/c/ecng031/Wk5/good/outel-8227/dump.vcd"
+[dumpfile_mtime] "Thu Jun 29 15:05:04 2023"
+[dumpfile_size] 5047459
+[savefile] "/home/shay/c/ecng031/Wk5/good/outel-8227/TestFormat.gtkw"
+[timestart] 321530
+[size] 1846 1016
 [pos] 163679 163679
-*-11.560953 35590 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-11.560953 323660 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb_8227_template.
 [treeopen] tb_8227_template.top8227.
-[treeopen] tb_8227_template.top8227.demux.
 [treeopen] tb_8227_template.top8227.instructionLoader.
 [treeopen] tb_8227_template.top8227.internalDataflow.
 [treeopen] tb_8227_template.top8227.internalDataflow.addressHighBusModule.
-[sst_width] 214
+[treeopen] tb_8227_template.top8227.internalDataflow.psr.
+[sst_width] 233
 [signals_width] 318
 [sst_expanded] 1
 [sst_vpaned_height] 291
@@ -25,35 +25,87 @@ tb_8227_template.test_name[1024:0]
 @28
 tb_8227_template.tb_nrst
 tb_8227_template.tb_clk
+tb_8227_template.top8227.slow_pulse
+@200
+-
+-
 @22
 tb_8227_template.tb_dataBusInput[7:0]
-tb_8227_template.tb_AddressBusHigh[7:0]
-tb_8227_template.tb_AddressBusLow[7:0]
+@c00022
 tb_8227_template.tb_dataBusOutput[7:0]
+@28
+(0)tb_8227_template.tb_dataBusOutput[7:0]
+(1)tb_8227_template.tb_dataBusOutput[7:0]
+(2)tb_8227_template.tb_dataBusOutput[7:0]
+(3)tb_8227_template.tb_dataBusOutput[7:0]
+(4)tb_8227_template.tb_dataBusOutput[7:0]
+(5)tb_8227_template.tb_dataBusOutput[7:0]
+(6)tb_8227_template.tb_dataBusOutput[7:0]
+(7)tb_8227_template.tb_dataBusOutput[7:0]
+@1401200
+-group_end
+@28
+tb_8227_template.top8227.readNotWrite
 @200
 -
--
-@24
-tb_8227_template.top8227.demux.state_machine.currentInstruction[5:0]
-tb_8227_template.top8227.demux.state_machine.currentAddress[3:0]
-@200
 -
 @22
+[color] 3
+tb_8227_template.tb_AddressBusHigh[7:0]
+[color] 3
+tb_8227_template.tb_AddressBusLow[7:0]
+[color] 3
 +{PCH Reg} tb_8227_template.top8227.internalDataflow.pchRegister.currentState[7:0]
+[color] 3
 +{PCL Reg} tb_8227_template.top8227.internalDataflow.pclRegister.currentState[7:0]
-+{DOR Reg} tb_8227_template.top8227.internalDataflow.dorRegister.currentState[7:0]
-+{ALU Reg} tb_8227_template.top8227.internalDataflow.aluRegister.currentState[7:0]
-+{Stack Pointer Reg} tb_8227_template.top8227.internalDataflow.stackPointerRegister.currentState[7:0]
-@23
-+{Accumulator Reg} tb_8227_template.top8227.internalDataflow.accumulatorRegister.currentState[7:0]
 @200
 -
-@22
-+{ADH Bus} tb_8227_template.top8227.internalDataflow.addressHighBusModule.busOutput[7:0]
-+{ADL Bus} tb_8227_template.top8227.internalDataflow.addressLowBusModule.busOutput[7:0]
-@200
 -
 @24
+[color] 2
+tb_8227_template.top8227.demux.state_machine.currentInstruction[5:0]
+[color] 2
+tb_8227_template.top8227.demux.state_machine.currentAddress[3:0]
+@28
+[color] 2
+tb_8227_template.top8227.demux.isAddressing
+@24
+[color] 2
 tb_8227_template.top8227.demux.state[2:0]
+@200
+-
+-
+@28
+[color] 1
+tb_8227_template.top8227.internalDataflow.psr.PSR_DB[7:0]
+@22
+[color] 1
++{DOR Reg} tb_8227_template.top8227.internalDataflow.dorRegister.currentState[7:0]
+[color] 1
++{ALU Reg} tb_8227_template.top8227.internalDataflow.aluRegister.currentState[7:0]
+[color] 1
++{Stack Pointer Reg} tb_8227_template.top8227.internalDataflow.stackPointerRegister.currentState[7:0]
+@200
+-
+-
+@22
+[color] 7
++{Accumulator Reg} tb_8227_template.top8227.internalDataflow.accumulatorRegister.currentState[7:0]
+[color] 7
++{Y_REG} tb_8227_template.top8227.internalDataflow.yRegister.currentState[7:0]
+[color] 7
++{X_REG} tb_8227_template.top8227.internalDataflow.xRegister.currentState[7:0]
+@28
+(87)tb_8227_template.top8227.flags[127:0]
+@200
+-
+-
+@29
+[color] 6
+tb_8227_template.top8227.demux.nmi
+[color] 6
+tb_8227_template.top8227.demux.reset
+[color] 6
+tb_8227_template.top8227.demux.irq
 [pattern_trace] 1
 [pattern_trace] 0
