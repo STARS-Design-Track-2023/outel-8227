@@ -17,6 +17,7 @@ module processStatusRegisterWrapper(
     input logic carry_C,        //enable read from alu
     input logic DBall_Z,        //enable set from ~|= (NOR) databus, Dragon Ball Z
     input logic overflow_V,     //enble read from alu
+    input logic setOverflow,     
     input logic rcl_V,          //directly set V to 1 from rcl
     input logic break_set,
     output logic [7:0] PSR_RCL,
@@ -50,7 +51,8 @@ processStatusReg processStatusReg(
     .overflow_V(overflow_V),
     .rcl_V(rcl_V),
     .PSR_Output(internalFFOutput),
-    .break_set(break_set)
+    .break_set(break_set),
+    .setOverflow(setOverflow)
 );
 
 //Output Logic:  PSR_RCL always has the signal.  PSR_DB can be disabled (but will write to the internal data bus when enabled)

@@ -33,7 +33,7 @@ module decoder (
                         end
                         3'b001: begin
                              CMD=JSR;
-                             ADDRESS=abs;
+                             ADDRESS=impl;
                         end
                         3'b010: begin
                              CMD=RTI;

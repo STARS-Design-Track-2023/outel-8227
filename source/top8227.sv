@@ -31,7 +31,6 @@ module top8227 (
         if(enableFFs)
         begin
             flags = preFlags;
-            flags[LOAD_OVERFLOW_PSR_FLAG] = setOverflow;
         end
         else
             flags = 0;
@@ -55,7 +54,8 @@ module top8227 (
         .externalAddressBusHighOutput(AddressBusHigh),
         .psrRegToLogicController(PSRCurrentValue),
         .aluCarryOut(aluCarryOut),
-        .pclMSB(pclMSB)
+        .pclMSB(pclMSB),
+        .setOverflow(setOverflow)
     );
 
     instructionLoader instructionLoader(
