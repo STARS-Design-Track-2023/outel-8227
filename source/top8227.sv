@@ -18,6 +18,8 @@ module top8227 (
     logic setIFlag;
     logic enableFFs;
     logic slow_pulse; // used to slow down the cpu so it can access memory
+    logic pclMSB;
+    logic branchBackward, branchForward;
 
     assign readNotWrite = ~preFlags[SET_WRITE_FLAG];
     assign enableFFs = (ready | ~readNotWrite) & slow_pulse;
@@ -52,7 +54,8 @@ module top8227 (
         .externalAddressBusLowOutput(AddressBusLow),
         .externalAddressBusHighOutput(AddressBusHigh),
         .psrRegToLogicController(PSRCurrentValue),
-        .aluCarryOut(aluCarryOut)
+        .aluCarryOut(aluCarryOut),
+        .pclMSB(pclMSB)
     );
 
     instructionLoader instructionLoader(
@@ -94,7 +97,9 @@ module top8227 (
         .getInstructionPostInjection(getInstructionPostInjection),
         .getInstructionPreInjection(getInstructionPreInjection),
         .outflags(preFlags),
-        .setInterruptFlag(setIFlag)
+        .setInterruptFlag(setIFlag),
+        .branchForwardFF(branchForward),
+        .branchBackwardFF(branchBackward)
     );
 
     free_carry_ff free_carry_ff (
@@ -104,6 +109,17 @@ module top8227 (
         .ALUcarry(aluCarryOut),
         .en(flags[SET_FREE_CARRY_FLAG_TO_ALU]),
         .freeCarry(freeCarry)
+    );
+
+    branch_ff branch_ff (
+        .clk(clk),
+        .nrst(nrst),
+        .branchForwardIn(  pclMSB & ~dataBusInput[7] &  aluCarryOut),
+        .branchBackwardIn(~pclMSB &  dataBusInput[7] & ~aluCarryOut),
+        .enable(flags[SET_BRANCH_PAGE_CROSS_FLAGS]),
+        .enableFFs(enableFFs),
+        .branchForward(branchForward),
+        .branchBackward(branchBackward)
     );
 
 
