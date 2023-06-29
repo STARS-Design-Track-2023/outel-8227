@@ -24,7 +24,7 @@ COMPONENT_FILES  := param_file.sv dataflow/* control_logic/* register.sv top8227
 # Specify the filepath of the test bench you want to use (ie. tb_top_level.sv)
 # (do not include the source folder in the name)
 
-TB               := TestBenches/tb_thomas.sv
+TB               := TestBenches/tb_andrew.sv
 
 # Get the top level design and test_bench module names
 TB_MODULE		 := $(notdir $(basename $(TB)))
