@@ -56,7 +56,6 @@ parameter ALU_AND = 31;
 parameter SET_DB_HIGH = 32;
 parameter SET_DB_TO_ACC = 33;
 parameter SET_SB_TO_SP = 34;
-parameter SET_PSR_CARRY_TO_ALU_CARRY_OUT = 35;
 parameter LOAD_SP = 36;
 parameter LOAD_CARRY_PSR_FLAG = 37; //Will load PSR_DATA_TO_LOAD into the PSR
 parameter LOAD_INTERUPT_PSR_FLAG = 38; //Will load PSR_DATA_TO_LOAD into the PSR
