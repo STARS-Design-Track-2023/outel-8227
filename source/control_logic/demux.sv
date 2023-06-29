@@ -6,7 +6,8 @@ module demux(
     output logic getInstructionPreInjection,
     output logic [NUMFLAGS - 1:0] outflags,
     input logic setInterruptFlag,
-    input logic enableFFs
+    input logic enableFFs,
+    input logic branchForwardFF, branchBackwardFF
 );
 
 logic  [NUMFLAGS - 1:0] outputListAddressing [13:0] ;
@@ -61,7 +62,7 @@ always_comb begin : blockName
         STX: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
-    if((preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == A) & getInstructionPostInjection) // bypasses Addressing (impl from param_file)
+    if((preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == rel | preFFAddressingCode == A) & getInstructionPostInjection) // bypasses Addressing (impl from param_file)
         passAddressing = 1'b1;
     else
         passAddressing = 1'b0;
@@ -83,8 +84,19 @@ always_comb begin : blockName
                         //save lower address to ALU
                         outflags[SET_DB_TO_DATA] = 1;
                         outflags[SET_INPUT_B_TO_DB] = 1;
+                        //DATA+0 = ALU'
+                        outflags[SET_INPUT_A_TO_LOW] = 1;
+                        outflags[ALU_ADD] = 1;
+                        outflags[LOAD_ALU] = 1;
                     end else if(state == A1)begin
                         //set low address
+                        if(instructionCode == JMP) begin
+                            outflags[LOAD_PC] = 1;
+                            outflags[PC_INC] = 1;
+                        end else begin
+                            outflags[LOAD_PC] = 0;
+                            outflags[PC_INC] = 0;
+                        end
                         outflags[LOAD_ABL] = 1;
                         outflags[SET_ADL_TO_ALU] = 1;
                         //set high address
@@ -203,6 +215,33 @@ always_comb begin : blockName
                     end else if(state == A1)begin
                         //Increment PC
                         outflags[PC_INC] = 1;
+                        outflags[LOAD_PC] = 1;
+                        //Set ABH to DATA
+                        outflags[SET_ADH_TO_DATA] = 1;
+                        outflags[LOAD_ABH] = 1;
+                        //load ABL with ALU
+                        outflags[SET_ADL_TO_ALU] = 1;
+                        outflags[LOAD_ABL] = 1;
+
+                    end else if(state == A2)begin
+                        //Increment PC
+                        outflags[PC_INC] = 1;
+                        //Load PC into Address Bus
+                        outflags[LOAD_ABH] = 1;
+                        outflags[LOAD_ABL] = 1;
+                        outflags[SET_ADH_TO_PCH] = 1;
+                        outflags[SET_ADL_TO_PCL] = 1;
+                        //load data into ALU B
+                        outflags[LOAD_ALU] = 1;
+                        outflags[ALU_ADD] = 1;
+                        outflags[SET_DB_TO_DATA] = 1;
+                        outflags[SET_INPUT_B_TO_DB] = 1;
+                        outflags[SET_INPUT_A_TO_LOW] = 1;
+
+                    end else if(state == A3)begin
+                        //Increment PC
+                        outflags[PC_INC] = 1;
+                        outflags[LOAD_PC] = 1;
                         //Set ABH to DATA
                         outflags[SET_ADH_TO_DATA] = 1;
                         outflags[LOAD_ABH] = 1;
@@ -218,8 +257,6 @@ always_comb begin : blockName
 
                     outflags = 0;
                     if(state == A0)begin
-                        //Increment PC
-                        outflags[PC_INC] = 1;
                         //Add data to X
                         outflags[LOAD_ALU] = 1;
                         outflags[ALU_ADD] = 1;
@@ -325,10 +362,15 @@ always_comb begin : blockName
                         
                     end else if(state == A3)begin
                         //Load data values:Data2+C,Data1+Y
-                        outflags[SET_ADH_TO_DATA] = 1;
+
+                        outflags[SET_SB_TO_ALU] = 1;
+                        outflags[SET_ADH_TO_SB] = 1;
                         outflags[LOAD_ABH] = 1;
-                        outflags[SET_ADL_TO_ALU] = 1;
-                        outflags[LOAD_ABL] = 1;
+
+                        // outflags[SET_ADH_TO_DATA] = 1;
+                        // outflags[LOAD_ABH] = 1;
+                        // outflags[SET_ADL_TO_ALU] = 1;
+                        // outflags[LOAD_ABL] = 1;
                         //funky store stuff
                         outflags[SET_DB_TO_ACC] = IS_STORE_ACC_INSTRUCT;
                         outflags[LOAD_DOR] = IS_STORE_ACC_INSTRUCT;
@@ -471,7 +513,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
                 default: outflags = 0;
@@ -523,7 +565,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
                 default: outflags = 0;
@@ -546,7 +588,7 @@ always_comb begin : blockName
                     outflags[LOAD_ALU] = 1;
                     
                     //SET outflags
-                    outflags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+                    outflags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
                 T1: begin
                     //Move ALU to DOR
@@ -556,7 +598,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -615,11 +657,16 @@ always_comb begin : blockName
                     //A+B=PCL+Data
                     outflags[ALU_ADD] = 1;
                     outflags[LOAD_ALU] = 1;
+                    outflags[SET_FREE_CARRY_FLAG_TO_ALU] = 1;
+
+                    //Update the jump forward/backward flip flops
+                    outflags[SET_BRANCH_PAGE_CROSS_FLAGS] = 1;
                 end
                 T1: begin
                     if(jump) begin
-                        //Increment PC
-                        outflags[PC_INC] = 1;
+                        //Increment PC if there is not a page crossing
+                        if(~branchForwardFF & ~branchBackwardFF)
+                            outflags[PC_INC] = 1;
 
                         //Move ALU to ABL/PCL
                         outflags[SET_ADL_TO_ALU] = 1;
@@ -627,13 +674,31 @@ always_comb begin : blockName
                         outflags[LOAD_ABL] = 1;
                         outflags[LOAD_PC] = 1;
 
-                        //ADD carry and ADH
-                        outflags[SET_SB_TO_ADH] = 1;
-                        outflags[SET_DB_TO_SB] = 1;
-                        outflags[SET_INPUT_A_TO_LOW] = 1;
-                        outflags[SET_INPUT_B_TO_DB] = 1;
-                        outflags[SET_FREE_CARRY_FLAG_TO_ALU] = 1;
+                        //ADD carry
+                        // outflags[SET_DB_TO_PCH] = 1;
+                        // outflags[SET_INPUT_A_TO_LOW] = 1;
+                        // outflags[SET_INPUT_B_TO_DB] = 1;
+                        // outflags[SET_ALU_CARRY_TO_FREE_CARRY] = 1;
 
+                        //If branchForwardFF, incrementPCH
+                        if(branchForwardFF) begin
+                            outflags[SET_DB_TO_PCH] = 1;
+                            outflags[SET_INPUT_A_TO_LOW] = 1;
+                            outflags[SET_INPUT_B_TO_DB] = 1;
+                            outflags[SET_ALU_CARRY_HIGH] = 1;
+                        end
+
+                        //If branchBackwardFF, decrementPCH
+                        if(branchBackwardFF) begin
+                            outflags[SET_SB_TO_ADH] = 1;//ADH has PCH
+                            outflags[SET_INPUT_A_TO_SB] = 1;//Put PCH on the ALU A input
+                            outflags[SET_DB_HIGH] = 1; //SET the DB to FF
+                            outflags[SET_INPUT_B_TO_DB] = 1; //Put FF on the ALU
+                        end
+
+                        //A+B=PCH+C
+                        outflags[ALU_ADD] = 1;
+                        outflags[LOAD_ALU] = 1;
                     end else begin
                         //Increment PC
                         outflags[PC_INC] = 1;
@@ -648,15 +713,17 @@ always_comb begin : blockName
                     end
                 end
                 T2: begin
-                    if(free_carry) begin
-                        //Increment PC
+                    if(branchBackwardFF | branchForwardFF) begin
+                        
                         outflags[PC_INC] = 1;
-
                         //Move ALU to ABH/PCH
                         outflags[SET_SB_TO_ALU] = 1;
                         outflags[SET_ADH_TO_SB] = 1;
                         outflags[SET_ADL_TO_PCL] = 1;
                         outflags[LOAD_PC] = 1;
+                        outflags[LOAD_ABH] = 1;
+                        outflags[LOAD_ABL] = 1;
+
 
                     end else begin
                         //Increment PC
@@ -712,6 +779,10 @@ always_comb begin : blockName
                     //And ACC&M
                     outflags[ALU_AND] = 1;
                     outflags[LOAD_ALU] = 1;
+
+                    //Set flags dependent on memory being tested
+                    outflags[SET_PSR_N_TO_DB7] = 1;
+                    outflags[SET_PSR_V_TO_DB6] = 1;
                 
                 end
                 T1: begin
@@ -724,9 +795,11 @@ always_comb begin : blockName
                     outflags[SET_ADL_TO_PCL] = 1;
                     outflags[LOAD_ABL] = 1;
 
+                    //Get ALU to the DB so that the zero flag can be written
+                    outflags[SET_SB_TO_ALU] = 1;
+                    outflags[SET_DB_TO_SB] = 1;
+
                     //Set PSR from ALU outflags
-                    outflags[SET_PSR_N_TO_DB7] = 1;
-                    outflags[SET_PSR_V_TO_DB6] = 1;
                     outflags[WRITE_ZERO_FLAG] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
@@ -879,8 +952,8 @@ always_comb begin : blockName
             case (state)
                 T0: begin
                     //Set FLAG
-                    outflags[PSR_DATA_TO_LOAD] = 1;
-                    outflags[LOAD_CARRY_PSR_FLAG] = 0;
+                    outflags[PSR_DATA_TO_LOAD] = 0;
+                    outflags[LOAD_CARRY_PSR_FLAG] = 1;
                 
                 end
                 T1: begin
@@ -903,8 +976,8 @@ always_comb begin : blockName
             case (state)
                 T0: begin
                     //Set FLAG
-                    outflags[PSR_DATA_TO_LOAD] = 1;
-                    outflags[LOAD_DECIMAL_PSR_FLAG] = 0;
+                    outflags[PSR_DATA_TO_LOAD] = 0;
+                    outflags[LOAD_DECIMAL_PSR_FLAG] = 1;
                 
                 end
                 T1: begin
@@ -927,8 +1000,8 @@ always_comb begin : blockName
             case (state)
                 T0: begin
                     //Set FLAG
-                    outflags[PSR_DATA_TO_LOAD] = 1;
-                    outflags[LOAD_INTERUPT_PSR_FLAG] = 0;
+                    outflags[PSR_DATA_TO_LOAD] = 0;
+                    outflags[LOAD_INTERUPT_PSR_FLAG] = 1;
                 
                 end
                 T1: begin
@@ -947,12 +1020,12 @@ always_comb begin : blockName
             end
             CLV: begin                                          // code CLV
 
-        outflags = 0;
+            outflags = 0;
             case (state)
                 T0: begin
                     //Set FLAG
-                    outflags[PSR_DATA_TO_LOAD] = 1;
-                    outflags[LOAD_OVERFLOW_PSR_FLAG] = 0;
+                    outflags[PSR_DATA_TO_LOAD] = 0;
+                    outflags[LOAD_OVERFLOW_PSR_FLAG] = 1;
                 
                 end
                 T1: begin
@@ -1015,7 +1088,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
 
@@ -1070,7 +1143,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
 
@@ -1125,7 +1198,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
 
@@ -1160,7 +1233,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -1222,6 +1295,11 @@ always_comb begin : blockName
                     outflags[SET_SB_TO_ALU] = 1;
                     outflags[LOAD_X] = 1;
 
+                    //Set PSR outflags
+                    outflags[SET_DB_TO_SB] = 1;
+                    outflags[WRITE_ZERO_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
+
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
                 default: outflags = 0;
@@ -1255,6 +1333,11 @@ always_comb begin : blockName
                     //Move ALU to Y
                     outflags[SET_SB_TO_ALU] = 1;
                     outflags[LOAD_Y] = 1;
+
+                    //Set PSR outflags
+                    outflags[SET_DB_TO_SB] = 1;
+                    outflags[WRITE_ZERO_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -1307,7 +1390,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -1338,7 +1421,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -1395,9 +1478,15 @@ always_comb begin : blockName
                     outflags[LOAD_ABH] = 1;
                     outflags[SET_ADL_TO_PCL] = 1;
                     outflags[LOAD_ABL] = 1;
+
                     //Move ALU to X
                     outflags[SET_SB_TO_ALU] = 1;
                     outflags[LOAD_X] = 1;
+
+                    //Set PSR outflags
+                    outflags[SET_DB_TO_SB] = 1;
+                    outflags[WRITE_ZERO_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -1428,9 +1517,15 @@ always_comb begin : blockName
                     outflags[LOAD_ABH] = 1;
                     outflags[SET_ADL_TO_PCL] = 1;
                     outflags[LOAD_ABL] = 1;
+
                     //Move ALU to Y
                     outflags[SET_SB_TO_ALU] = 1;
                     outflags[LOAD_Y] = 1;
+
+                    //Set PSR outflags
+                    outflags[SET_DB_TO_SB] = 1;
+                    outflags[WRITE_ZERO_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -1443,21 +1538,9 @@ always_comb begin : blockName
             outflags = 0;
             case (state)
                 T0: begin
-                    //Update ABL
-                    outflags[SET_ADL_TO_ALU] = 1;
-                    outflags[LOAD_ABL] = 1;
-
-                    //Update ABH
-                    outflags[SET_ADH_TO_DATA] = 1;
-                    outflags[LOAD_ABH] = 1;
-
-                    //Update PC
-                    outflags[LOAD_PC] = 1;
-                    outflags[PC_INC] = 1;
-                end
-                T1: begin
                     //Increment PC
                     outflags[PC_INC] = 1;
+                    outflags[LOAD_PC] = 1;
 
                     //set ABH and ABL to PC
                     outflags[SET_ADH_TO_PCH] = 1;
@@ -1601,7 +1684,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                 end
                 T1: begin
@@ -1641,7 +1724,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                 end
                 T1: begin
@@ -1681,7 +1764,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                 end
                 T1: begin
@@ -1715,7 +1798,7 @@ always_comb begin : blockName
                     outflags[LOAD_ALU] = 1;
                     
                     //SET outflags
-                    outflags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+                    outflags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
                 T1: begin
                     //Move ALU to DOR
@@ -1725,7 +1808,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -1825,7 +1908,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -2009,6 +2092,11 @@ always_comb begin : blockName
                     outflags[SET_DB_TO_DATA] = 1;
                     outflags[SET_SB_TO_DB] = 1;
                     outflags[LOAD_ACC] = 1;
+
+                    //Set PSR outflags
+                    outflags[WRITE_ZERO_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
+
                 end
                 T3: begin
                     //Increment PC
@@ -2106,7 +2194,7 @@ always_comb begin : blockName
                     outflags[ALU_ADD] = 1;
                     outflags[LOAD_ALU] = 1;
                     //SET outflags
-                    outflags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+                    outflags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
                 T1: begin
                     //Move ALU to DOR
@@ -2116,7 +2204,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -2166,7 +2254,7 @@ always_comb begin : blockName
                     outflags[LOAD_ALU] = 1;
                     
                     //SET outflags
-                    outflags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+                    outflags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
                 T1: begin
                     //Move ALU to DOR
@@ -2176,7 +2264,7 @@ always_comb begin : blockName
 
                     //Set PSR outflags
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
                     outflags[SET_WRITE_FLAG] = 1;
@@ -2448,7 +2536,7 @@ always_comb begin : blockName
                     //Set PSR from ALU outflags
                     
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
 
@@ -2699,7 +2787,7 @@ always_comb begin : blockName
                     outflags[LOAD_ALU] = 1;
                     
                     //SET FLAGS
-                    outflags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+                    outflags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
                 T1: begin
                     //Increment PC and set ABH and ABL to PC
@@ -2716,7 +2804,7 @@ always_comb begin : blockName
                     //Set PSR FLAGS
                     outflags[SET_DB_TO_SB] = 1;
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -2739,7 +2827,7 @@ always_comb begin : blockName
                     outflags[ALU_ADD] = 1;
                     outflags[LOAD_ALU] = 1;
                     //SET outflags
-                    outflags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+                    outflags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
                 T1: begin
                     //Increment PC and set ABH and ABL to PC
@@ -2756,7 +2844,7 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[SET_DB_TO_SB] = 1;
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -2777,7 +2865,7 @@ always_comb begin : blockName
                     outflags[LOAD_ALU] = 1;
                     
                     //SET outflags
-                    outflags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+                    outflags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
                 T1: begin
                     //Increment PC and set ABH and ABL to PC
@@ -2794,7 +2882,7 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[SET_DB_TO_SB] = 1;
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                     end
@@ -2818,7 +2906,7 @@ always_comb begin : blockName
                     outflags[LOAD_ALU] = 1;
                     
                     //SET outflags
-                    outflags[SET_PSR_CARRY_TO_ALU_CARRY_OUT] = 1;
+                    outflags[SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
                 T1: begin
                     //Increment PC and set ABH and ABL to PC
@@ -2835,7 +2923,7 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[SET_DB_TO_SB] = 1;
                     outflags[WRITE_ZERO_FLAG] = 1;
-                    outflags[WRITE_NEGATIVE_FLAG] = 1;
+                    outflags[SET_PSR_N_TO_DB7] = 1;
 
                     outflags[END_INSTRUCTION] = 1'b1; // signal to end the instruction
                 end
@@ -2879,6 +2967,9 @@ always_comb begin : blockName
         outflags[PSR_DATA_TO_LOAD] = 1'b1;
     end
 
+
+if(~enableFFs) // VERY IMPORTANT: THIS HALTS 2/3RDS OF CLOCK CYCLES
+    outflags = 0;
 end
 
 endmodule

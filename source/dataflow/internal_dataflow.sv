@@ -1,11 +1,13 @@
 module internalDataflow(
     input logic nrst, clk,
+    input logic freeCarry, psrCarry,
     input logic [NUMFLAGS-1:0] flags,
     input logic [7:0] externalDBRead,
     output logic [7:0] externalDBWrite,
     output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput,
     output logic [7:0] psrRegToLogicController,
-    output logic aluCarryOut
+    output logic aluCarryOut,
+    output logic pclMSB
 );
     //outputs from registers
     //ABL = address bus low
@@ -31,6 +33,8 @@ module internalDataflow(
                 sbToADH, adhToSB,//SB/ADH Bridge Outputs
                 sbToDB, dbToSB,//SB/DB Bridge Outputs
                 dataToDB, dataToADL, dataToADH;//External DB Interface Outputs
+
+    assign pclMSB = pclRegToDB[7];//Assign this to the MSB of the PCL's current value to pass to control logic
 
     logic aluOverflowOut;
 
@@ -249,8 +253,8 @@ module internalDataflow(
         .ldb_adl(flags[SET_INPUT_B_TO_ADL]),
         .lda_sb(flags[SET_INPUT_A_TO_SB]),
         .lda_zero(flags[SET_INPUT_A_TO_LOW]),
-        .enable_dec(flags[SET_ALU_DEC_TO_PSR_DEC]),
-        .carry_in(flags[SET_ALU_CARRY_HIGH] || flags[SET_ALU_CARRY_TO_PSR_CARRY]),
+        .enable_dec(flags[SET_ALU_DEC_TO_PSR_DEC] & psrRegToLogicController[3]),
+        .carry_in(flags[SET_ALU_CARRY_HIGH] | (flags[SET_ALU_CARRY_TO_FREE_CARRY] & freeCarry) | (flags[SET_ALU_CARRY_TO_PSR_CARRY] & psrCarry)),
         .e_sum(flags[ALU_ADD]),
         .e_and(flags[ALU_AND]),
         .e_eor(flags[ALU_XOR]),
@@ -258,7 +262,8 @@ module internalDataflow(
         .e_shiftr(flags[ALU_R_SHIFT]),
         .carry_out(aluCarryOut),
         .overflow(aluOverflowOut),
-        .alu_out(aluOutput)
+        .alu_out(aluOutput),
+        .subtracting(flags[SET_ALU_DEC_TO_PSR_DEC]&flags[SET_INPUT_B_TO_NOT_DB])
     );
 
     // Process Status Register

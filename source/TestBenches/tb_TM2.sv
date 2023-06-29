@@ -12,7 +12,8 @@ module tb_8227_template ();
   logic                tb_nrst;
   logic                tb_nonMaskableInterrupt;
   logic                tb_interruptRequest;
-  logic [7:0]          tb_dataBusGPIO;
+  logic [7:0]          tb_dataBusInput;
+  logic [7:0]          tb_dataBusOutput;
   logic [7:0]          tb_AddressBusHigh;
   logic [7:0]          tb_AddressBusLow;
   logic                tb_dataBusEnable;
@@ -30,21 +31,39 @@ module tb_8227_template ();
     memory = 0;
     memory[8*16'HFFFC+:8] = 8'HDD;//ADL of reset pointer
     memory[8*16'HFFFD+:8] = 8'HCC;//ADH of reset Pointer
+    memory[8*16'HCCDD+:8] = 8'HA9;//LDA, Imeddiate
+    memory[8*16'HCCDE+:8] = 8'H19;//data to load
+    memory[8*16'HCCDF+:8] = 8'H48;//STACK PUSH
+    memory[8*16'HCCE0+:8] = 8'HAD;//LDA, ABS
+    memory[8*16'HCCE1+:8] = 8'HD1;//ADL
+    memory[8*16'HCCE2+:8] = 8'HDA;//ADL
+    memory[8*16'HDAD1+:8] = 8'HB4;//data to load
+    memory[8*16'HCCE3+:8] = 8'H68;//STACK PULL
+    memory[8*16'HCCE4+:8] = 8'HAA;//TAX
+    memory[8*16'HCCE5+:8] = 8'H9A;//TXS
+    memory[8*16'HCCE6+:8] = 8'H98;//TYA
+    memory[8*16'HCCE7+:8] = 8'H8A;//TXA
+    memory[8*16'HCCE8+:8] = 8'HA8;//TAY
+
+    memory[8*16'HCCE9+:8] = 8'HBE;//LDX, absy
+    memory[8*16'HCCEA+:8] = 8'H07;//DATAL
+    memory[8*16'HCCEB+:8] = 8'H02;//DATAH
+    memory[8*16'H0220+:8] = 8'H80;//DATA
     
-    memory[8*16'H0099+:8] = 8'H73;//memory to test lda,zpg      (30, 10)
-    memory[8*16'HCCDD+:8] = 8'HA5;//program start
-    memory[8*16'HCCDE+:8] = 8'H99;
+    memory[8*16'HCCEC+:8] = 8'HBC;//LDY, absX
+    memory[8*16'HCCED+:8] = 8'H80;//DATAL
+    memory[8*16'HCCEE+:8] = 8'H02;//DATAH
+    memory[8*16'H0300+:8] = 8'H05;//DATA 
+    
+    memory[8*16'H0301+:8] = 8'H72;//DATA, this is for debugging and should not be seen
+    memory[8*16'H0299+:8] = 8'H7B;//DATA, this is for debugging and should not be seen
+    memory[8*16'H0200+:8] = 8'H70;//DATA, this is for debugging and should not be seen
+    
+    memory[8*16'HCCEF+:8] = 8'H96;//STX, zpgY
+    memory[8*16'HCCF0+:8] = 8'H01;//DATA for zpg
 
-    memory[8*16'HCCDF+:8] = 8'H85;//STA, ZPG (50)               (48, 10)
-    memory[8*16'HCCE0+:8] = 8'H50;
-
-    memory[8*16'H0098+:8] = 8'H98;//memory to test lda,zpg      (30, 10)
-    memory[8*16'HCCDF+:8] = 8'HA5;//LDA, ZPG (98)               (30, 10)
-    memory[8*16'HCCE0+:8] = 8'H98;
-
-    memory[8*16'HCCDF+:8] = 8'HA5;//LDA, ZPG (50)               (30, 10)
-    memory[8*16'HCCE0+:8] = 8'H50;
-
+    memory[8*16'HCCF1+:8] = 8'H94;//STY, zpgX
+    memory[8*16'HCCF2+:8] = 8'H84;//DATA for zpg
   end
 
   //Memory loop
@@ -80,17 +99,10 @@ module tb_8227_template ();
     // Wait until safely away from rising edge of the clock before releasing
     @(negedge tb_clk);
     tb_nrst = 1'b1;
-    assign tb_nonMaskableInterrupt = 0;
-    assign tb_interruptRequest = 0;
-    assign tb_dataBusGPIO = 8'h00;
 
     // Leave out of reset for a couple cycles before allowing other stimulus
     // Wait for negative clock edges, 
     // since inputs to DUT should normally be applied away from rising clock edges
-    @(negedge tb_clk);
-    @(negedge tb_clk); 
-    @(negedge tb_clk);
-    @(negedge tb_clk);
     @(negedge tb_clk);
     @(negedge tb_clk);
   end
@@ -102,7 +114,8 @@ module tb_8227_template ();
     .nrst(tb_nrst), 
     .nonMaskableInterrupt(tb_nonMaskableInterrupt), 
     .interruptRequest(tb_interruptRequest),
-    .dataBusGPIO(dataBusGPIO),
+    .dataBusInput(tb_dataBusInput),
+    .dataBusOutput(tb_dataBusOutput),
     .AddressBusHigh(tb_AddressBusHigh),
     .AddressBusLow(tb_AddressBusLow),
     .dataBusEnable(tb_dataBusEnable), 
@@ -196,19 +209,64 @@ module tb_8227_template ();
     @(posedge tb_clk);
     test_name = "Boot Seq clk 7";
 
-//--------------------------------------------------------------------------------------------
-//----------------------------------------LDA, ZPG--------------------------------------------
-//--------------------------------------------------------------------------------------------    
-
     //Clk 0
     @(negedge tb_clk);
     //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
     @(posedge tb_clk);
-    test_name = "Program Start";
+    test_name = "LDA";
 
     //Clk 1
-    @(negedge tb_clk);
-    //tb_dataBusInput = 8'H99;//Put goal address on ZPG
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "PHA";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "LDA";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "PLA";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "TAX";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "TXS";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "TYA";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "TXA";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "TAY";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "LDX,absy";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "LDY,absx";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "STX";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "STY";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
     @(posedge tb_clk);
 
     for(int i = 0; i < 100; i++)
@@ -218,22 +276,6 @@ module tb_8227_template ();
       //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
       @(posedge tb_clk);
     end
-
-//--------------------------------------------------------------------------------------------
-//----------------------------------------Next Instruction------------------------------------
-//--------------------------------------------------------------------------------------------
-
-    @(posedge tb_clk);
-    test_name = "Next Opcode";
-
-    //Clk 0
-    @(negedge tb_clk);
-    //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
-    @(posedge tb_clk);
-
-//--------------------------------------------------------------------------------------------
-//------------------------------------End Example Test----------------------------------------
-//--------------------------------------------------------------------------------------------
 
     test_name = "Finishing";
     @(negedge tb_clk);

@@ -12,6 +12,7 @@ module alu(
     input logic e_eor,                                  //output a^b
     input logic e_or,                                   //output a|b
     input logic e_shiftr,                               //output a >>
+    input logic subtracting,
     output logic carry_out,                             //carry out of alu
     output logic overflow,                              //overflow from alu
     output logic [7:0] alu_out                          //output bus going to alu register
@@ -34,8 +35,10 @@ module alu(
     logic sum_carry_out;              //holds the carry out from sum function
     logic [6:0] rot_buffer;                             //buffer to hold shifted part of rotate
 
-    logic [3:0] lo_nib, hi_nib;                         //for bcd ops
-    logic [7:0] bcd_buffer;
+    logic [3:0] lo_nib_a, hi_nib_a;                         //for bcd ops
+    logic [3:0] lo_nib_b, hi_nib_b;                         //for bcd ops
+    logic [3:0] lo_nib_c, hi_nib_c;                         //for bcd ops
+    logic half_carry;
 
     //NOTE: ALU is only directly responsible for outputting carry and overflow
 
@@ -45,16 +48,20 @@ module alu(
     assign {sum_carry_out, sum} = a + b + {7'b0000000, carry_in};
     
     //Set the overflow flag (right now it is only set in sum, it might need to be selected later)
-    assign overflow = sum_carry_out ^ sum[7];
+    assign overflow = (a[7] ^ sum[7]) & (b[7] ^ sum[7]) & (~(enable_dec && e_sum));
     
 
     always_comb begin
         alu_out = 0;                                    //default to 0
         carry_out = 0;
         rot_buffer = 0;
-        lo_nib = 0;
-        hi_nib = 0;
-        bcd_buffer = 0;
+        lo_nib_a = 0;
+        hi_nib_a = 0;                         //for bcd ops
+        lo_nib_b = 0;
+        hi_nib_b = 0;                         //for bcd ops
+        lo_nib_c = 0;
+        hi_nib_c = 0;                         //for bcd ops
+        half_carry = 0;
 
         if(e_sum) begin                                 //handle addition with carry and overflow
             alu_out = sum;
@@ -70,41 +77,41 @@ module alu(
             alu_out = a | b;
         end
         if(e_shiftr) begin
-            {rot_buffer, carry_out} = a >> 1;
-            alu_out = {carry_in, rot_buffer};
+            {alu_out, carry_out} = {carry_in, a};
         end
 
-        if(enable_dec) begin                            //handle add/subtract in bcd
-            if(carry_in) begin
-                if(e_sum) begin
-                    bcd_buffer = a - b;
-                    {hi_nib, lo_nib} = bcd_buffer;
-                    if(lo_nib > 4'b1001) begin
-                        lo_nib = lo_nib + 4'b1010;
-                    end
-                    if(hi_nib > 4'b1001) begin
-                        hi_nib = hi_nib + 4'b1010;
-                        carry_out = 1;
-                    end
+        if(enable_dec && e_sum) begin                            //handle add/subtract in bcd
+            {hi_nib_a, lo_nib_a} = a;
+            {hi_nib_b, lo_nib_b} = b;
+            //Determine Low Nibble
+            if((lo_nib_a + lo_nib_b + carry_in > 5'b01001) & (lo_nib_a + lo_nib_b + carry_in < 5'b10000)) begin
+                if(~subtracting)
+                    lo_nib_c = lo_nib_a + lo_nib_b + carry_in + 4'b0110;
+                else
+                    lo_nib_c = lo_nib_a + lo_nib_b + carry_in + 4'b1010;
+            end else
+                lo_nib_c = lo_nib_a + lo_nib_b + carry_in;
 
-                    alu_out = {hi_nib, lo_nib};
-                end
+            //Set half_Carry
+            if(lo_nib_a + lo_nib_b + carry_in > 5'b01001)
+                half_carry = 1;
+            
+            
+            //Determine Low Nibble
+            if((hi_nib_a + hi_nib_b + half_carry > 5'b01001) & (hi_nib_a + hi_nib_b + half_carry < 5'b10000)) begin
+                if(~subtracting)
+                    hi_nib_c = hi_nib_a + hi_nib_b + half_carry + 4'b0110;
+                else
+                    hi_nib_c = hi_nib_a + hi_nib_b + half_carry + 4'b1010;
+            end else
+                hi_nib_c = hi_nib_a + hi_nib_b + half_carry;
 
-            end else begin
-                if(e_sum) begin
-                    bcd_buffer = a + b;
-                    {hi_nib, lo_nib} = bcd_buffer;
-                    if(lo_nib > 4'b1001) begin
-                        lo_nib = lo_nib + 4'b0110;
-                    end
-                    if(hi_nib > 4'b1001) begin
-                        hi_nib = hi_nib + 4'b0110;
-                        carry_out = 1;
-                    end
+            //Set Carry Out
+            if(hi_nib_a + hi_nib_b + half_carry > 5'b01001)
+                carry_out = 1;
 
-                    alu_out = {hi_nib, lo_nib};
-                end
-            end
-        end
+
+            alu_out = {hi_nib_c, lo_nib_c};
+         end
     end
 endmodule

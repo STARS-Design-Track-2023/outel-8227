@@ -84,11 +84,12 @@ module decoder (
                     ADDRESS=abs;
                     case(a)
                         3'b001: CMD=BIT;
-                        3'b010: CMD=JMP;
+                        3'b010: begin
+                            CMD=JMP;
+                        end
                         3'b011: begin
-                             CMD=JMP;
-                             ADDRESS=ind;
-                             ADDRESS=abs; // only one with a different address
+                            CMD=JMP;
+                            ADDRESS=ind;
                         end
                         3'b100: CMD=STY;
                         3'b101: CMD=LDY;
