@@ -45,7 +45,7 @@ module alu(
     //Constant selects in Always_* processes are unsupported so much of this is done outside of always_comb blocks
     
     //Assign the output and carryout from the sum 
-    assign {sum_carry_out, sum} = a + b + {7'b0000000, carry_in};
+    //assign {sum_carry_out, sum} = a + b + {7'b0000000, carry_in};
     
     //Set the overflow flag (right now it is only set in sum, it might need to be selected later)
     assign overflow = (a[7] ^ sum[7]) & (b[7] ^ sum[7]) & (~(enable_dec && e_sum));

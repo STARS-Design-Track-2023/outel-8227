@@ -78,10 +78,11 @@ module top8227 (
 
     decoder decoder(
         .opcode(opcodeCurrentValue),
-        .CMD(instructionCode),
-        .ADDRESS(addressingCode),
-        .debug(debug)
+        .cmd(instructionCode),
+        .address(addressingCode)
     );
+
+    assign debug[3:0] = addressingCode;
 
     demux demux(
         .preFFInstructionCode(instructionCode),
