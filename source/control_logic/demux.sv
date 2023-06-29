@@ -1024,7 +1024,6 @@ always_comb begin : blockName
             case (state)
                 T0: begin
                     //Set FLAG
-                    outflags[PSR_DATA_TO_LOAD] = 0;
                     outflags[LOAD_OVERFLOW_PSR_FLAG] = 1;
                 
                 end
@@ -2303,6 +2302,10 @@ always_comb begin : blockName
             outflags = 0;
             case (state)
                 T0: begin
+                    //go to stack
+                    outflags[SET_ADH_TO_ONE] = 1;
+                    outflags[LOAD_ABH] = 1;
+                    
                     //Set input B to SP
                     outflags[SET_SB_TO_SP] = 1;
                     outflags[SET_DB_TO_SB] = 1;
@@ -2407,6 +2410,10 @@ always_comb begin : blockName
             outflags = 0;
             case (state)
                 T0: begin
+                    //go to stack
+                    outflags[SET_ADH_TO_ONE] = 1;
+                    outflags[LOAD_ABH] = 1;
+
                     //Set input B to SP
                     outflags[SET_SB_TO_SP] = 1;
                     outflags[SET_DB_TO_SB] = 1;
@@ -2470,6 +2477,16 @@ always_comb begin : blockName
                     outflags[PC_INC] = 1;
                 end
                 T4: begin
+                    //Increment PC
+                    outflags[PC_INC] = 1;
+
+                    //set ABH and ABL to PC
+                    outflags[SET_ADH_TO_PCH] = 1;
+                    outflags[LOAD_ABH] = 1;
+                    outflags[SET_ADL_TO_PCL] = 1;
+                    outflags[LOAD_ABL] = 1;
+                end
+                T5: begin
                     //Increment PC
                     outflags[PC_INC] = 1;
 
