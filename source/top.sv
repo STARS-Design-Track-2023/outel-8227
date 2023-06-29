@@ -1,6 +1,5 @@
 `default_nettype none
 
-
 // `include "source/control_logic/state_machine.sv" 
 // `include "source/param_file.sv" 
 
@@ -35,6 +34,11 @@ module top
 );
 
   top8227 top8227(
+    .dataBusEnable(1),
+    .ready(1),
+    .setOverflow(0),
+    .sync(),
+    .readNotWrite(),
     .clk(pb[16]), 
     .nrst(~pb[19]), 
     .nonMaskableInterrupt(pb[18]), 

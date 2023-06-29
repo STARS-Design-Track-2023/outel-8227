@@ -76,8 +76,8 @@ module top8227 (
 
     decoder decoder(
         .opcode(opcodeCurrentValue),
-        .CMD(instructionCode),
-        .ADDRESS(addressingCode)
+        .cmd(instructionCode),
+        .address(addressingCode)
     );
 
     demux demux(
