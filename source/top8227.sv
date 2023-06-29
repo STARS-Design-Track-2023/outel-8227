@@ -1,3 +1,7 @@
+`ifndef NUMFLAGS
+`include "param_file.sv"
+`endif
+
 module top8227 (
     input  logic clk, nrst, nonMaskableInterrupt, interruptRequest, dataBusEnable, ready, setOverflow,
     input  logic [7:0] dataBusInput,
@@ -13,7 +17,7 @@ module top8227 (
     logic       getInstruction;
     logic       aluCarryOut, freeCarry;
     logic       nmiRunning, resetRunning;
-    logic [NUMFLAGS-1:0] flags, preFlags;
+    logic [`NUMFLAGS-1:0] flags, preFlags;
     logic getInstructionPreInjection, getInstructionPostInjection;
     logic setIFlag;
     logic enableFFs;
@@ -21,10 +25,10 @@ module top8227 (
     logic pclMSB;
     logic branchBackward, branchForward;
 
-    assign readNotWrite = ~preFlags[SET_WRITE_FLAG];
+    assign readNotWrite = ~preFlags[`SET_WRITE_FLAG];
     assign enableFFs = (ready | ~readNotWrite) & slow_pulse;
     
-    assign sync = flags[END_INSTRUCTION];
+    assign sync = flags[`END_INSTRUCTION];
 
     //Disable all flags
     always_comb begin
