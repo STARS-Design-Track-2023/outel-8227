@@ -28,56 +28,56 @@ module decoder (
                 3'b000: begin
                     case(a)
                         3'b000: begin
-                             cmd=BRK;
-                             address=impl;
+                             cmd=`BRK;
+                             address=`impl;
                         end
                         3'b001: begin
-                             cmd=JSR;
-                             address=impl;
+                             cmd=`JSR;
+                             address=`impl;
                         end
                         3'b010: begin
-                             cmd=RTI;
-                             address=impl;
+                             cmd=`RTI;
+                             address=`impl;
                         end
                         3'b011: begin
-                             cmd=RTS;
-                             address=impl;
+                             cmd=`RTS;
+                             address=`impl;
                         end
                         3'b101: begin
-                             cmd=LDY;
-                             address=IMMEDIATE;
+                             cmd=`LDY;
+                             address=`IMMEDIATE;
                         end
                         3'b110: begin
-                             cmd=CPY;
-                             address=IMMEDIATE;
+                             cmd=`CPY;
+                             address=`IMMEDIATE;
                         end
                         default: begin // ACTUAL 3'b111
-                             cmd=CPX;
-                             address=IMMEDIATE;
+                             cmd=`CPX;
+                             address=`IMMEDIATE;
                         end
                     endcase
                 end
                 3'b001: begin
-                    address=zpg;
+                    address=`zpg;
                     casez(a)
-                        3'b00?: cmd=BIT;
-                        3'b100: cmd=STY;
-                        3'b101: cmd=LDY;
-                        3'b110: cmd=CPY;
-                        default: cmd=CPX; // ACTUAL 3'b111 
+                        3'b00?: cmd=`BIT;
+                        3'b100: cmd=`STY;
+                        3'b101: cmd=`LDY;
+                        3'b110: cmd=`CPY;
+                        default: cmd=`CPX; // ACTUAL 3'b111 
                     endcase
                 end
                 3'b010: begin
-                    address=impl;
+                    address=`impl;
                     case(a)
-                        3'b000: cmd=PHP;
-                        3'b001: cmd=PLP;
-                        3'b010: cmd=PHA;
-                        3'b011: cmd=PLA;
-                        3'b100: cmd=DEY;
-                        3'b101: cmd=TAY;
-                        3'b110: cmd=INY;
-                        default: cmd=INX; // ACTUAL 3'b111
+                        3'b000: cmd=`PHP;
+                        3'b001: cmd=`PLP;
+                        3'b010: cmd=`PHA;
+                        3'b011: cmd=`PLA;
+                        3'b100: cmd=`DEY;
+                        3'b101: cmd=`TAY;
+                        3'b110: cmd=`INY;
+                        default: cmd=`INX; // ACTUAL 3'b111
                     endcase
                 end
                 3'b011: begin
