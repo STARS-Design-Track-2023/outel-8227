@@ -40,9 +40,11 @@ Here are reference materials that support the Outel 8227 Design:
 
 - Read/~Write: 1 O pin reserved for showing whether the processor is currently reading or writing information
 
+- Sync: 1 O pin reserved for showing whether an instruction has been completed
+
 - Set Overflow: 1 I pin reserved for directly setting the overflow flag in the process status register
 
-## Supporting Equipment
+## Supporting Equipment (suggested post-silicon hardware)
 With the Outel 8227 alone, it is difficult to see many of the fascinating applications of a processor. It is recommended that users have supporting equipment to interface with the processor. The standard and tested configuration for external hardware is given by Ben Eater** in his video series regarding the 6502 processor. Ideally, the 8227 will be able to access external RAM, ROM, and some form of display. The parts list for this capability is as follows:
 
 - RAM - AS6C62256 from Alliance
@@ -58,8 +60,12 @@ With the Outel 8227 alone, it is difficult to see many of the fascinating applic
 
 The basic function of the suggested peripheral setup is as follows: The processor's addressing power is mapped between RAM and ROM, the address bus determines the location of a read or write. The interface adapter can see the outputs from memory and choose to output them to the ASCII display.
 
+## Supporting Equipment (suggested FPGA hardware)
+The ice40 FPGA does have 4 kb of on-chip RAM. This memory can be configured to act as ROM. Therefore, a nearly complete test of the processor is possible on the ice40 FPGA. 
+
 ## RTL Diagrams
 All referenced diagrams are available at the given link. Additional diagrams of various parts of the design are also present at the link.
+Diagrams: https://purdue0-my.sharepoint.com/:p:/g/personal/jacobse7_purdue_edu/EdXysM900eFEkCPI6MGofeEBssT8I5oD_8j2K1cs7i5JpQ?e=KRjAxs
 
 ## Some Legal Statement
 From Purdue that I haven't figured out yet, maybe some stuff about Dr. J, the program, and other instructors
