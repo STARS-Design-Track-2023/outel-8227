@@ -84,30 +84,30 @@ module alu(
             {hi_nib_a, lo_nib_a} = a;
             {hi_nib_b, lo_nib_b} = b;
             //Determine Low Nibble
-            if((lo_nib_a + lo_nib_b + carry_in > 5'b01001) & (lo_nib_a + lo_nib_b + carry_in < 5'b10000)) begin
+            if(({1'b0, lo_nib_a} + {1'b0, lo_nib_b} + {4'b0, carry_in} > 5'b01001) & (lo_nib_a + lo_nib_b + {3'b0, carry_in} < 5'b10000)) begin
                 if(~subtracting)
-                    lo_nib_c = lo_nib_a + lo_nib_b + carry_in + 4'b0110;
+                    lo_nib_c = lo_nib_a + lo_nib_b + {3'b0, carry_in} + 4'b0110;
                 else
-                    lo_nib_c = lo_nib_a + lo_nib_b + carry_in + 4'b1010;
+                    lo_nib_c = lo_nib_a + lo_nib_b + {3'b0, carry_in} + 4'b1010;
             end else
-                lo_nib_c = lo_nib_a + lo_nib_b + carry_in;
+                lo_nib_c = lo_nib_a + lo_nib_b + {3'b0, carry_in};
 
             //Set half_Carry
-            if(lo_nib_a + lo_nib_b + carry_in > 5'b01001)
+            if(lo_nib_a + lo_nib_b + {3'b0, carry_in} > 5'b01001)
                 half_carry = 1;
             
             
             //Determine Low Nibble
-            if((hi_nib_a + hi_nib_b + half_carry > 5'b01001) & (hi_nib_a + hi_nib_b + half_carry < 5'b10000)) begin
+            if(({1'b0, hi_nib_a} + {1'b0, hi_nib_b} + {4'b0, half_carry} > 5'b01001) & (hi_nib_a + hi_nib_b + {3'b0, half_carry} < 5'b10000)) begin
                 if(~subtracting)
-                    hi_nib_c = hi_nib_a + hi_nib_b + half_carry + 4'b0110;
+                    hi_nib_c = hi_nib_a + hi_nib_b + {3'b0, half_carry} + 4'b0110;
                 else
-                    hi_nib_c = hi_nib_a + hi_nib_b + half_carry + 4'b1010;
+                    hi_nib_c = hi_nib_a + hi_nib_b + {3'b0, half_carry} + 4'b1010;
             end else
-                hi_nib_c = hi_nib_a + hi_nib_b + half_carry;
+                hi_nib_c = hi_nib_a + hi_nib_b + {3'b0, half_carry};
 
             //Set Carry Out
-            if(hi_nib_a + hi_nib_b + half_carry > 5'b01001)
+            if(hi_nib_a + hi_nib_b + {3'b0, half_carry} > 5'b01001)
                 carry_out = 1;
 
 

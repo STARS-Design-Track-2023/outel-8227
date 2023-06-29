@@ -7,7 +7,8 @@ module internalDataflow(
     output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput,
     output logic [7:0] psrRegToLogicController,
     output logic aluCarryOut,
-    output logic pclMSB
+    output logic pclMSB,
+    output logic [7:0] debug
 );
     //outputs from registers
     //ABL = address bus low
@@ -33,6 +34,8 @@ module internalDataflow(
                 sbToADH, adhToSB,//SB/ADH Bridge Outputs
                 sbToDB, dbToSB,//SB/DB Bridge Outputs
                 dataToDB, dataToADL, dataToADH;//External DB Interface Outputs
+
+    assign debug = aluRegToADL;    
 
     assign pclMSB = pclRegToDB[7];//Assign this to the MSB of the PCL's current value to pass to control logic
 

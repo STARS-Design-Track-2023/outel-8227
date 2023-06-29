@@ -34,105 +34,100 @@ module top
   input  logic txready, rxready
 );
 
-  top8227 top8227(
-    .clk(pb[16]), 
-    .nrst(~pb[19]), 
-    .nonMaskableInterrupt(pb[18]), 
-    .interruptRequest(pb[17]), 
-    .dataBusInput(pb[7:0]),
-    .dataBusOutput({ss7[7], ss6[7], ss5[7], ss4[7], ss3[7], ss2[7], ss1[7], ss0[7]}),
-    .AddressBusHigh(left),
-    .AddressBusLow(right)
+  logic clk, nrst, nmi, irq, dbe, rdy, sv, sync, rnw;
+  logic [7:0] addressBusHigh, addressBusLow, dataBusOut, dataBusIn;
+  logic [7:0] romOut, ramOut;
+
+  assign {ss7[7], ss6[7], ss5[7], ss4[7], ss3[7], ss2[7], ss1[7], ss0[7]} = dataBusOut;
+  //assign left = addressBusHigh;
+  //assign right = addressBusLow;
+
+  assign clk = pb[16]; 
+  assign nrst = ~reset;
+  assign nmi = 1'b0;
+  assign irq = 1'b0;
+  assign dbe = 1'b0;
+  assign rdy = 1'b1;
+  assign sv = 1'b0;
+  //assign red = sync;
+  assign blue = rnw;
+
+  assign {ss7[0], ss6[0], ss5[0], ss4[0], ss3[0], ss2[0], ss1[0], ss0[0]} = dataBusIn;
+
+  top8227 top8227 (
+    .clk(clk),
+    .nrst(nrst),
+    .nonMaskableInterrupt(nmi),
+    .interruptRequest(irq),
+    .dataBusEnable(dbe),
+    .ready(rdy),
+    .setOverflow(sv),
+    .dataBusInput(dataBusIn),
+    .dataBusOutput(dataBusOut),
+    .addressBusHigh(addressBusHigh),
+    .addressBusLow(addressBusLow),
+    .sync(sync),
+    .readNotWrite(rnw),
+    .debug(left),
+    .debug2(right)
   );
+
+  //Memory Select (only 01 and 00 can be written to and overlap)
+  always_comb begin : memory_select
+    if(rnw)
+    begin
+      if(addressBusHigh > 8'H7F)
+      begin
+        dataBusIn = romOut;
+      end
+      else
+        dataBusIn = ramOut;//Note that all these pages overlap and writing will only affect pages 01 and 00
+    end
+    else
+    begin
+      dataBusIn = 8'H00;
+    end
+  end
+
+  logic [2047:0] ram, ramNext;
+  always_comb begin : RAM
+    ramNext = ram;
+    red = 1'b0;
+    if(~rnw)
+    begin
+      //If writing, only write to the zero page and 1st page
+      if(addressBusHigh == 8'H00 || addressBusHigh == 8'H01)
+        ramNext[8*addressBusLow+:8] = dataBusOut;
+    end
+  end
+
+  // If we are writing, the memory doesn't need to appear until the next clock cycle
+  always_ff @(posedge clk, negedge nrst) begin : RAM_next_state
+    if(~nrst)
+      ram = 2048'b0;
+    else
+      begin
+        ram = ramNext;
+      end
+  end
+
+  //Set ramOut (01 and 00 pages will overlap)
+  assign ramOut = ram[8*addressBusLow+:8] & {8{rnw}};//only set if reading
+
+  //Set RomOut
+  always_comb begin : RomOut
+    if(rnw)
+    begin
+      case({addressBusHigh, addressBusLow})
+        16'HFFFE: romOut = 8'HFF;
+        16'HFFFF: romOut = 8'HFF;
+        default:  romOut = 8'H00;
+      endcase
+    end
+    else
+    begin
+      romOut = 8'H00;
+    end
+  end
     
 endmodule
-
-
-// module timing_generator (
-//   input logic clk, rst,
-//   input logic [2:0] addressTimingCode, opTimingCode,
-//   output logic [2:0] timeOut,
-//   output logic isAddressing
-// );
-
-// logic [2:0] negTime, nextTime;
-
-// always_comb begin : comb_timingGenerator
-//     nextTime = 3'b000;
-//     timeOut = 3'b000;
-//     if(negTime == 3'b000) begin
-
-//       if(isAddressing)
-//         nextTime = opTimingCode; // goes from addressing to operations
-//       else
-//         nextTime = addressTimingCode; // goes from operations to addressing
-
-//     end
-//     else 
-//         nextTime = negTime - 3'b001; // default behavior, decrements the next time
-
-
-//     if(isAddressing)
-//         timeOut = addressTimingCode - negTime; // conversion for addressing, adapts to count up behavior
-//     else
-//         timeOut = opTimingCode - negTime; // conversion for operations, see above
-// end
-
-// always_ff @( posedge clk, negedge rst ) begin : ff_timingGenerator
-//         if(rst == 1'b0) begin
-//             negTime = addressTimingCode;
-//         end
-//         else
-//             negTime = nextTime; // sets the next time
-        
-// end 
-
-// always_ff @( posedge clk, negedge rst ) begin : ff_start_timingGenerator
-//     if(rst == 1'b0) 
-//         isAddressing = 1'b1;
-//     else if(negTime == 3'b000)
-//         isAddressing = ~isAddressing; // transition from addressing to operations and vice versa
-// end
-
-// endmodule
-
-// module timingGenerator (
-//     input logic clk, rst,
-//     input logic [2:0] addressTimingCode, opTimingCode,
-//     output logic [2:0] timeOut,
-//     output logic isAddressing
-// );
-
-// logic [2:0] negTime, nextTime;
-// logic start;
-
-// always_comb begin : comb_timingGenerator
-//     if(negTime == 3'b000) begin
-
-//         if(start) begin
-//             nextTime = opTimingCode; // goes from addressing to operations
-//             timeOut = addressTimingCode - negTime; // conversion for addressing, adapts to count up behavior
-//         end
-//         else begin
-//             nextTime = addressTimingCode; // goes from operations to addressing
-//             timeOut = opTimingCode - negTime; // conversion for operations, see above
-//         end
-//     end
-//     else 
-//         nextTime = negTime - 3'b001; // default behavior, decrements the next time
-
-// end
-
-// always_ff @( posedge clk, negedge rst ) begin : blockName
-//         if(rst == 1'b0) begin
-//             negTime = addressTimingCode;
-//             start = 1'b1;
-//         end
-//         else
-//             negTime = nextTime; // sets the next time
-        
-//         if(negTime == 3'b000)
-//             start = ~start; // transition from addressing to operations and vice versa
-// end 
-
-// endmodule

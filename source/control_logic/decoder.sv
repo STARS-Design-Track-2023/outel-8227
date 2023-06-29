@@ -1,7 +1,8 @@
 module decoder (
     input  logic [7:0] opcode,
     output logic [5:0] CMD,
-    output logic [3:0] ADDRESS
+    output logic [3:0] ADDRESS,
+    output logic [7:0] 
 );
 
     logic [2:0] a;
@@ -22,7 +23,7 @@ module decoder (
     CMD = 6'b0;
     ADDRESS = 4'b0;
     
-    casez(c)
+    case(c)
         2'b00: begin
             case(b)
                 3'b000: begin
@@ -59,8 +60,9 @@ module decoder (
                 end
                 3'b001: begin
                     ADDRESS=zpg;
-                    casez(a)
-                        3'b00?: CMD=BIT;
+                    case(a)
+                        3'b000: CMD=BIT;
+                        3'b001: CMD=BIT;
                         3'b100: CMD=STY;
                         3'b101: CMD=LDY;
                         3'b110: CMD=CPY;

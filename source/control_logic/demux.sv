@@ -7,7 +7,8 @@ module demux(
     output logic [NUMFLAGS - 1:0] outflags,
     input logic setInterruptFlag,
     input logic enableFFs,
-    input logic branchForwardFF, branchBackwardFF
+    input logic branchForwardFF, branchBackwardFF,
+    output logic [7:0] debug, debug2
 );
 
 logic  [NUMFLAGS - 1:0] outputListAddressing [13:0] ;
@@ -21,6 +22,9 @@ logic passAddressing;
 logic jump; // to be fixed later // was kind of fixed later
 logic [5:0] instructionCode;
 logic [3:0] addressingCode;
+
+assign debug2[3] = passAddressing;
+assign debug2[0] = getInstructionPostInjection;
 
 assign getInstructionPreInjection = outflags[END_INSTRUCTION]; // output flag to handle reset injection
 
@@ -49,6 +53,7 @@ state_machine state_machine(
     .mode(isAddressing)
 );
 
+assign passAddressing = (preFFAddressingCode == 4'd0); // bypasses Addressing (impl from param_file);
 
 always_comb begin : blockName
 
@@ -62,10 +67,12 @@ always_comb begin : blockName
         STX: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
-    if((preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == rel | preFFAddressingCode == A) & getInstructionPostInjection) // bypasses Addressing (impl from param_file)
-        passAddressing = 1'b1;
-    else
-        passAddressing = 1'b0;
+    
+    // if((preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == rel | preFFAddressingCode == 4'd0) & getInstructionPostInjection) // bypasses Addressing (impl from param_file)
+    // if(1==1) // bypasses Addressing (impl from param_file)
+    //     passAddressing = 1'b1;
+    // else
+    //     passAddressing = 1'b0;
 
 
     if(isAddressing & ~passAddressing) begin
