@@ -52,7 +52,7 @@ state_machine state_machine(
     .mode(isAddressing)
 );
 
-assign passAddressing = ((preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == rel | preFFAddressingCode == 4'd0) & getInstructionPostInjection);// & getInstructionPostInjection); // bypasses Addressing (impl from param_file);
+assign passAddressing = (addressingCode == IMMEDIATE | addressingCode == impl | addressingCode == rel | addressingCode == 4'd0);// & getInstructionPostInjection); // bypasses Addressing (impl from param_file);
 
 always_comb begin : blockName
 
@@ -66,12 +66,6 @@ always_comb begin : blockName
         STX: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
-    
-    // if((preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == rel | preFFAddressingCode == 4'd0) & getInstructionPostInjection) // bypasses Addressing (impl from param_file)
-    // if(1==1) // bypasses Addressing (impl from param_file)
-    //     passAddressing = 1'b1;
-    // else
-    //     passAddressing = 1'b0;
 
     outflags = 0;
     if(isAddressing & ~passAddressing) begin
