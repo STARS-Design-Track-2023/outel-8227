@@ -1,7 +1,7 @@
 module decoder (
     input  logic [7:0] opcode,
-    output logic [5:0] CMD,
-    output logic [3:0] ADDRESS
+    output logic [5:0] cmd,
+    output logic [3:0] address
 );
 
     logic [2:0] a;
@@ -19,8 +19,8 @@ module decoder (
     always_comb begin : comb_decoder
 
     
-    CMD = 6'b0;
-    ADDRESS = 4'b0;
+    cmd = 6'b0;
+    address = 4'b0;
     
     casez(c)
         2'b00: begin
@@ -28,258 +28,259 @@ module decoder (
                 3'b000: begin
                     case(a)
                         3'b000: begin
-                             CMD=BRK;
-                             ADDRESS=impl;
+                             cmd=BRK;
+                             address=impl;
                         end
                         3'b001: begin
-                             CMD=JSR;
-                             ADDRESS=abs;
+                             cmd=JSR;
+                             address=impl;
                         end
                         3'b010: begin
-                             CMD=RTI;
-                             ADDRESS=impl;
+                             cmd=RTI;
+                             address=impl;
                         end
                         3'b011: begin
-                             CMD=RTS;
-                             ADDRESS=impl;
+                             cmd=RTS;
+                             address=impl;
                         end
                         3'b101: begin
-                             CMD=LDY;
-                             ADDRESS=IMMEDIATE;
+                             cmd=LDY;
+                             address=IMMEDIATE;
                         end
                         3'b110: begin
-                             CMD=CPY;
-                             ADDRESS=IMMEDIATE;
+                             cmd=CPY;
+                             address=IMMEDIATE;
                         end
                         default: begin // ACTUAL 3'b111
-                             CMD=CPX;
-                             ADDRESS=IMMEDIATE;
+                             cmd=CPX;
+                             address=IMMEDIATE;
                         end
                     endcase
                 end
                 3'b001: begin
-                    ADDRESS=zpg;
+                    address=zpg;
                     casez(a)
-                        3'b00?: CMD=BIT;
-                        3'b100: CMD=STY;
-                        3'b101: CMD=LDY;
-                        3'b110: CMD=CPY;
-                        default: CMD=CPX; // ACTUAL 3'b111 
+                        3'b00?: cmd=BIT;
+                        3'b100: cmd=STY;
+                        3'b101: cmd=LDY;
+                        3'b110: cmd=CPY;
+                        default: cmd=CPX; // ACTUAL 3'b111 
                     endcase
                 end
                 3'b010: begin
-                    ADDRESS=impl;
+                    address=impl;
                     case(a)
-                        3'b000: CMD=PHP;
-                        3'b001: CMD=PLP;
-                        3'b010: CMD=PHA;
-                        3'b011: CMD=PLA;
-                        3'b100: CMD=DEY;
-                        3'b101: CMD=TAY;
-                        3'b110: CMD=INY;
-                        default: CMD=INX; // ACTUAL 3'b111
+                        3'b000: cmd=PHP;
+                        3'b001: cmd=PLP;
+                        3'b010: cmd=PHA;
+                        3'b011: cmd=PLA;
+                        3'b100: cmd=DEY;
+                        3'b101: cmd=TAY;
+                        3'b110: cmd=INY;
+                        default: cmd=INX; // ACTUAL 3'b111
                     endcase
                 end
                 3'b011: begin
-                    ADDRESS=abs;
+                    address=abs;
                     case(a)
-                        3'b001: CMD=BIT;
-                        3'b010: CMD=JMP;
-                        3'b011: begin
-                             CMD=JMP;
-                             ADDRESS=ind;
-                             ADDRESS=abs; // only one with a different address
+                        3'b001: cmd=BIT;
+                        3'b010: begin
+                            cmd=JMP;
                         end
-                        3'b100: CMD=STY;
-                        3'b101: CMD=LDY;
-                        3'b110: CMD=CPY;
-                        default: CMD=CPX; // ACTUAL 3'b111
+                        3'b011: begin
+                            cmd=JMP;
+                            address=ind;
+                        end
+                        3'b100: cmd=STY;
+                        3'b101: cmd=LDY;
+                        3'b110: cmd=CPY;
+                        default: cmd=CPX; // ACTUAL 3'b111
                     endcase
                 end
                 3'b100: begin
-                    ADDRESS=rel;
+                    address=rel;
                     case(a)
-                        3'b000: CMD=BPL;
-                        3'b001: CMD=BMI;
-                        3'b010: CMD=BVC;
-                        3'b011: CMD=BVS;
-                        3'b100: CMD=BCC;
-                        3'b101: CMD=BCS;
-                        3'b110: CMD=BNE;
-                        default: CMD=BEQ; // ACTUAL 3'b111
+                        3'b000: cmd=BPL;
+                        3'b001: cmd=BMI;
+                        3'b010: cmd=BVC;
+                        3'b011: cmd=BVS;
+                        3'b100: cmd=BCC;
+                        3'b101: cmd=BCS;
+                        3'b110: cmd=BNE;
+                        default: cmd=BEQ; // ACTUAL 3'b111
                     endcase
                 end
                 3'b101: begin
-                    ADDRESS=zpgX;
+                    address=zpgX;
                     case(a)
-                        3'b100: CMD=STY;
-                        default: CMD=LDY; // ACTUAL 3'b101
+                        3'b100: cmd=STY;
+                        default: cmd=LDY; // ACTUAL 3'b101
                     endcase
                 end
                 3'b110: begin
-                    ADDRESS=impl;
+                    address=impl;
                     case(a)
-                        3'b000: CMD=CLC;
-                        3'b001: CMD=SEC;
-                        3'b010: CMD=CLI;
-                        3'b011: CMD=SEI;
-                        3'b100: CMD=TYA;
-                        3'b101: CMD=CLV;
-                        3'b110: CMD=CLD;
-                        default: CMD=SED; // ACTUAL 3'b111
+                        3'b000: cmd=CLC;
+                        3'b001: cmd=SEC;
+                        3'b010: cmd=CLI;
+                        3'b011: cmd=SEI;
+                        3'b100: cmd=TYA;
+                        3'b101: cmd=CLV;
+                        3'b110: cmd=CLD;
+                        default: cmd=SED; // ACTUAL 3'b111
                     endcase
                 end
                 default: begin // ACTUAL 3'b111
-                    ADDRESS=absX;
-                    CMD=LDY;
+                    address=absX;
+                    cmd=LDY;
                 end
             endcase
             end
                 
         2'b01: begin // start of block c 1
             case(b)
-                3'b000: ADDRESS=Xind;
-                3'b001: ADDRESS=zpg;
-                3'b010: ADDRESS=IMMEDIATE;
-                3'b011: ADDRESS=abs;
-                3'b100: ADDRESS=indY;
-                3'b101: ADDRESS=zpgX;
-                3'b110: ADDRESS=absY;
-                default: ADDRESS=absX; // ACTUAL 3'b111
+                3'b000: address=Xind;
+                3'b001: address=zpg;
+                3'b010: address=IMMEDIATE;
+                3'b011: address=abs;
+                3'b100: address=indY;
+                3'b101: address=zpgX;
+                3'b110: address=absY;
+                default: address=absX; // ACTUAL 3'b111
             endcase // end of b addressing
             case(a)
-                3'b000: CMD=ORA;
-                3'b001: CMD=AND;
-                3'b010: CMD=EOR;
-                3'b011: CMD=ADC;
-                3'b100: CMD=STA;
-                3'b101: CMD=LDA;
-                3'b110: CMD=CMP;
-                default: CMD=SBC; // end of c addressing
+                3'b000: cmd=ORA;
+                3'b001: cmd=AND;
+                3'b010: cmd=EOR;
+                3'b011: cmd=ADC;
+                3'b100: cmd=STA;
+                3'b101: cmd=LDA;
+                3'b110: cmd=CMP;
+                default: cmd=SBC; // end of c addressing
             endcase
         end
  
         default: begin // start of block c 2
             case(b)
                 3'b000: begin
-                             ADDRESS=IMMEDIATE;
-                             CMD=LDX;
+                             address=IMMEDIATE;
+                             cmd=LDX;
                         end
                 3'b001: begin
-                ADDRESS=zpg;
+                address=zpg;
                     case(a)
                         3'b000: begin
-                             CMD=ASL;
-                             ADDRESS=A;
+                             cmd=ASL;
+                             address=A;
                         end
                         3'b001: begin
-                             CMD=ROL;
-                             ADDRESS=A;
+                             cmd=ROL;
+                             address=A;
                         end
                         3'b010: begin
-                             CMD=LSR;
-                             ADDRESS=A;
+                             cmd=LSR;
+                             address=A;
                         end
                         3'b011: begin
-                             CMD=ROR;
-                             ADDRESS=A;
+                             cmd=ROR;
+                             address=A;
                         end
                         3'b100: begin
-                             CMD=STX;
-                             ADDRESS=impl;
+                             cmd=STX;
+                             address=impl;
                         end
                         3'b101: begin
-                             CMD=LDX;
-                             ADDRESS=impl;
+                             cmd=LDX;
+                             address=impl;
                         end
                         3'b110: begin
-                             CMD=DEC;
-                             ADDRESS=impl;
+                             cmd=DEC;
+                             address=impl;
                         end
                         default: begin // ACTUAL 3'b111
-                             CMD=INC;
-                             ADDRESS=impl;
+                             cmd=INC;
+                             address=impl;
                         end
                     endcase
                 end
                 3'b010: begin
                     case(a)
-                        3'b000: CMD=ASLA;
-                        3'b001: CMD=ROLA;
-                        3'b010: CMD=LSRA;
-                        3'b011: CMD=RORA;
-                        3'b100: CMD=TXA;
-                        3'b101: CMD=TAX;
-                        3'b110: CMD=DEX;
-                        default: CMD=NOP; // ACTUAL 3'b111
+                        3'b000: cmd=ASLA;
+                        3'b001: cmd=ROLA;
+                        3'b010: cmd=LSRA;
+                        3'b011: cmd=RORA;
+                        3'b100: cmd=TXA;
+                        3'b101: cmd=TAX;
+                        3'b110: cmd=DEX;
+                        default: cmd=NOP; // ACTUAL 3'b111
                     endcase
                 end
                 3'b011: begin
-                ADDRESS=abs;
+                address=abs;
                     case(a)
-                        3'b000: CMD=ASL;
-                        3'b001: CMD=ROL;
-                        3'b010: CMD=LSR;
-                        3'b011: CMD=ROR;
-                        3'b100: CMD=STX;
-                        3'b101: CMD=LDX;
-                        3'b110: CMD=DEC;
-                        default: CMD=INC; // ACTUAL 3'b111
+                        3'b000: cmd=ASL;
+                        3'b001: cmd=ROL;
+                        3'b010: cmd=LSR;
+                        3'b011: cmd=ROR;
+                        3'b100: cmd=STX;
+                        3'b101: cmd=LDX;
+                        3'b110: cmd=DEC;
+                        default: cmd=INC; // ACTUAL 3'b111
                     endcase
                 end
                 3'b101: begin
                     case(a)
                         3'b000: begin
-                             CMD=ASL;
-                             ADDRESS=zpgX;
+                             cmd=ASL;
+                             address=zpgX;
                         end
                         3'b001: begin
-                             CMD=ROL;
-                             ADDRESS=zpgX;
+                             cmd=ROL;
+                             address=zpgX;
                         end
                         3'b010: begin
-                             CMD=LSR;
-                             ADDRESS=zpgX;
+                             cmd=LSR;
+                             address=zpgX;
                         end
                         3'b011: begin
-                             CMD=ROR;
-                             ADDRESS=zpgX;
+                             cmd=ROR;
+                             address=zpgX;
                         end
                         3'b100: begin
-                             CMD=STX;
-                             ADDRESS=zpgY;
+                             cmd=STX;
+                             address=zpgY;
                         end
                         3'b101: begin
-                             CMD=LDX;
-                             ADDRESS=zpgY;
+                             cmd=LDX;
+                             address=zpgY;
                         end
                         3'b110: begin
-                             CMD=DEC;
-                             ADDRESS=zpgX;
+                             cmd=DEC;
+                             address=zpgX;
                         end
                         default: begin // ACTUAL 3'b111
-                             CMD=INC;
-                             ADDRESS=zpgX;
+                             cmd=INC;
+                             address=zpgX;
                         end
                     endcase
                 end
                 3'b110: begin
-                    ADDRESS=impl;
+                    address=impl;
                     case(a)
-                        3'b100: CMD=TXS;
-                        default: CMD=TSX; // ACTUAL 3'b101
+                        3'b100: cmd=TXS;
+                        default: cmd=TSX; // ACTUAL 3'b101
                     endcase
                 end
                 default: begin // ACTUAL 3'b101
-                    ADDRESS=absX;
+                    address=absX;
                     case(a)
-                        3'b000: CMD=ASL;
-                        3'b001: CMD=ROL;
-                        3'b010: CMD=LSR;
-                        3'b011: CMD=ROR;
-                        3'b101: CMD=LDX;
-                        3'b110: CMD=DEC;
-                        default: CMD=INC; // ACTUAL 3'b101
+                        3'b000: cmd=ASL;
+                        3'b001: cmd=ROL;
+                        3'b010: cmd=LSR;
+                        3'b011: cmd=ROR;
+                        3'b101: cmd=LDX;
+                        3'b110: cmd=DEC;
+                        default: cmd=INC; // ACTUAL 3'b101
                     endcase
                 end
             endcase

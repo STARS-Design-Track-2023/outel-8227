@@ -1,12 +1,14 @@
 module internalDataflow(
     input logic nrst, clk,
     input logic freeCarry, psrCarry,
+    input logic setOverflow,
     input logic [NUMFLAGS-1:0] flags,
     input logic [7:0] externalDBRead,
     output logic [7:0] externalDBWrite,
     output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput,
     output logic [7:0] psrRegToLogicController,
-    output logic aluCarryOut
+    output logic aluCarryOut,
+    output logic pclMSB
 );
     //outputs from registers
     //ABL = address bus low
@@ -32,6 +34,8 @@ module internalDataflow(
                 sbToADH, adhToSB,//SB/ADH Bridge Outputs
                 sbToDB, dbToSB,//SB/DB Bridge Outputs
                 dataToDB, dataToADL, dataToADH;//External DB Interface Outputs
+
+    assign pclMSB = pclRegToDB[7];//Assign this to the MSB of the PCL's current value to pass to control logic
 
     logic aluOverflowOut;
 
@@ -259,7 +263,8 @@ module internalDataflow(
         .e_shiftr(flags[ALU_R_SHIFT]),
         .carry_out(aluCarryOut),
         .overflow(aluOverflowOut),
-        .alu_out(aluOutput)
+        .alu_out(aluOutput),
+        .subtracting(flags[SET_ALU_DEC_TO_PSR_DEC]&flags[SET_INPUT_B_TO_NOT_DB])
     );
 
     // Process Status Register
@@ -270,12 +275,12 @@ module internalDataflow(
         .manual_set(flags[PSR_DATA_TO_LOAD]),
         .carry(aluCarryOut),
         .overflow(aluOverflowOut),
-        .DB0_C(flags[SET_PSR_C_TO_DB0]),
-        .DB1_Z(flags[SET_PSR_Z_TO_DB1]),
-        .DB2_I(flags[SET_PSR_I_TO_DB2]),
-        .DB3_D(flags[SET_PSR_D_TO_DB3]),
-        .DB6_V(flags[SET_PSR_V_TO_DB6]),
-        .DB7_N(flags[SET_PSR_N_TO_DB7]),
+        .DB0_C(flags[SET_PSR_C_TO_DB0] | flags[SET_PSR_TO_DB]),
+        .DB1_Z(flags[SET_PSR_Z_TO_DB1] | flags[SET_PSR_TO_DB]),
+        .DB2_I(flags[SET_PSR_I_TO_DB2] | flags[SET_PSR_TO_DB]),
+        .DB3_D(flags[SET_PSR_D_TO_DB3] | flags[SET_PSR_TO_DB]),
+        .DB6_V(flags[SET_PSR_V_TO_DB6] | flags[SET_PSR_TO_DB]),
+        .DB7_N(flags[SET_PSR_N_TO_DB7] | flags[SET_PSR_TO_DB]),
         .manual_C(flags[LOAD_CARRY_PSR_FLAG]),
         .manual_I(flags[LOAD_INTERUPT_PSR_FLAG]),
         .manual_D(flags[LOAD_DECIMAL_PSR_FLAG]),
@@ -286,7 +291,8 @@ module internalDataflow(
         .break_set(flags[SET_PSR_OUTPUT_BRK_HIGH]),
         .PSR_RCL(psrRegToLogicController),
         .PSR_DB(psrRegToDB),
-        .enableDBWrite(flags[SET_DB_TO_PSR])
+        .enableDBWrite(flags[SET_DB_TO_PSR]),
+        .setOverflow(setOverflow)
     );
 
     //Data Bus Preset

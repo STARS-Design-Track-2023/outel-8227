@@ -16,6 +16,7 @@ module processStatusReg(
     input logic carry_C,        //enable read from alu
     input logic DBall_Z,        //enable set from |= databus
     input logic overflow_V,     //enble read from alu
+    input logic setOverflow,     
     input logic rcl_V,          //directly set V to 1 from rcl (random control logic)
     input logic break_set,      //Sets break high for interrupt / break control
     output logic [7:0] PSR_Output //status register to control unit
@@ -35,7 +36,7 @@ module processStatusReg(
     assign stat_buf_nxt[1] = (DB1_Z & DB_in[1]) | (DBall_Z & ~|DB_in)     | (~DBall_Z & ~DB1_Z & status_buffer[1]);
     assign stat_buf_nxt[2] = (DB2_I & DB_in[2]) | (manual_I & manual_set) | (~manual_I & ~DB2_I & status_buffer[2]);
     assign stat_buf_nxt[3] = (DB3_D & DB_in[3]) | (manual_D & manual_set) | (~manual_D & ~DB3_D & status_buffer[3]);
-    assign stat_buf_nxt[6] = (DB6_V & DB_in[6]) | (overflow_V & overflow) | (rcl_V) | (~rcl_V & ~overflow_V & ~DB6_V & status_buffer[6]);
+    assign stat_buf_nxt[6] = (DB6_V & DB_in[6]) | (overflow_V & overflow) | (~rcl_V & ~overflow_V & ~DB6_V & status_buffer[6]) | setOverflow;
     assign stat_buf_nxt[7] = (DB7_N & DB_in[7]) | (~DB7_N & status_buffer[7]);
 
     // always_comb begin                                   //comb block to handle next state logic
