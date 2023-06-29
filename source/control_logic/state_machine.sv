@@ -14,23 +14,23 @@ logic [2:0] nextTime;
 always_comb begin : comb_timingGeneration
     if(endAddressing | (noAddressing)) begin // it is on the last stage of addressing
         nextMode = INSTRUCTION;
-        nextTime = T0;
+        nextTime = `T0;
     end
     else if(getInstruction) begin // it is on the last stage of the instruction
-        nextMode = ADDRESS;
-        nextTime = T0;
+        nextMode = `ADDRESS;
+        nextTime = `T0;
     end
     else begin
         nextMode = mode; // default behavior, remains in the loop
 
         case(timeState) // state machine proper, increases until it hits the max time in the instruction then resets
-        T0: nextTime = T1;
-        T1: nextTime = T2;
-        T2: nextTime = T3;
-        T3: nextTime = T4;
-        T4: nextTime = T5;
-        T5: nextTime = T6;
-        default: nextTime = T0;
+        T0: nextTime = `T1;
+        T1: nextTime = `T2;
+        T2: nextTime = `T3;
+        T3: nextTime = `T4;
+        T4: nextTime = `T5;
+        T5: nextTime = `T6;
+        default: nextTime = `T0;
         endcase
     end
     if(~enableFFs)
