@@ -91,21 +91,21 @@ module top
 
 
 //assign ramOut = 8'H00;
-  logic [2047:0] ram, ramNext;
+  logic [127:0] ram, ramNext;
   always_comb begin : RAM
     ramNext = ram;
     if(~rnw)
     begin
       //If writing, only write to the zero page and 1st page
       if(addressBusHigh == 8'H00 || addressBusHigh == 8'H01)
-        ramNext[8*addressBusLow+:8] = dataBusOut;
+        ramNext[8*addressBusLow[3:0]+:8] = dataBusOut;
     end
   end
 
   // If we are writing, the memory doesn't need to appear until the next clock cycle
   always_ff @(posedge clk, negedge nrst) begin : RAM_next_state
     if(~nrst)
-      ram = 2048'b0;
+      ram = 128'b0;
     else
       begin
         ram = ramNext;
@@ -113,15 +113,15 @@ module top
   end
 
   //Set ramOut (01 and 00 pages will overlap)
-  assign ramOut = ram[8*addressBusLow+:8] & {8{rnw}};//only set if reading
+  assign ramOut = ram[8*addressBusLow[3:0]+:8] & {8{rnw}};//only set if reading
 
   //Set RomOut
   always_comb begin : RomOut
     if(rnw)
     begin
       case({addressBusHigh, addressBusLow})
-        16'HFFFE: romOut = 8'HFF;
-        16'HFFFF: romOut = 8'HFF;
+        16'HFFFC: romOut = 8'HCC;
+        16'HFFFD: romOut = 8'HDD;
         default:  romOut = 8'H00;
       endcase
     end
