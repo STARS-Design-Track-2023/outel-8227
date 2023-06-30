@@ -42,7 +42,7 @@ module top
   assign left = addressBusHigh;
   assign right = addressBusLow;
 
-  assign clk = pb[16]; 
+  assign clk = hwclk; 
   assign nrst = ~reset;
   assign nmi = 1'b0;
   assign irq = 1'b0;
@@ -127,7 +127,7 @@ module top
         16'HFF01: romOut = 8'H00;
         16'HFF02: romOut = 8'H8A;
         16'HFF03: romOut = 8'HC9;
-        16'HFF04: romOut = 8'H08;
+        16'HFF04: romOut = 8'H05;
         16'HFF05: romOut = 8'H10;
         16'HFF06: romOut = 8'H06;
         16'HFF07: romOut = 8'H8A;
@@ -137,8 +137,9 @@ module top
         16'HFF0B: romOut = 8'H4C;
         16'HFF0C: romOut = 8'H03;
         16'HFF0D: romOut = 8'HFF;
-        16'HFF0E: romOut = 8'H00;
-        16'HFF0F: romOut = 8'H00;
+        16'HFF0E: romOut = 8'H4C;
+        16'HFF0F: romOut = 8'H0E;
+        16'HFF10: romOut = 8'HFF;
 
         default:  romOut = 8'H00;
       endcase
