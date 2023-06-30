@@ -1,5 +1,7 @@
 // parameter DECODER_BASE_ADDRESS = 16'H00; // for fpga_seven_seg_driver
-
+`ifndef NUMFLAGS
+`include "source/param_file.sv"
+`endif
 
 module fpga_seven_seg_driver
 (
@@ -16,67 +18,82 @@ module fpga_seven_seg_driver
 );
 
 logic [7:0] decodedData;
-logic [7:0] sevenSegs [7:0];
-logic [7:0] nextSevenSegs [7:0];
+logic [7:0] sevenSegs0;
+logic [7:0] sevenSegs1;
+logic [7:0] sevenSegs2;
+logic [7:0] sevenSegs3;
+logic [7:0] sevenSegs4;
+logic [7:0] sevenSegs5;
+logic [7:0] sevenSegs6;
+logic [7:0] sevenSegs7;
 
-assign sevenSegs[0] = ss0;
-assign sevenSegs[1] = ss1;
-assign sevenSegs[2] = ss2;
-assign sevenSegs[3] = ss3;
-assign sevenSegs[4] = ss4;
-assign sevenSegs[5] = ss5;
-assign sevenSegs[6] = ss6;
-assign sevenSegs[7] = ss7;
+logic [7:0] nextSevenSegs0;
+logic [7:0] nextSevenSegs1;
+logic [7:0] nextSevenSegs2;
+logic [7:0] nextSevenSegs3;
+logic [7:0] nextSevenSegs4;
+logic [7:0] nextSevenSegs5;
+logic [7:0] nextSevenSegs6;
+logic [7:0] nextSevenSegs7;
+
+// assign sevenSegs0 = ss0;
+// assign sevenSegs1 = ss1;
+// assign sevenSegs2 = ss2;
+// assign sevenSegs3 = ss3;
+// assign sevenSegs4 = ss4;
+// assign sevenSegs5 = ss5;
+// assign sevenSegs6 = ss6;
+// assign sevenSegs7 = ss7;
 
 byteTo7Seg byteTo7Seg(.num(databus), .disp(decodedData)); // converts from numbers to 7seg display panels
 
 always_comb begin : comb_7seg_decoder
 
     
-      nextSevenSegs[0] = sevenSegs[0];
-      nextSevenSegs[1] = sevenSegs[1];
-      nextSevenSegs[2] = sevenSegs[2];
-      nextSevenSegs[3] = sevenSegs[3];
-      nextSevenSegs[4] = sevenSegs[4];
-      nextSevenSegs[5] = sevenSegs[5];
-      nextSevenSegs[6] = sevenSegs[6];
-      nextSevenSegs[7] = sevenSegs[7];
+      nextSevenSegs0 = ss0;
+      nextSevenSegs1 = ss1;
+      nextSevenSegs2 = ss2;
+      nextSevenSegs3 = ss3;
+      nextSevenSegs4 = ss4;
+      nextSevenSegs5 = ss5;
+      nextSevenSegs6 = ss6;
+      nextSevenSegs7 = ss7;
   
     
     if(writeEnable) begin
         case( {addressbusHigh, addressbusLow} ) // DECODER_BASE_ADDRESS is the address of the first byte used to represent the displays
-            (`DECODER_BASE_ADDRESS + 0): nextSevenSegs[0] = decodedData;  
-            (`DECODER_BASE_ADDRESS + 1): nextSevenSegs[1] = decodedData;
-            (`DECODER_BASE_ADDRESS + 2): nextSevenSegs[2] = decodedData;
-            (`DECODER_BASE_ADDRESS + 3): nextSevenSegs[3] = decodedData;
-            (`DECODER_BASE_ADDRESS + 4): nextSevenSegs[4] = decodedData;
-            (`DECODER_BASE_ADDRESS + 5): nextSevenSegs[5] = decodedData;
-            (`DECODER_BASE_ADDRESS + 6): nextSevenSegs[6] = decodedData;
-            (`DECODER_BASE_ADDRESS + 7): nextSevenSegs[7] = decodedData;
+            (`DECODER_BASE_ADDRESS + 0): nextSevenSegs0 = decodedData;  
+            (`DECODER_BASE_ADDRESS + 1): nextSevenSegs1 = decodedData;
+            (`DECODER_BASE_ADDRESS + 2): nextSevenSegs2 = decodedData;
+            (`DECODER_BASE_ADDRESS + 3): nextSevenSegs3 = decodedData;
+            (`DECODER_BASE_ADDRESS + 4): nextSevenSegs4 = decodedData;
+            (`DECODER_BASE_ADDRESS + 5): nextSevenSegs5 = decodedData;
+            (`DECODER_BASE_ADDRESS + 6): nextSevenSegs6 = decodedData;
+            (`DECODER_BASE_ADDRESS + 7): nextSevenSegs7 = decodedData;
         endcase
     end
 end
 
 always_ff @( posedge clk, negedge nrst ) begin : ff_7seg_decoder
     if(nrst == 1'b0) begin
-        sevenSegs[0] = 0;
-        sevenSegs[1] = 0;
-        sevenSegs[2] = 0;
-        sevenSegs[3] = 0;
-        sevenSegs[4] = 0;
-        sevenSegs[5] = 0;
-        sevenSegs[6] = 0;
-        sevenSegs[7] = 0;
+        ss0 <= 0;
+        ss1 <= 0;
+        ss2 <= 0;
+        ss3 <= 0;
+        ss4 <= 0;
+        ss5 <= 0;
+        ss6 <= 0;
+        ss7 <= 0;
     end
     else begin
-        sevenSegs[0] = nextSevenSegs[0];
-        sevenSegs[1] = nextSevenSegs[1];
-        sevenSegs[2] = nextSevenSegs[2];
-        sevenSegs[3] = nextSevenSegs[3];
-        sevenSegs[4] = nextSevenSegs[4];
-        sevenSegs[5] = nextSevenSegs[5];
-        sevenSegs[6] = nextSevenSegs[6];
-        sevenSegs[7] = nextSevenSegs[7];
+        ss0 <= nextSevenSegs0;
+        ss1 <= nextSevenSegs1;
+        ss2 <= nextSevenSegs2;
+        ss3 <= nextSevenSegs3;
+        ss4 <= nextSevenSegs4;
+        ss5 <= nextSevenSegs5;
+        ss6 <= nextSevenSegs6;
+        ss7 <= nextSevenSegs7;
     end
 end
 
@@ -131,7 +148,7 @@ endmodule
       8'd19:
         disp = 8'b01010000; // r
       default:
-        disp = 8'b00000000;
+        disp = 8'b00111111; // defaults to 0
     endcase
 
     end
