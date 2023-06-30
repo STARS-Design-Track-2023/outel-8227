@@ -68,7 +68,7 @@ module top
   );
 
   demo_mapped_io demo_mapped_io (
-    .clk(hwclk), 
+    .clk(hwclk),
     .nrst(nrst),
     .addr({addressBusHigh, addressBusLow}),
     .din(dataBusOut),
