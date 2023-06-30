@@ -115,8 +115,8 @@ module tb_8227_template ();
     .interruptRequest(tb_interruptRequest),
     .dataBusInput(tb_dataBusInput),
     .dataBusOutput(tb_dataBusOutput),
-    .AddressBusHigh(tb_AddressBusHigh),
-    .AddressBusLow(tb_AddressBusLow)
+    .AddressBusHigh(tb_addressBusHigh),
+    .AddressBusLow(tb_addressBusLow)
   );
 
   // Signal Dump

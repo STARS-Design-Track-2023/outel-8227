@@ -1,0 +1,95 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Thu Jun 29 19:28:25 2023
+[*]
+[dumpfile] "/mnt/c/Users/draid/Documents/GitHub/outel-8227/dump.vcd"
+[dumpfile_mtime] "Thu Jun 29 16:14:10 2023"
+[dumpfile_size] 4307656
+[savefile] "/mnt/c/Users/draid/Documents/GitHub/outel-8227/TestFormat_Aidan.gtkw"
+[timestart] 0
+[size] 1908 997
+[pos] 327359 327359
+*-12.560953 17000 17000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_8227_template.
+[treeopen] tb_8227_template.top8227.
+[treeopen] tb_8227_template.top8227.demux.
+[treeopen] tb_8227_template.top8227.instructionLoader.
+[treeopen] tb_8227_template.top8227.internalDataflow.
+[treeopen] tb_8227_template.top8227.internalDataflow.accumulatorRegister.
+[treeopen] tb_8227_template.top8227.internalDataflow.addressHighBusModule.
+[treeopen] tb_8227_template.top8227.internalDataflow.dataBusModule.
+[treeopen] tb_8227_template.top8227.internalDataflow.psr.
+[sst_width] 276
+[signals_width] 318
+[sst_expanded] 1
+[sst_vpaned_height] 291
+@22
+tb_8227_template.tb_dataBusInput[7:0]
+tb_8227_template.tb_AddressBusHigh[7:0]
+tb_8227_template.tb_AddressBusLow[7:0]
+@28
+tb_8227_template.tb_nrst
+tb_8227_template.tb_clk
+@200
+-
+@22
++{Accumulator Reg} tb_8227_template.top8227.internalDataflow.accumulatorRegister.currentState[7:0]
++{PCH Reg} tb_8227_template.top8227.internalDataflow.pchRegister.currentState[7:0]
++{PCL Reg} tb_8227_template.top8227.internalDataflow.pclRegister.currentState[7:0]
++{X Reg} tb_8227_template.top8227.internalDataflow.xRegister.currentState[7:0]
++{Y Reg} tb_8227_template.top8227.internalDataflow.yRegister.currentState[7:0]
++{Alu Reg} tb_8227_template.top8227.internalDataflow.aluRegister.currentState[7:0]
+@200
+-
+@28
++{SYNC} tb_8227_template.tb_sync
+@24
++{Instruction} tb_8227_template.top8227.demux.state_machine.currentInstruction[5:0]
++{Address} tb_8227_template.top8227.demux.state_machine.currentAddress[3:0]
+@200
+-
+-
+@800022
++{PSR Reg} tb_8227_template.top8227.internalDataflow.psr.PSR_RCL[7:0]
+@28
++{PSR N} (0)tb_8227_template.top8227.internalDataflow.psr.PSR_RCL[7:0]
++{PSR V} (1)tb_8227_template.top8227.internalDataflow.psr.PSR_RCL[7:0]
++{PSR B} (3)tb_8227_template.top8227.internalDataflow.psr.PSR_RCL[7:0]
++{PSR D} (4)tb_8227_template.top8227.internalDataflow.psr.PSR_RCL[7:0]
++{PSR I} (5)tb_8227_template.top8227.internalDataflow.psr.PSR_RCL[7:0]
++{PSR Z} (6)tb_8227_template.top8227.internalDataflow.psr.PSR_RCL[7:0]
++{PSR C} (7)tb_8227_template.top8227.internalDataflow.psr.PSR_RCL[7:0]
+@1001200
+-group_end
+@28
+tb_8227_template.top8227.getInstructionPreInjection
+tb_8227_template.top8227.getInstructionPostInjection
+tb_8227_template.top8227.pulse_slower.slow_pulse
+@24
+tb_8227_template.top8227.demux.state[2:0]
+@28
+tb_8227_template.top8227.demux.isAddressing
+tb_8227_template.top8227.demux.state_machine.mode
+tb_8227_template.top8227.demux.state_machine.nextMode
+tb_8227_template.top8227.demux.state_machine.endAddressing
+tb_8227_template.top8227.demux.state_machine.getInstruction
+tb_8227_template.top8227.demux.state_machine.noAddressing
+tb_8227_template.top8227.demux.getInstructionPostInjection
+tb_8227_template.top8227.demux.passAddressing
+@c00022
+tb_8227_template.top8227.demux.preFFAddressingCode[3:0]
+@28
+(0)tb_8227_template.top8227.demux.preFFAddressingCode[3:0]
+(1)tb_8227_template.top8227.demux.preFFAddressingCode[3:0]
+(2)tb_8227_template.top8227.demux.preFFAddressingCode[3:0]
+(3)tb_8227_template.top8227.demux.preFFAddressingCode[3:0]
+@1401200
+-group_end
+@28
+tb_8227_template.top8227.decoder.a[2:0]
+@29
+tb_8227_template.top8227.decoder.b[2:0]
+@28
+tb_8227_template.top8227.decoder.c[1:0]
+[pattern_trace] 1
+[pattern_trace] 0
