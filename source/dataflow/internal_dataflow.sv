@@ -1,3 +1,6 @@
+`ifndef NUMFLAGS
+`include "source/param_file.sv"
+`endif
 module internalDataflow(
     input logic nrst, clk,
     input logic freeCarry, psrCarry,

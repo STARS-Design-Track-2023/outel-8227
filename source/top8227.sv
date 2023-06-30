@@ -1,5 +1,5 @@
 `ifndef NUMFLAGS
-`include "param_file.sv"
+`include "source/param_file.sv"
 `endif
 
 module top8227 (
@@ -111,7 +111,7 @@ module top8227 (
         .nrst(nrst),
         .enableFFs(enableFFs),
         .ALUcarry(aluCarryOut),
-        .en(flags[SET_FREE_CARRY_FLAG_TO_ALU]),
+        .en(flags[`SET_FREE_CARRY_FLAG_TO_ALU]),
         .freeCarry(freeCarry)
     );
 
@@ -120,7 +120,7 @@ module top8227 (
         .nrst(nrst),
         .branchForwardIn(  pclMSB & ~dataBusInput[7] &  aluCarryOut),
         .branchBackwardIn(~pclMSB &  dataBusInput[7] & ~aluCarryOut),
-        .enable(flags[SET_BRANCH_PAGE_CROSS_FLAGS]),
+        .enable(flags[`SET_BRANCH_PAGE_CROSS_FLAGS]),
         .enableFFs(enableFFs),
         .branchForward(branchForward),
         .branchBackward(branchBackward)

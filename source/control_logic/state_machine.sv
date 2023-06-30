@@ -1,3 +1,6 @@
+`ifndef NUMFLAGS
+`include "param_file.sv"
+`endif
 module state_machine(
     input logic clk, nrst, noAddressing, getInstruction, endAddressing,
     input logic [5:0] decodedInstruction,
@@ -71,7 +74,7 @@ end
 
 always_ff @( posedge clk, negedge nrst) begin : ff_timingGeneration_timeState
     if(nrst == 1'b0)
-        timeState = T0;
+        timeState = `T0;
     else
         timeState = nextTime;
 end

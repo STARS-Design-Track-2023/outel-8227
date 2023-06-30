@@ -1,3 +1,6 @@
+`ifndef NUMFLAGS
+`include "source/param_file.sv"
+`endif
 module decoder (
     input  logic [7:0] opcode,
     output logic [5:0] cmd,
@@ -81,7 +84,7 @@ module decoder (
                     endcase
                 end
                 3'b011: begin
-                    address=abs;
+                    address=`abs;
                     case(a)
                         3'b001: cmd=`BIT;
                         3'b010: begin
@@ -98,14 +101,14 @@ module decoder (
                     endcase
                 end
                 3'b100: begin
-                    address=rel;
+                    address=`rel;
                     case(a)
                         3'b000: cmd=`BPL;
                         3'b001: cmd=`BMI;
                         3'b010: cmd=`BVC;
                         3'b011: cmd=`BVS;
                         3'b100: cmd=`BCC;
-                        3'b101: cmd=BCS;
+                        3'b101: cmd=`BCS;
                         3'b110: cmd=`BNE;
                         default: cmd=`BEQ; // ACTUAL 3'b111
                     endcase

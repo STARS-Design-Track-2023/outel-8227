@@ -1,3 +1,6 @@
+`ifndef NUMFLAGS
+`include "source/param_file.sv"
+`endif
 module demux(
     input logic [5:0] preFFInstructionCode,
     input logic [3:0] preFFAddressingCode,
@@ -62,7 +65,7 @@ always_comb begin : blockName
         `STX: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
-    if((preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == rel | preFFAddressingCode == A) & getInstructionPostInjection) // bypasses Addressing (impl from param_file)
+    if((preFFAddressingCode == `IMMEDIATE | preFFAddressingCode == `impl | preFFAddressingCode == `rel | preFFAddressingCode == `A) & getInstructionPostInjection) // bypasses Addressing (impl from param_file)
         passAddressing = 1'b1;
     else
         passAddressing = 1'b0;
@@ -90,7 +93,7 @@ always_comb begin : blockName
                         outflags[`LOAD_ALU] = 1;
                     end else if(state == `A1)begin
                         //set low address
-                        if(instructionCode == JMP) begin
+                        if(instructionCode == `JMP) begin
                             outflags[`LOAD_PC] = 1;
                             outflags[`PC_INC] = 1;
                         end else begin
@@ -113,7 +116,7 @@ always_comb begin : blockName
                     end
 
             end
-            absX: begin                                        // addressing instruction absX
+            `absX: begin                                        // addressing instruction absX
 
                     outflags = 0;
                     if(state == `A0)begin
@@ -154,7 +157,7 @@ always_comb begin : blockName
                     end 
 
             end
-            absY: begin                                        // addressing instruction absY
+            `absY: begin                                        // addressing instruction absY
             
                     outflags = 0;
                     if(state == `A0)begin
@@ -195,7 +198,7 @@ always_comb begin : blockName
                     end
 
             end
-            ind: begin                                         // addressing instruction ind
+            `ind: begin                                         // addressing instruction ind
             
                     outflags = 0;
                     if(state == `A0)begin
@@ -253,7 +256,7 @@ always_comb begin : blockName
                     end
 
             end
-            Xind: begin                                        // addressing instruction Xind
+            `Xind: begin                                        // addressing instruction Xind
 
                     outflags = 0;
                     if(state == `A0)begin
@@ -306,7 +309,7 @@ always_comb begin : blockName
                     end
 
             end
-            indY: begin                                        // addressing instruction indY
+            `indY: begin                                        // addressing instruction indY
         
 
                     outflags = 0;
@@ -379,7 +382,7 @@ always_comb begin : blockName
                     end
 
             end
-            zpg: begin                                         // addressing instruction zpg
+            `zpg: begin                                         // addressing instruction zpg
                     outflags = 0;
                     if(state == `A0)begin
                         //go to zero page
@@ -398,7 +401,7 @@ always_comb begin : blockName
                         outflags[`END_ADDRESSING] = 1'b1; // signal to end addressing
                     end
             end
-            zpgX: begin                                        // addressing instruction zpgX
+            `zpgX: begin                                        // addressing instruction zpgX
 
                     outflags = 0;
                     if(state == `A0)begin
@@ -426,7 +429,7 @@ always_comb begin : blockName
                     end
 
             end
-            zpgY: begin                                        // addressing instruction zpgY
+            `zpgY: begin                                        // addressing instruction zpgY
 
                     outflags = 0;
                     if(state == `A0)begin
@@ -462,11 +465,11 @@ always_comb begin : blockName
     begin
 
         case(instructionCode)
-            ADC: begin                                         // code ADC
+            `ADC: begin                                         // code ADC
             
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -495,7 +498,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_OVERFLOW_TO_ALU_OVERFLOW] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -520,11 +523,11 @@ always_comb begin : blockName
             endcase
 
             end
-            AND: begin                                          // code AND
+            `AND: begin                                          // code AND
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -547,7 +550,7 @@ always_comb begin : blockName
                     outflags[`LOAD_ALU] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -572,11 +575,11 @@ always_comb begin : blockName
             endcase
 
             end
-            ASL: begin                                          // code ASL
+            `ASL: begin                                          // code ASL
 
             outflags = 0;
             case (state)
-                T0:  begin
+                `T0:  begin
                     //Set B and A to input data
                     outflags[`SET_DB_TO_DATA] = 1;
                     outflags[`SET_SB_TO_DB] = 1;
@@ -590,7 +593,7 @@ always_comb begin : blockName
                     //SET outflags
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Move ALU to DOR
                     outflags[`SET_SB_TO_ALU] = 1;
                     outflags[`SET_DB_TO_SB] = 1;
@@ -603,7 +606,7 @@ always_comb begin : blockName
                     //Get ready to write
                     outflags[`SET_WRITE_FLAG] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //write modified data
                     outflags[`SET_WRITE_FLAG] = 1;
 
@@ -616,7 +619,7 @@ always_comb begin : blockName
                     outflags[`SET_ADL_TO_PCL] = 1;
                     outflags[`LOAD_ABL] = 1;
                 end
-                T3: begin
+                `T3: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -632,11 +635,11 @@ always_comb begin : blockName
             endcase
 
             end
-            BCC, BCS, BEQ, BMI, BNE, BPL, BVC, BVS: begin       // code BCC                  BRANCH CHECKING ONE THAT IS HARD
+            `BCC, `BCS, `BEQ, `BMI, `BNE, `BPL, `BVC, `BVS: begin       // code BCC                  BRANCH CHECKING ONE THAT IS HARD
             
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -662,7 +665,7 @@ always_comb begin : blockName
                     //Update the jump forward/backward flip flops
                     outflags[`SET_BRANCH_PAGE_CROSS_FLAGS] = 1;
                 end
-                T1: begin
+                `T1: begin
                     if(jump) begin
                         //Increment PC if there is not a page crossing
                         if(~branchForwardFF & ~branchBackwardFF)
@@ -712,7 +715,7 @@ always_comb begin : blockName
                         outflags[`END_INSTRUCTION] = 1'b1; // signal to end the instruction
                     end
                 end
-                T2: begin
+                `T2: begin
                     if(branchBackwardFF | branchForwardFF) begin
                         
                         outflags[`PC_INC] = 1;
@@ -737,7 +740,7 @@ always_comb begin : blockName
                         outflags[`END_INSTRUCTION] = 1'b1; // signal to end the instruction
                     end
                 end
-                T3: begin
+                `T3: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -754,11 +757,11 @@ always_comb begin : blockName
             endcase
 
             end
-            BIT: begin                                          // code BIT
+            `BIT: begin                                          // code BIT
             
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -785,7 +788,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_V_TO_DB6] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -808,11 +811,11 @@ always_comb begin : blockName
             endcase
 
             end
-            BRK: begin                                          // code BRK
+            `BRK: begin                                          // code BRK
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Go to Stack
                     outflags[`SET_ADH_TO_ONE] = 1;
                     outflags[`LOAD_ABH] = 1;
@@ -835,7 +838,7 @@ always_comb begin : blockName
                     outflags[`LOAD_DOR] = 1;
                     
                 end
-                T1: begin
+                `T1: begin
                     //Write DOR
                     outflags[`SET_WRITE_FLAG] = ~reset;
 
@@ -859,7 +862,7 @@ always_comb begin : blockName
                     outflags[`LOAD_DOR] = 1;
                     
                 end
-                T2: begin
+                `T2: begin
                     //Write DOR
                     outflags[`SET_WRITE_FLAG] = ~reset;
 
@@ -883,7 +886,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_OUTPUT_BRK_HIGH] = ~(nmi|irq|reset);
                     outflags[`LOAD_DOR] = 1;
                 end
-                T3: begin
+                `T3: begin
                     //Write DOR
                     outflags[`SET_WRITE_FLAG] = ~reset;
 
@@ -899,7 +902,7 @@ always_comb begin : blockName
                     outflags[`SET_SB_TO_ALU] = 1;    
                     outflags[`LOAD_SP] = 1;    
                 end
-                T4: begin
+                `T4: begin
                     //set ABH and ABL to presets
                     outflags[`SET_ADH_FF] = 1;
                     outflags[`LOAD_ABH] = 1;
@@ -917,7 +920,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T5: begin
+                `T5: begin
                     //Update ABL
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL] = 1;
@@ -930,7 +933,7 @@ always_comb begin : blockName
                     outflags[`LOAD_PC] = 1;
                     outflags[`PC_INC] = 1;
                 end
-                T6:  begin
+                `T6:  begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -946,17 +949,17 @@ always_comb begin : blockName
             endcase
 
             end
-            CLC: begin                                          // code CLC
+            `CLC: begin                                          // code CLC
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set FLAG
                     outflags[`PSR_DATA_TO_LOAD] = 0;
                     outflags[`LOAD_CARRY_PSR_FLAG] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -970,17 +973,17 @@ always_comb begin : blockName
             endcase
 
             end
-            CLD: begin                                          // code CLD
+            `CLD: begin                                          // code CLD
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set FLAG
                     outflags[`PSR_DATA_TO_LOAD] = 0;
                     outflags[`LOAD_DECIMAL_PSR_FLAG] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -994,17 +997,17 @@ always_comb begin : blockName
             endcase
 
             end
-            CLI: begin                                          // code CLI
+            `CLI: begin                                          // code CLI
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set FLAG
                     outflags[`PSR_DATA_TO_LOAD] = 0;
                     outflags[`LOAD_INTERUPT_PSR_FLAG] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -1018,16 +1021,16 @@ always_comb begin : blockName
             endcase
 
             end
-            CLV: begin                                          // code CLV
+            `CLV: begin                                          // code CLV
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set FLAG
                     outflags[`LOAD_OVERFLOW_PSR_FLAG] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -1041,11 +1044,11 @@ always_comb begin : blockName
             endcase
 
             end
-            CMP: begin                                          // code CMP
+            `CMP: begin                                          // code CMP
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1070,7 +1073,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1096,11 +1099,11 @@ always_comb begin : blockName
             endcase
 
             end
-            CPX: begin                                          // code CPX
+            `CPX: begin                                          // code CPX
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1125,7 +1128,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1151,11 +1154,11 @@ always_comb begin : blockName
             endcase
 
             end
-            CPY: begin                                          // code CPY
+            `CPY: begin                                          // code CPY
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1180,7 +1183,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1206,11 +1209,11 @@ always_comb begin : blockName
             endcase
 
             end
-            DEC: begin                                          // code DEC
+            `DEC: begin                                          // code DEC
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set B and A to be FF and Data
                     outflags[`SET_DB_HIGH] = 1;
                     outflags[`SET_INPUT_A_TO_SB] = 1;
@@ -1224,7 +1227,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Move ALU to DOR
                     outflags[`SET_SB_TO_ALU] = 1;
                     outflags[`SET_DB_TO_SB] = 1;
@@ -1237,7 +1240,7 @@ always_comb begin : blockName
                     //Get ready to write
                     outflags[`SET_WRITE_FLAG] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //write modified data
                     outflags[`SET_WRITE_FLAG] = 1;
 
@@ -1250,7 +1253,7 @@ always_comb begin : blockName
                     outflags[`SET_ADL_TO_PCL] = 1;
                     outflags[`LOAD_ABL] = 1;
                 end
-                T3: begin
+                `T3: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1266,11 +1269,11 @@ always_comb begin : blockName
             endcase
 
             end
-            DEX: begin                                          // code DEX
+            `DEX: begin                                          // code DEX
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set B and A to be FF and Y
                     outflags[`SET_DB_HIGH] = 1;
                     outflags[`SET_INPUT_A_TO_SB] = 1;
@@ -1283,7 +1286,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -1305,11 +1308,11 @@ always_comb begin : blockName
             endcase
 
             end
-            DEY: begin                                          // code DEY
+            `DEY: begin                                          // code DEY
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set B and A to be FF and Y
                     outflags[`SET_DB_HIGH] = 1;
                     outflags[`SET_INPUT_A_TO_SB] = 1;
@@ -1322,7 +1325,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -1344,11 +1347,11 @@ always_comb begin : blockName
             endcase
 
             end
-            EOR: begin                                          // code EOR
+            `EOR: begin                                          // code EOR
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1371,7 +1374,7 @@ always_comb begin : blockName
                     outflags[`LOAD_ALU] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1397,11 +1400,11 @@ always_comb begin : blockName
             endcase
 
             end
-            INC: begin                                          // code INC
+            `INC: begin                                          // code INC
             
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set C B and A to be 1 Data and 0
                     outflags[`SET_DB_TO_DATA] = 1;
                     outflags[`SET_INPUT_B_TO_DB] = 1;
@@ -1412,7 +1415,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Move ALU to DOR
                     outflags[`SET_SB_TO_ALU] = 1;
                     outflags[`SET_DB_TO_SB] = 1;
@@ -1425,7 +1428,7 @@ always_comb begin : blockName
                     //Get ready to write
                     outflags[`SET_WRITE_FLAG] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //write modified data
                     outflags[`SET_WRITE_FLAG] = 1;
 
@@ -1438,7 +1441,7 @@ always_comb begin : blockName
                     outflags[`SET_ADL_TO_PCL] = 1;
                     outflags[`LOAD_ABL] = 1;
                 end
-                T3: begin
+                `T3: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1454,11 +1457,11 @@ always_comb begin : blockName
             endcase
 
             end
-            INX: begin                                          // code INX
+            `INX: begin                                          // code INX
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set B and A to input data
                     outflags[`SET_SB_TO_X] = 1;
                     outflags[`SET_DB_TO_SB] = 1;
@@ -1470,7 +1473,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -1493,11 +1496,11 @@ always_comb begin : blockName
             endcase
 
             end
-            INY: begin                                          // code INY
+            `INY: begin                                          // code INY
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set C B and A to be 1 Y and 0
                     outflags[`SET_SB_TO_Y] = 1;
                     outflags[`SET_DB_TO_SB] = 1;
@@ -1509,7 +1512,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -1532,11 +1535,11 @@ always_comb begin : blockName
             endcase
 
             end
-            JMP: begin                                          // code JMP
+            `JMP: begin                                          // code JMP
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
                     outflags[`LOAD_PC] = 1;
@@ -1553,11 +1556,11 @@ always_comb begin : blockName
             endcase
 
             end
-            JSR: begin                                          // code JSR
+            `JSR: begin                                          // code JSR
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set input B and ABL to SP
                     outflags[`SET_ADL_TO_SP] = 1;
                     outflags[`SET_INPUT_B_TO_ADL] = 1;
@@ -1578,7 +1581,7 @@ always_comb begin : blockName
                     outflags[`LOAD_SP] = 1;
                     
                 end
-                T1: begin
+                `T1: begin
                     //ABH to 01
                     outflags[`SET_ADH_TO_ONE] = 1;
                     outflags[`LOAD_ABH] = 1;
@@ -1595,7 +1598,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //Write DOR
                     outflags[`SET_WRITE_FLAG] = 1;
 
@@ -1607,7 +1610,7 @@ always_comb begin : blockName
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL] = 1;
                 end
-                T3: begin
+                `T3: begin
                     //Write DOR
                     outflags[`SET_WRITE_FLAG] = 1;
 
@@ -1629,7 +1632,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T4: begin
+                `T4: begin
                     //Update ABL
                     outflags[`SET_ADL_TO_SP] = 1;
                     outflags[`LOAD_ABL] = 1;
@@ -1646,7 +1649,7 @@ always_comb begin : blockName
                     outflags[`SET_SB_TO_ALU] = 1;
                     outflags[`LOAD_SP] = 1;
                 end
-                T5: begin
+                `T5: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1662,11 +1665,11 @@ always_comb begin : blockName
             endcase
 
             end
-            LDA: begin                                          // code LDA
+            `LDA: begin                                          // code LDA
 
             outflags = 0;
             case (state)
-                T0:  begin
+                `T0:  begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1686,7 +1689,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_N_TO_DB7] = 1;
 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1702,11 +1705,11 @@ always_comb begin : blockName
             endcase
 
             end
-            LDX: begin                                          // code LDX
+            `LDX: begin                                          // code LDX
 
             outflags = 0;
             case (state)
-                T0:  begin
+                `T0:  begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1726,7 +1729,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_N_TO_DB7] = 1;
 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1742,11 +1745,11 @@ always_comb begin : blockName
             endcase
 
             end
-            LDY: begin                                          // code LDY
+            `LDY: begin                                          // code LDY
 
             outflags = 0;
             case (state)
-                T0:  begin
+                `T0:  begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1766,7 +1769,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_N_TO_DB7] = 1;
 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1782,11 +1785,11 @@ always_comb begin : blockName
             endcase
 
             end
-            LSR: begin                                          // code LSR
+            `LSR: begin                                          // code LSR
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set A to DATA
                     outflags[`SET_DB_TO_DATA] = 1;
                     outflags[`SET_SB_TO_DB] = 1;
@@ -1799,7 +1802,7 @@ always_comb begin : blockName
                     //SET outflags
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Move ALU to DOR
                     outflags[`SET_SB_TO_ALU] = 1;
                     outflags[`SET_DB_TO_SB] = 1;
@@ -1812,7 +1815,7 @@ always_comb begin : blockName
                     //Get ready to write
                     outflags[`SET_WRITE_FLAG] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //write modified data
                     outflags[`SET_WRITE_FLAG] = 1;
 
@@ -1825,7 +1828,7 @@ always_comb begin : blockName
                     outflags[`SET_ADL_TO_PCL] = 1;
                     outflags[`LOAD_ABL] = 1;
                 end
-                T3: begin
+                `T3: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1841,14 +1844,14 @@ always_comb begin : blockName
             endcase
 
             end
-            NOP: begin                                          // code NOP
+            `NOP: begin                                          // code NOP
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -1862,11 +1865,11 @@ always_comb begin : blockName
             endcase
 
             end
-            ORA: begin                                          // code ORA
+            `ORA: begin                                          // code ORA
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1889,7 +1892,7 @@ always_comb begin : blockName
                     outflags[`LOAD_ALU] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1915,11 +1918,11 @@ always_comb begin : blockName
             endcase
 
             end
-            PHA: begin                                          // code PHA
+            `PHA: begin                                          // code PHA
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Decrement PC
                     outflags[`PC_DEC] = 1;
 
@@ -1934,7 +1937,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_OUTPUT_BRK_HIGH] = 1;
                     outflags[`LOAD_DOR] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //write modified data
                     outflags[`SET_WRITE_FLAG] = 1;
                     
@@ -1959,7 +1962,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1979,11 +1982,11 @@ always_comb begin : blockName
             endcase
 
             end
-            PHP: begin                                          // code PHP
+            `PHP: begin                                          // code PHP
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Decrement PC
                     outflags[`PC_DEC] = 1;
 
@@ -1998,7 +2001,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_OUTPUT_BRK_HIGH] = 1;
                     outflags[`LOAD_DOR] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //write modified data
                     outflags[`SET_WRITE_FLAG] = 1;
                     
@@ -2023,7 +2026,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2043,11 +2046,11 @@ always_comb begin : blockName
             endcase
 
             end
-            PLA: begin                                          // code PLA
+            `PLA: begin                                          // code PLA
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Decrement PC
                     outflags[`PC_DEC] = 1;
 
@@ -2064,7 +2067,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //ALU to SP
                     outflags[`SET_SB_TO_ALU] = 1;
                     outflags[`LOAD_SP] = 1;
@@ -2077,7 +2080,7 @@ always_comb begin : blockName
                     outflags[`SET_ADH_TO_ONE] = 1;
                     outflags[`LOAD_ABH] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2097,7 +2100,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_N_TO_DB7] = 1;
 
                 end
-                T3: begin
+                `T3: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2113,11 +2116,11 @@ always_comb begin : blockName
             endcase
 
             end
-            PLP: begin                                          // code PLP
+            `PLP: begin                                          // code PLP
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Decrement PC
                     outflags[`PC_DEC] = 1;
 
@@ -2134,7 +2137,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //ALU to SP
                     outflags[`SET_SB_TO_ALU] = 1;
                     outflags[`LOAD_SP] = 1;
@@ -2147,7 +2150,7 @@ always_comb begin : blockName
                     outflags[`SET_ADH_TO_ONE] = 1;
                     outflags[`LOAD_ABH] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2161,7 +2164,7 @@ always_comb begin : blockName
                     outflags[`SET_DB_TO_DATA] = 1;
                     outflags[`SET_PSR_TO_DB] = 1;
                 end
-                T3: begin
+                `T3: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2177,11 +2180,11 @@ always_comb begin : blockName
             endcase
 
             end
-            ROL: begin                                          // code ROL
+            `ROL: begin                                          // code ROL
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set B and A to input data
                     outflags[`SET_DB_TO_DATA] = 1;
                     outflags[`SET_SB_TO_DB] = 1;
@@ -2195,7 +2198,7 @@ always_comb begin : blockName
                     //SET outflags
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Move ALU to DOR
                     outflags[`SET_SB_TO_ALU] = 1;
                     outflags[`SET_DB_TO_SB] = 1;
@@ -2208,7 +2211,7 @@ always_comb begin : blockName
                     //Get ready to write
                     outflags[`SET_WRITE_FLAG] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //write modified data
                     outflags[`SET_WRITE_FLAG] = 1;
 
@@ -2221,7 +2224,7 @@ always_comb begin : blockName
                     outflags[`SET_ADL_TO_PCL] = 1;
                     outflags[`LOAD_ABL] = 1;
                 end
-                T3: begin
+                `T3: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2237,11 +2240,11 @@ always_comb begin : blockName
             endcase
 
             end
-            ROR: begin                                          // code ROR
+            `ROR: begin                                          // code ROR
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set A to DATA
                     outflags[`SET_DB_TO_DATA] = 1;
                     outflags[`SET_SB_TO_DB] = 1;
@@ -2255,7 +2258,7 @@ always_comb begin : blockName
                     //SET outflags
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Move ALU to DOR
                     outflags[`SET_SB_TO_ALU] = 1;
                     outflags[`SET_DB_TO_SB] = 1;
@@ -2268,7 +2271,7 @@ always_comb begin : blockName
                     //Get ready to write
                     outflags[`SET_WRITE_FLAG] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //write modified data
                     outflags[`SET_WRITE_FLAG] = 1;
 
@@ -2281,7 +2284,7 @@ always_comb begin : blockName
                     outflags[`SET_ADL_TO_PCL] = 1;
                     outflags[`LOAD_ABL] = 1;
                 end
-                T3: begin
+                `T3: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2297,11 +2300,11 @@ always_comb begin : blockName
             endcase
 
             end
-            RTI: begin                                          // code RTI
+            `RTI: begin                                          // code RTI
             
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //go to stack
                     outflags[`SET_ADH_TO_ONE] = 1;
                     outflags[`LOAD_ABH] = 1;
@@ -2319,7 +2322,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //ABL to ALU
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL]  = 1;
@@ -2335,7 +2338,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T2: begin
+                `T2: begin
                     ///ABL to ALU
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL]  = 1;
@@ -2356,7 +2359,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_TO_DB] = 1;
                     
                 end
-                T3: begin
+                `T3: begin
                     ///ABL to ALU
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL]  = 1;
@@ -2376,7 +2379,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T4: begin
+                `T4: begin
                     //Update ABL
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL] = 1;
@@ -2389,7 +2392,7 @@ always_comb begin : blockName
                     outflags[`LOAD_PC] = 1;
                     outflags[`PC_INC] = 1;
                 end
-                T5: begin
+                `T5: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2405,11 +2408,11 @@ always_comb begin : blockName
             endcase
 
             end
-            RTS: begin                                          // code RTS // STILL NEEDS WORK
+            `RTS: begin                                          // code RTS // STILL NEEDS WORK
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //go to stack
                     outflags[`SET_ADH_TO_ONE] = 1;
                     outflags[`LOAD_ABH] = 1;
@@ -2427,7 +2430,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //ABL to ALU
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL]  = 1;
@@ -2443,7 +2446,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T2: begin
+                `T2: begin
                     //ABL to ALU
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL]  = 1;
@@ -2463,7 +2466,7 @@ always_comb begin : blockName
                     outflags[`ALU_ADD] = 1;
                     outflags[`LOAD_ALU] = 1;
                 end
-                T3: begin
+                `T3: begin
                     //Update ABL
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL] = 1;
@@ -2476,7 +2479,7 @@ always_comb begin : blockName
                     outflags[`LOAD_PC] = 1;
                     outflags[`PC_INC] = 1;
                 end
-                T4: begin
+                `T4: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2486,7 +2489,7 @@ always_comb begin : blockName
                     outflags[`SET_ADL_TO_PCL] = 1;
                     outflags[`LOAD_ABL] = 1;
                 end
-                T5: begin
+                `T5: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2502,11 +2505,11 @@ always_comb begin : blockName
             endcase
 
             end
-            SBC: begin                                          // code SBC
+            `SBC: begin                                          // code SBC
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2535,7 +2538,7 @@ always_comb begin : blockName
                     outflags[`SET_PSR_OVERFLOW_TO_ALU_OVERFLOW] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2562,17 +2565,17 @@ always_comb begin : blockName
             endcase
 
             end
-            SEC: begin                                          // code SEC
+            `SEC: begin                                          // code SEC
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set FLAG
                     outflags[`PSR_DATA_TO_LOAD] = 1;
                     outflags[`LOAD_CARRY_PSR_FLAG] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2586,17 +2589,17 @@ always_comb begin : blockName
             endcase
 
             end
-            SED: begin                                          // code SED
+            `SED: begin                                          // code SED
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set FLAG
                     outflags[`PSR_DATA_TO_LOAD] = 1;
                     outflags[`LOAD_DECIMAL_PSR_FLAG] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2610,17 +2613,17 @@ always_comb begin : blockName
             endcase
 
             end
-            SEI: begin                                          // code SEI
+            `SEI: begin                                          // code SEI
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set FLAG
                     outflags[`PSR_DATA_TO_LOAD] = 1;
                     outflags[`LOAD_INTERUPT_PSR_FLAG] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2634,11 +2637,11 @@ always_comb begin : blockName
             endcase
 
             end
-            STA, STX, STY: begin                                          // code STO (STA, STX, STY) WE NEED TO ADD LOGIC TO STORE TO A, X, OR Y
+            `STA, `STX, `STY: begin                                          // code STO (STA, STX, STY) WE NEED TO ADD LOGIC TO STORE TO A, X, OR Y
             
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set FLAG
                     outflags[`SET_WRITE_FLAG] = 1;
 
@@ -2649,7 +2652,7 @@ always_comb begin : blockName
                     outflags[`LOAD_ABL] = 1;
                 
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2663,18 +2666,18 @@ always_comb begin : blockName
             endcase
 
             end
-            TAX: begin                                          // code TAX
+            `TAX: begin                                          // code TAX
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set signal on the stack bus
                     outflags[`SET_SB_TO_ACC] = 1;
                     
                     //update registar
                     outflags[`LOAD_X] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2688,18 +2691,18 @@ always_comb begin : blockName
             endcase
 
             end
-            TAY: begin                                          // code TAY
+            `TAY: begin                                          // code TAY
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set signal on the stack bus
                     outflags[`SET_SB_TO_ACC] = 1;
                     
                     //update registar
                     outflags[`LOAD_Y] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2713,18 +2716,18 @@ always_comb begin : blockName
             endcase
 
             end
-            TSX: begin                                          // code TSX
+            `TSX: begin                                          // code TSX
 
         outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set signal on the stack bus
                     outflags[`SET_SB_TO_SP] = 1;
                     
                     //update registar
                     outflags[`LOAD_X] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2738,18 +2741,18 @@ always_comb begin : blockName
             endcase
 
             end
-            TXA: begin                                          // code TXA
+            `TXA: begin                                          // code TXA
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set signal on the stack bus
                     outflags[`SET_SB_TO_X] = 1;
                     
                     //update registar
                     outflags[`LOAD_ACC] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2763,18 +2766,18 @@ always_comb begin : blockName
             endcase
 
             end
-            TXS: begin                                          // code TXS
+            `TXS: begin                                          // code TXS
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set signal on the stack bus
                     outflags[`SET_SB_TO_X] = 1;
                     
                     //update registar
                     outflags[`LOAD_SP] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2788,11 +2791,11 @@ always_comb begin : blockName
             endcase
 
             end
-            ASLA: begin                                          // code ASLA
+            `ASLA: begin                                          // code ASLA
 
                 outflags = 0;
             case (state)
-                T0:  begin
+                `T0:  begin
                     //Set B and A to input data
                     outflags[`SET_DB_TO_ACC] = 1;
                     outflags[`SET_SB_TO_ACC] = 1;
@@ -2806,7 +2809,7 @@ always_comb begin : blockName
                     //SET FLAGS
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2829,10 +2832,10 @@ always_comb begin : blockName
             endcase
 
             end
-            ROLA: begin                                          // code ROLA
+            `ROLA: begin                                          // code ROLA
                 outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set B and A to input data
                     outflags[`SET_DB_TO_ACC] = 1;
                     outflags[`SET_SB_TO_ACC] = 1;
@@ -2846,7 +2849,7 @@ always_comb begin : blockName
                     //SET outflags
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2868,11 +2871,11 @@ always_comb begin : blockName
                 default: outflags = 0;
             endcase
             end
-            LSRA: begin                                          // code LSRA
+            `LSRA: begin                                          // code LSRA
             
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set A to ACC
                     outflags[`SET_SB_TO_ACC] = 1;
                     outflags[`SET_INPUT_A_TO_SB] = 1;
@@ -2884,7 +2887,7 @@ always_comb begin : blockName
                     //SET outflags
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2908,11 +2911,11 @@ always_comb begin : blockName
 
             end
 
-            RORA: begin                                          // code RORA
+            `RORA: begin                                          // code RORA
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set A to ACC
                     outflags[`SET_SB_TO_ACC] = 1;
                     outflags[`SET_INPUT_A_TO_SB] = 1;
@@ -2925,7 +2928,7 @@ always_comb begin : blockName
                     //SET outflags
                     outflags[`SET_PSR_CARRY_TO_ALU_CARRY] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -2948,18 +2951,18 @@ always_comb begin : blockName
             endcase
 
             end
-            TYA: begin                                          // code TYA
+            `TYA: begin                                          // code TYA
 
             outflags = 0;
             case (state)
-                T0: begin
+                `T0: begin
                     //Set signal on the stack bus
                     outflags[`SET_SB_TO_Y] = 1;
                     
                     //update registar
                     outflags[`LOAD_ACC] = 1;
                 end
-                T1: begin
+                `T1: begin
                     //Increment PC and set ABH and ABL to PC
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;

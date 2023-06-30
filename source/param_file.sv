@@ -191,7 +191,7 @@
 `define impl 4'd5
 `define ind 4'd6
 `define Xind 4'd7
-`define indY4'd8
+`define indY 4'd8
 `define rel 4'd9
 `define zpg 4'd10
 `define zpgX 4'd11
