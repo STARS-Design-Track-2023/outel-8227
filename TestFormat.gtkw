@@ -1,19 +1,18 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Thu Jun 29 15:07:58 2023
+[*] Fri Jun 30 13:27:29 2023
 [*]
 [dumpfile] "/home/shay/c/ecng031/Wk5/good/outel-8227/dump.vcd"
-[dumpfile_mtime] "Thu Jun 29 15:05:04 2023"
-[dumpfile_size] 5047459
+[dumpfile_mtime] "Fri Jun 30 13:23:44 2023"
+[dumpfile_size] 22855017
 [savefile] "/home/shay/c/ecng031/Wk5/good/outel-8227/TestFormat.gtkw"
-[timestart] 321530
+[timestart] 90220
 [size] 1846 1016
 [pos] 163679 163679
-*-11.560953 323660 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-11.560953 104790 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb_8227_template.
 [treeopen] tb_8227_template.top8227.
 [treeopen] tb_8227_template.top8227.instructionLoader.
-[treeopen] tb_8227_template.top8227.internalDataflow.
 [treeopen] tb_8227_template.top8227.internalDataflow.addressHighBusModule.
 [treeopen] tb_8227_template.top8227.internalDataflow.psr.
 [sst_width] 233
@@ -31,7 +30,7 @@ tb_8227_template.top8227.slow_pulse
 -
 @22
 tb_8227_template.tb_dataBusInput[7:0]
-@c00022
+@c00028
 tb_8227_template.tb_dataBusOutput[7:0]
 @28
 (0)tb_8227_template.tb_dataBusOutput[7:0]
@@ -103,9 +102,11 @@ tb_8227_template.top8227.internalDataflow.psr.PSR_DB[7:0]
 @29
 [color] 6
 tb_8227_template.top8227.demux.nmi
+@28
 [color] 6
 tb_8227_template.top8227.demux.reset
 [color] 6
 tb_8227_template.top8227.demux.irq
+tb_8227_template.top8227.interruptRequest
 [pattern_trace] 1
 [pattern_trace] 0
