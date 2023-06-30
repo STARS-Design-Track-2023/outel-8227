@@ -37,9 +37,9 @@ module nmiGeneratedFF (
 
     always_ff @(posedge clk, negedge nrst) begin : nmiAssignment
         if(~nrst)
-            nmiGenerated = 1'b0;
+            nmiGenerated <= 1'b0;
         else
-            nmiGenerated = nextNMIGenerated;
+            nmiGenerated <= nextNMIGenerated;
     end
 
 endmodule

@@ -35,9 +35,9 @@ module irqGeneratedFF (
 
     always_ff @(posedge clk, negedge nrst) begin : nmiAssignment
         if(~nrst)
-            irqGenerated = 1'b0;
+            irqGenerated <= 1'b0;
         else
-            irqGenerated = nextIRQGenerated;
+            irqGenerated <= nextIRQGenerated;
     end
 
 endmodule
