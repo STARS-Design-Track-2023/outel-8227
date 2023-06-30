@@ -1,3 +1,7 @@
+`ifndef NUMFLAGS
+`include "source/param_file.sv"
+`endif
+
 module top8227 (
     input  logic clk, nrst, nonMaskableInterrupt, interruptRequest, dataBusEnable, ready, setOverflow,
     input  logic [7:0] dataBusInput,
@@ -13,7 +17,7 @@ module top8227 (
     logic       getInstruction;
     logic       aluCarryOut, freeCarry;
     logic       nmiRunning, resetRunning;
-    logic [NUMFLAGS-1:0] flags, preFlags;
+    logic [`NUMFLAGS-1:0] flags, preFlags;
     logic getInstructionPreInjection, getInstructionPostInjection;
     logic setIFlag;
     logic enableFFs;
@@ -21,10 +25,10 @@ module top8227 (
     logic pclMSB;
     logic branchBackward, branchForward;
 
-    assign readNotWrite = ~preFlags[SET_WRITE_FLAG];
+    assign readNotWrite = ~preFlags[`SET_WRITE_FLAG];
     assign enableFFs = (ready | ~readNotWrite) & slow_pulse;
     
-    assign sync = flags[END_INSTRUCTION];
+    assign sync = flags[`END_INSTRUCTION];
 
     //Disable all flags
     always_comb begin
@@ -107,7 +111,7 @@ module top8227 (
         .nrst(nrst),
         .enableFFs(enableFFs),
         .ALUcarry(aluCarryOut),
-        .en(flags[SET_FREE_CARRY_FLAG_TO_ALU]),
+        .en(flags[`SET_FREE_CARRY_FLAG_TO_ALU]),
         .freeCarry(freeCarry)
     );
 
@@ -116,7 +120,7 @@ module top8227 (
         .nrst(nrst),
         .branchForwardIn(  pclMSB & ~dataBusInput[7] &  aluCarryOut),
         .branchBackwardIn(~pclMSB &  dataBusInput[7] & ~aluCarryOut),
-        .enable(flags[SET_BRANCH_PAGE_CROSS_FLAGS]),
+        .enable(flags[`SET_BRANCH_PAGE_CROSS_FLAGS]),
         .enableFFs(enableFFs),
         .branchForward(branchForward),
         .branchBackward(branchBackward)
