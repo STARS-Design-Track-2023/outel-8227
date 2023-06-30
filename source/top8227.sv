@@ -58,7 +58,7 @@ module top8227 (
         .psrRegToLogicController(PSRCurrentValue),
         .aluCarryOut(aluCarryOut),
         .pclMSB(pclMSB),
-        .debug()
+        .debug(debug2)
     );
 
     instructionLoader instructionLoader(
@@ -84,7 +84,6 @@ module top8227 (
     );
 
     assign debug[3:0] = addressingCode;
-    assign debug2[1] = slow_pulse;
 
     demux demux(
         .preFFInstructionCode(instructionCode),

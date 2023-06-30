@@ -37,9 +37,9 @@ module nmiRunningFF (
 
     always_ff @(posedge clk, negedge nrst) begin : nmiAssignment
         if(~nrst)
-            nmiRunning = 1'b0;
+            nmiRunning <= 1'b0;
         else
-            nmiRunning = nextNMIRunning;
+            nmiRunning <= nextNMIRunning;
     end
 
 endmodule

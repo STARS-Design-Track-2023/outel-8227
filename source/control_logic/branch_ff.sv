@@ -22,11 +22,11 @@ end
 
 always_ff @( posedge clk, negedge nrst ) begin : nextStateAssignment
     if(nrst == 1'b0) begin         // resets to 0
-        branchForward = 1'b0;
-        branchBackward = 1'b0;
+        branchForward <= 1'b0;
+        branchBackward <= 1'b0;
     end else begin
-        branchForward = branchForwardNext;
-        branchBackward = branchBackwardNext;
+        branchForward <= branchForwardNext;
+        branchBackward <= branchBackwardNext;
     end
 end
 
