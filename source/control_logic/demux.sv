@@ -4,7 +4,7 @@
 module demux(
     input logic [5:0] preFFInstructionCode,
     input logic [3:0] preFFAddressingCode,
-    input logic nrst, clk, free_carry, nmi, irq, reset, PSR_C, PSR_N, PSR_V, PSR_Z,
+    input logic nrst, clk, nmi, irq, reset, PSR_C, PSR_N, PSR_V, PSR_Z,
     input logic getInstructionPostInjection,
     output logic getInstructionPreInjection,
     output logic [`NUMFLAGS - 1:0] outflags,
