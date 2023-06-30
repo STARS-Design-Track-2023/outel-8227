@@ -19,7 +19,7 @@ TOP_FILE         := top.sv
 
 # List internal component/block files here (separate the filenames with spaces)
 # NOTE: YOU WILL NEED TO SET THIS VARIABLE'S VALUE WHEN WORKING WITH HEIRARCHICAL DESIGNS
-COMPONENT_FILES  := param_file.sv dataflow/* control_logic/* register.sv top8227.sv seven_seg_decoder.sv
+COMPONENT_FILES  := param_file.sv dataflow/* control_logic/* register.sv top8227.sv demo/demo_mapped_io.sv demo/fpga_io_driver.sv
 
 # Specify the filepath of the test bench you want to use (ie. tb_top_level.sv)
 # (do not include the source folder in the name)

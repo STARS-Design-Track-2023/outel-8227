@@ -93,7 +93,6 @@ module top8227 (
         .nrst(nrst), 
         .clk(clk), 
         .enableFFs(enableFFs),
-        .free_carry(freeCarry), 
         .nmi(nmiRunning), 
         .irq(PSRCurrentValue[2] & ~resetRunning), //High I flag in PSR, reset not running
         .reset(resetRunning), 
