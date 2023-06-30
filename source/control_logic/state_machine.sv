@@ -1,5 +1,5 @@
 `ifndef NUMFLAGS
-`include "param_file.sv"
+`include "source/param_file.sv"
 `endif
 module state_machine(
     input logic clk, nrst, noAddressing, getInstruction, endAddressing,
@@ -15,7 +15,7 @@ module state_machine(
 logic nextMode;
 logic [2:0] nextTime;
 always_comb begin : comb_timingGeneration
-    if(endAddressing | (noAddressing)) begin // it is on the last stage of addressing
+    if(endAddressing) begin // it is on the last stage of addressing
         nextMode = `INSTRUCTION;
         nextTime = `T0;
     end
@@ -35,6 +35,9 @@ always_comb begin : comb_timingGeneration
         `T5: nextTime = `T6;
         default: nextTime = `T0;
         endcase
+    end
+    if((mode == `ADDRESS) & noAddressing) begin
+        nextMode = `INSTRUCTION;
     end
     if(~enableFFs)
     begin
