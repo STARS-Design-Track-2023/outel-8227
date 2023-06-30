@@ -1,0 +1,171 @@
+
+ /----------------------------------------------------------------------------\
+ |                                                                            |
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |                                                                            |
+ |  Copyright (C) 2012 - 2020  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |                                                                            |
+ |  Permission to use, copy, modify, and/or distribute this software for any  |
+ |  purpose with or without fee is hereby granted, provided that the above    |
+ |  copyright notice and this permission notice appear in all copies.         |
+ |                                                                            |
+ |  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES  |
+ |  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF          |
+ |  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR   |
+ |  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    |
+ |  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN     |
+ |  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF   |
+ |  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.            |
+ |                                                                            |
+ \----------------------------------------------------------------------------/
+
+ Yosys 0.27 (git sha1 5f88c218b, gcc 11.3.0-1ubuntu1~22.04 -fPIC -O3)
+
+
+-- Running command `read_verilog -sv -noblackbox source/param_file.sv source/dataflow/* source/control_logic/* source/register.sv source/top8227.sv source/seven_seg_decoder.sv; synth -top ; dfflibmap -liberty /home/shay/c/ecng005/sky130A/lib/sky130_fd_sc_hd__tt_100C_1v80.lib; abc -liberty /home/shay/c/ecng005/sky130A/lib/sky130_fd_sc_hd__tt_100C_1v80.lib; clean; write_verilog -noattr -noexpr -nohex -nodec -defparam mapped/.v' --
+
+1. Executing Verilog-2005 frontend: source/param_file.sv
+Parsing SystemVerilog input from `source/param_file.sv' to AST representation.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: source/dataflow/alu.sv
+Parsing SystemVerilog input from `source/dataflow/alu.sv' to AST representation.
+Generating RTLIL representation for module `\alu'.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: source/dataflow/bridge.sv
+Parsing SystemVerilog input from `source/dataflow/bridge.sv' to AST representation.
+Generating RTLIL representation for module `\bridge'.
+Successfully finished Verilog frontend.
+
+4. Executing Verilog-2005 frontend: source/dataflow/bus_interface.sv
+Parsing SystemVerilog input from `source/dataflow/bus_interface.sv' to AST representation.
+Generating RTLIL representation for module `\busInterface'.
+Successfully finished Verilog frontend.
+
+5. Executing Verilog-2005 frontend: source/dataflow/bus_preset_logic.sv
+Parsing SystemVerilog input from `source/dataflow/bus_preset_logic.sv' to AST representation.
+Generating RTLIL representation for module `\busPreset'.
+Successfully finished Verilog frontend.
+
+6. Executing Verilog-2005 frontend: source/dataflow/internal_bus.sv
+Parsing SystemVerilog input from `source/dataflow/internal_bus.sv' to AST representation.
+Generating RTLIL representation for module `\internalBus'.
+Warning: Replacing memory \busOutputUnpacked with list of registers. See source/dataflow/internal_bus.sv:54
+Successfully finished Verilog frontend.
+
+7. Executing Verilog-2005 frontend: source/dataflow/internal_dataflow.sv
+Parsing SystemVerilog input from `source/dataflow/internal_dataflow.sv' to AST representation.
+Generating RTLIL representation for module `\internalDataflow'.
+Successfully finished Verilog frontend.
+
+8. Executing Verilog-2005 frontend: source/dataflow/oneHotEncoder.sv
+Parsing SystemVerilog input from `source/dataflow/oneHotEncoder.sv' to AST representation.
+Generating RTLIL representation for module `\oneHotEncoder'.
+Successfully finished Verilog frontend.
+
+9. Executing Verilog-2005 frontend: source/dataflow/process_status_register.sv
+Parsing SystemVerilog input from `source/dataflow/process_status_register.sv' to AST representation.
+Generating RTLIL representation for module `\processStatusReg'.
+Successfully finished Verilog frontend.
+
+10. Executing Verilog-2005 frontend: source/dataflow/process_status_register_wrapper.sv
+Parsing SystemVerilog input from `source/dataflow/process_status_register_wrapper.sv' to AST representation.
+Generating RTLIL representation for module `\processStatusRegisterWrapper'.
+Successfully finished Verilog frontend.
+
+11. Executing Verilog-2005 frontend: source/dataflow/program_counter_logic.sv
+Parsing SystemVerilog input from `source/dataflow/program_counter_logic.sv' to AST representation.
+Generating RTLIL representation for module `\programCounterLogic'.
+Successfully finished Verilog frontend.
+
+12. Executing Verilog-2005 frontend: source/control_logic/addressing_modes.sv
+Parsing SystemVerilog input from `source/control_logic/addressing_modes.sv' to AST representation.
+Successfully finished Verilog frontend.
+
+13. Executing Verilog-2005 frontend: source/control_logic/branch_ff.sv
+Parsing SystemVerilog input from `source/control_logic/branch_ff.sv' to AST representation.
+Generating RTLIL representation for module `\branch_ff'.
+Successfully finished Verilog frontend.
+
+14. Executing Verilog-2005 frontend: source/control_logic/decoder.sv
+Parsing SystemVerilog input from `source/control_logic/decoder.sv' to AST representation.
+Generating RTLIL representation for module `\decoder'.
+Successfully finished Verilog frontend.
+
+15. Executing Verilog-2005 frontend: source/control_logic/demux.sv
+Parsing SystemVerilog input from `source/control_logic/demux.sv' to AST representation.
+Generating RTLIL representation for module `\demux'.
+Successfully finished Verilog frontend.
+
+16. Executing Verilog-2005 frontend: source/control_logic/free_carry_ff.sv
+Parsing SystemVerilog input from `source/control_logic/free_carry_ff.sv' to AST representation.
+Generating RTLIL representation for module `\free_carry_ff'.
+Successfully finished Verilog frontend.
+
+17. Executing Verilog-2005 frontend: source/control_logic/instruction_loader.sv
+Parsing SystemVerilog input from `source/control_logic/instruction_loader.sv' to AST representation.
+Generating RTLIL representation for module `\instructionLoader'.
+Successfully finished Verilog frontend.
+
+18. Executing Verilog-2005 frontend: source/control_logic/interrupt_injector.sv
+Parsing SystemVerilog input from `source/control_logic/interrupt_injector.sv' to AST representation.
+Generating RTLIL representation for module `\interruptInjector'.
+Successfully finished Verilog frontend.
+
+19. Executing Verilog-2005 frontend: source/control_logic/irq_generated_ff.sv
+Parsing SystemVerilog input from `source/control_logic/irq_generated_ff.sv' to AST representation.
+Generating RTLIL representation for module `\irqGeneratedFF'.
+Successfully finished Verilog frontend.
+
+20. Executing Verilog-2005 frontend: source/control_logic/nmi_generated_ff.sv
+Parsing SystemVerilog input from `source/control_logic/nmi_generated_ff.sv' to AST representation.
+Generating RTLIL representation for module `\nmiGeneratedFF'.
+Successfully finished Verilog frontend.
+
+21. Executing Verilog-2005 frontend: source/control_logic/nmi_running_ff.sv
+Parsing SystemVerilog input from `source/control_logic/nmi_running_ff.sv' to AST representation.
+Generating RTLIL representation for module `\nmiRunningFF'.
+Successfully finished Verilog frontend.
+
+22. Executing Verilog-2005 frontend: source/control_logic/pulse_slower.sv
+Parsing SystemVerilog input from `source/control_logic/pulse_slower.sv' to AST representation.
+Generating RTLIL representation for module `\pulse_slower'.
+Successfully finished Verilog frontend.
+
+23. Executing Verilog-2005 frontend: source/control_logic/reset_detector.sv
+Parsing SystemVerilog input from `source/control_logic/reset_detector.sv' to AST representation.
+Generating RTLIL representation for module `\resetDetector'.
+Successfully finished Verilog frontend.
+
+24. Executing Verilog-2005 frontend: source/control_logic/reset_running_ff.sv
+Parsing SystemVerilog input from `source/control_logic/reset_running_ff.sv' to AST representation.
+Generating RTLIL representation for module `\resetRunningFF'.
+Successfully finished Verilog frontend.
+
+25. Executing Verilog-2005 frontend: source/control_logic/state_machine.sv
+Parsing SystemVerilog input from `source/control_logic/state_machine.sv' to AST representation.
+Generating RTLIL representation for module `\state_machine'.
+Successfully finished Verilog frontend.
+
+26. Executing Verilog-2005 frontend: source/control_logic/synchronizer.sv
+Parsing SystemVerilog input from `source/control_logic/synchronizer.sv' to AST representation.
+Generating RTLIL representation for module `\synchronizer'.
+Successfully finished Verilog frontend.
+
+27. Executing Verilog-2005 frontend: source/register.sv
+Parsing SystemVerilog input from `source/register.sv' to AST representation.
+Generating RTLIL representation for module `\register'.
+Warning: Replacing memory \busOutputUnpacked with list of registers. See source/register.sv:35
+Successfully finished Verilog frontend.
+
+28. Executing Verilog-2005 frontend: source/top8227.sv
+Parsing SystemVerilog input from `source/top8227.sv' to AST representation.
+Generating RTLIL representation for module `\top8227'.
+Successfully finished Verilog frontend.
+
+29. Executing Verilog-2005 frontend: source/seven_seg_decoder.sv
+Parsing SystemVerilog input from `source/seven_seg_decoder.sv' to AST representation.
+Generating RTLIL representation for module `\fpga_seven_seg_driver'.
+Warning: Replacing memory \nextSevenSegs with list of registers. See source/seven_seg_decoder.sv:36
+Warning: Replacing memory \sevenSegs with list of registers. See source/seven_seg_decoder.sv:62, source/seven_seg_decoder.sv:22

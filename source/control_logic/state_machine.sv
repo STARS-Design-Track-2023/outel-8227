@@ -6,13 +6,14 @@ module state_machine(
     output logic [3:0] currentAddress,
     output logic [2:0] timeState,
     output logic mode,
-    input logic enableFFs
+    input logic enableFFs,
+    output logic [7:0] debug
 );
 
 logic nextMode;
 logic [2:0] nextTime;
 always_comb begin : comb_timingGeneration
-    if(endAddressing | (noAddressing)) begin // it is on the last stage of addressing
+    if(endAddressing) begin // it is on the last stage of addressing
         nextMode = INSTRUCTION;
         nextTime = T0;
     end
@@ -33,6 +34,8 @@ always_comb begin : comb_timingGeneration
         default: nextTime = T0;
         endcase
     end
+    if((mode == ADDRESS) & noAddressing) //Go to the second instruction cycle and fix mode if noAddressing
+        nextMode = INSTRUCTION;
     if(~enableFFs)
     begin
         nextTime = timeState;
@@ -64,26 +67,26 @@ end
 
 always_ff @( posedge clk, negedge nrst) begin : ff_timingGeneration_mode
     if(nrst == 1'b0)
-        mode = ADDRESS;
+        mode <= ADDRESS;
     else
-        mode = nextMode;
+        mode <= nextMode;
 end
 
 always_ff @( posedge clk, negedge nrst) begin : ff_timingGeneration_timeState
     if(nrst == 1'b0)
-        timeState = T0;
+        timeState <= T0;
     else
-        timeState = nextTime;
+        timeState <= nextTime;
 end
 
 always_ff @( posedge clk, negedge nrst) begin : ff_OPCode
     if(nrst == 1'b0) begin
-        currentInstruction = 0;
-        currentAddress = 0; 
+        currentInstruction <= 0;
+        currentAddress <= 0; 
     end
     else begin
-        currentInstruction = nextInstruction;
-        currentAddress = nextAddress;
+        currentInstruction <= nextInstruction;
+        currentAddress <= nextAddress;
     end
 end
 

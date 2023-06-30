@@ -11,7 +11,9 @@ module demux(
     output logic [NUMFLAGS - 1:0] outflags,
     input logic setInterruptFlag,
     input logic enableFFs,
-    input logic branchForwardFF, branchBackwardFF
+    input logic branchForwardFF, branchBackwardFF,
+    output logic [7:0] debug, debug2,
+    output logic debugRed
 );
 
 logic  [NUMFLAGS - 1:0] outputListAddressing [13:0] ;
@@ -50,9 +52,15 @@ state_machine state_machine(
     .currentInstruction(instructionCode),
     .currentAddress(addressingCode),
     .timeState(state),
-    .mode(isAddressing)
+    .mode(isAddressing),
+    .debug()
 );
 
+assign debugRed = isAddressing;
+assign debug2[7:5] = state;
+assign debug2[0] = passAddressing;
+
+assign passAddressing = (addressingCode == IMMEDIATE | addressingCode == impl | addressingCode == rel | addressingCode == A);// & getInstructionPostInjection); // bypasses Addressing (impl from param_file);
 
 always_comb begin : blockName
 
@@ -66,12 +74,8 @@ always_comb begin : blockName
         `STX: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
-    if((preFFAddressingCode == `IMMEDIATE | preFFAddressingCode == `impl | preFFAddressingCode == `rel | preFFAddressingCode == `A) & getInstructionPostInjection) // bypasses `Addressing (impl from param_file)
-        passAddressing = 1'b1;
-    else
-        passAddressing = 1'b0;
 
-
+    outflags = 0;
     if(isAddressing & ~passAddressing) begin
 
         case(addressingCode)
@@ -514,7 +518,7 @@ always_comb begin : blockName
                     outflags[`SET_DB_TO_SB] = 1;
                     outflags[`LOAD_ACC] = 1;
 
-                    //Set PSR from `ALU outflags
+                    // //Set PSR from ALU outflags
                     
                     outflags[`WRITE_ZERO_FLAG] = 1;
                     outflags[`SET_PSR_N_TO_DB7] = 1;
@@ -2972,8 +2976,8 @@ always_comb begin : blockName
     end
 
 
-if(~enableFFs) // VERY IMPORTANT:`THIS HALTS 2/3RDS OF CLOCK CYCLES
-    outflags = 0;
+    if(~enableFFs) // VERY IMPORTANT: THIS HALTS 2/3RDS OF CLOCK CYCLES
+        outflags = 0;
 end
 
 endmodule

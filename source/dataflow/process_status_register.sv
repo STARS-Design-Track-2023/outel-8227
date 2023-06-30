@@ -25,9 +25,9 @@ module processStatusReg(
     logic [7:0] status_buffer, stat_buf_nxt;            //reg to hold status flags
     always_ff @ (posedge clk, negedge nrst) begin
         if(nrst == 0) begin
-            status_buffer = 0;       
+            status_buffer <= 0;       
         end else begin
-            status_buffer = stat_buf_nxt;
+            status_buffer <= stat_buf_nxt;
         end
     end
 

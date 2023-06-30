@@ -2,9 +2,11 @@ module top8227 (
     input  logic clk, nrst, nonMaskableInterrupt, interruptRequest, dataBusEnable, ready, setOverflow,
     input  logic [7:0] dataBusInput,
     output logic [7:0] dataBusOutput,
-    output logic [7:0] AddressBusHigh,
-    output logic [7:0] AddressBusLow,
-    output logic sync, readNotWrite
+    output logic [7:0] addressBusHigh,
+    output logic [7:0] addressBusLow,
+    output logic sync, readNotWrite,
+    output logic [7:0] debug, debug2,
+    output logic debugRed
 );
     logic [7:0] PSRCurrentValue;
     logic [7:0] opcodeCurrentValue;
@@ -50,12 +52,12 @@ module top8227 (
         .psrCarry(PSRCurrentValue[0]),
         .externalDBRead(dataBusInput),
         .externalDBWrite(dataBusOutput),
-        .externalAddressBusLowOutput(AddressBusLow),
-        .externalAddressBusHighOutput(AddressBusHigh),
+        .externalAddressBusLowOutput(addressBusLow),
+        .externalAddressBusHighOutput(addressBusHigh),
         .psrRegToLogicController(PSRCurrentValue),
         .aluCarryOut(aluCarryOut),
         .pclMSB(pclMSB),
-        .setOverflow(setOverflow)
+        .debug(debug2)
     );
 
     instructionLoader instructionLoader(
@@ -80,6 +82,8 @@ module top8227 (
         .address(addressingCode)
     );
 
+    assign debug[3:0] = addressingCode;
+
     demux demux(
         .preFFInstructionCode(instructionCode),
         .preFFAddressingCode(addressingCode),
@@ -99,7 +103,10 @@ module top8227 (
         .outflags(preFlags),
         .setInterruptFlag(setIFlag),
         .branchForwardFF(branchForward),
-        .branchBackwardFF(branchBackward)
+        .branchBackwardFF(branchBackward),
+        .debug(),
+        .debug2(/*debug2*/),
+        .debugRed(debugRed)
     );
 
     free_carry_ff free_carry_ff (

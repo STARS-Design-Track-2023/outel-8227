@@ -8,7 +8,8 @@ module internalDataflow(
     output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput,
     output logic [7:0] psrRegToLogicController,
     output logic aluCarryOut,
-    output logic pclMSB
+    output logic pclMSB,
+    output logic [7:0] debug
 );
     //outputs from registers
     //ABL = address bus low
@@ -34,6 +35,8 @@ module internalDataflow(
                 sbToADH, adhToSB,//SB/ADH Bridge Outputs
                 sbToDB, dbToSB,//SB/DB Bridge Outputs
                 dataToDB, dataToADL, dataToADH;//External DB Interface Outputs
+
+    assign debug = dataBus;    
 
     assign pclMSB = pclRegToDB[7];//Assign this to the MSB of the PCL's current value to pass to control logic
 
@@ -150,7 +153,7 @@ module internalDataflow(
     register #(
         .INPUT_COUNT(2), 
         .OUTPUT_COUNT(3),
-        .DEFAULT_VALUE(8'HAA)
+        .DEFAULT_VALUE(8'H00)
     ) pchRegister (
         .nrst(nrst),
         .clk(clk), 
@@ -163,7 +166,7 @@ module internalDataflow(
     register #(
         .INPUT_COUNT(2), 
         .OUTPUT_COUNT(3),
-        .DEFAULT_VALUE(8'HBB)
+        .DEFAULT_VALUE(8'H00)
     ) pclRegister (
         .nrst(nrst),
         .clk(clk), 
@@ -261,7 +264,7 @@ module internalDataflow(
         .e_eor(flags[ALU_XOR]),
         .e_or(flags[ALU_OR]),
         .e_shiftr(flags[ALU_R_SHIFT]),
-        .carry_out(aluCarryOut),
+        .carry_out(aluCarryOut),       //aluCarryOut),
         .overflow(aluOverflowOut),
         .alu_out(aluOutput),
         .subtracting(flags[SET_ALU_DEC_TO_PSR_DEC]&flags[SET_INPUT_B_TO_NOT_DB])
