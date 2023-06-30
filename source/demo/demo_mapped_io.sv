@@ -1,22 +1,35 @@
 `default_nettype none
-`define RAM_MEMORY_MAP 16'b0000_000?_????_????
-`define ROM_MEMORY_MAP 16'b1111_111?_????_????
+`define RAM_MEMORY_MAP 16'b0000_000?_????_???? // RAM: 0x00 - 0x01
+`define ROM_MEMORY_MAP 16'b1111_111?_????_???? // ROM: 0xFE - 0xFF
+`define IO_MEMORY_MAP  16'b1000_0000_????_???? // FPGA IO: 0x80 page
 
 `define RAM_CS 1
 `define ROM_CS 2
+`define IO_CS 3
 
 `define ROM_FILE_NAME "source/demo/program.mem"
 
 module demo_mapped_io (
-    input logic clk,
+    input logic clk, nrst,
     input logic [15:0] addr,
     input logic [7:0] din,
     input logic read_en,
-    output logic [7:0] dout
+    input logic [20:0] pb,
+    output logic [7:0] dout,
+    output logic [7:0] ss0, 
+    output logic [7:0] ss1, 
+    output logic [7:0] ss2, 
+    output logic [7:0] ss3, 
+    output logic [7:0] ss4, 
+    output logic [7:0] ss5, 
+    output logic [7:0] ss6, 
+    output logic [7:0] ss7,
+    output logic [7:0] left, 
+    output logic [7:0] right 
 );
 
   logic [1:0] cs; // Chip select
-  logic [7:0] ram_dout, rom_dout;
+  logic [7:0] ram_dout, rom_dout, io_dout;
 
   ram ram (
       .clk(clk),
@@ -32,10 +45,30 @@ module demo_mapped_io (
       .addr(addr[8:0])
   );
 
+  fpga_io_driver fpga_io_driver (
+    .clk(clk), .nrst(nrst),
+    .read_en(read_en || cs != `IO_CS),
+    .addr(addr[7:0]),
+    .din(din),
+    .pb(pb),
+    .dout(io_dout),
+    .ss0(ss0), 
+    .ss1(ss1), 
+    .ss2(ss2), 
+    .ss3(ss3), 
+    .ss4(ss4), 
+    .ss5(ss5), 
+    .ss6(ss6), 
+    .ss7(ss7),
+    .left(left), 
+    .right(right)  
+  );
+  
   always_comb begin
     casez (addr)
       `RAM_MEMORY_MAP: cs = `RAM_CS;
       `ROM_MEMORY_MAP: cs = `ROM_CS;
+      `IO_MEMORY_MAP: cs = `IO_CS;
       default: cs = 0;
     endcase
   end
@@ -44,6 +77,7 @@ module demo_mapped_io (
     casez (cs)
       `RAM_CS: dout = ram_dout;
       `ROM_CS: dout = rom_dout;
+      `IO_CS: dout = io_dout;
       default: dout = 0;
     endcase
   end
@@ -80,29 +114,3 @@ module rom (
   always @(posedge clk)
       data <= Rom[addr];
 endmodule
-
-// // Character ROM.
-// module rom (
-//   input logic ROMCLK,// Read clock
-
-//   output logic [7:0] ROM_OUT,// Data output
-
-//   input logic [8:0] ROM_ADDR // Read address
-// );// Read enable
-	
-//   // E paper fonts.
-//   reg [7:0] fonts [511:0];// Font bitmap, Inferring to BRAM.
-
-//   initial $readmemh("source/demo/program.bin", fonts);
-  
-//   // initial begin
-//   //   // Write font data to BRAM rom.
-//   //   $display("Reading from program file...");
-//   //   $readmemh(`, fonts);// read file data from same location of this Verilog file. I used this binary data to initialize the BRAM as a character bitmap ROM.
-//   // end
-
-//   always@(posedge ROMCLK) begin
-//     ROM_OUT <= fonts[ROM_ADDR];	
-//   end	
-
-// endmodule
