@@ -29,37 +29,40 @@ module tb_8227_template ();
 
   always_comb begin : memoryAssignment
     memory = 0;
-    memory[8*16'HFFFC+:8] = 8'HDD;//ADL of reset pointer
+    //for brk
+    memory[8*16'HFFFE+:8] = 8'HCA;//ADL of reset pointer
+    memory[8*16'HFFFF+:8] = 8'HCC;//ADH of reset Pointer
+    //for 
+    memory[8*16'HFFFC+:8] = 8'HDB;//ADL of reset pointer
     memory[8*16'HFFFD+:8] = 8'HCC;//ADH of reset Pointer
-    memory[8*16'HCCDD+:8] = 8'H90;//BCC
-    memory[8*16'HCCDE+:8] = 8'H32;//move 33(HEX) if c=0
-    memory[8*16'HCD12+:8] = 8'H38;//set carry
-    memory[8*16'HCD13+:8] = 8'H90;//BCC
-    memory[8*16'HCD14+:8] = 8'H99;//BAD DATA
-    memory[8*16'HCD15+:8] = 8'H18;//clear carry
-    memory[8*16'HCD16+:8] = 8'HB0;//BCS
-    memory[8*16'HCD17+:8] = 8'H98;//BAD data
-    memory[8*16'HCD18+:8] = 8'H38;//set carry
-    memory[8*16'HCD19+:8] = 8'HB0;//BCS
-    memory[8*16'HCD1A+:8] = 8'H10;//move 10
-    memory[8*16'HCD2B+:8] = 8'HCE;//DEC
-    memory[8*16'HCD2C+:8] = 8'H31;//ADL
-    memory[8*16'HCD2D+:8] = 8'HCD;//ADH
-    memory[8*16'HCD2E+:8] = 8'HCE;//DEC
-    memory[8*16'HCD2F+:8] = 8'H31;//ADL
-    memory[8*16'HCD30+:8] = 8'HCD;//ADH
-    memory[8*16'HCD31+:8] = 8'HF0;//INC+2
-    memory[8*16'HCD32+:8] = 8'H00;//ADL
-    memory[8*16'HCD33+:8] = 8'H01;//ADH
-    memory[8*16'H0100+:8] = 8'HFF;//DATA
-    memory[8*16'HCD34+:8] = 8'HCA;//DEX
-    memory[8*16'HCD35+:8] = 8'HE8;//INX
-    memory[8*16'HCD36+:8] = 8'H6C;//JMP
-    memory[8*16'HCD37+:8] = 8'H00;//IML
-    memory[8*16'HCD38+:8] = 8'H03;//IMH
-    memory[8*16'H0300+:8] = 8'H34;//ADL
-    memory[8*16'H0301+:8] = 8'HCD;//ADH
 
+    memory[8*16'H0000+:8] = 8'b00000101;//first number to multiply
+    memory[8*16'H0001+:8] = 8'b00000111;//second number to multiply
+    memory[8*16'H0002+:8] = 8'H00;//result, less than 256 unsigned or 127 and greater than -128 signed
+    
+    memory[8*16'HCCDB+:8] = 8'H58;//CLI
+    memory[8*16'HCCDC+:8] = 8'HA9;//LDA
+    memory[8*16'HCCDD+:8] = 8'H00;//data to load
+
+    memory[8*16'HCCDE+:8] = 8'HA2;//LDX
+    memory[8*16'HCCDF+:8] = 8'H00;//data to load
+
+    memory[8*16'HCCE0+:8] = 8'H18;//CLC
+
+    memory[8*16'HCCE1+:8] = 8'H65;//ADC
+    memory[8*16'HCCE2+:8] = 8'H00;//zpg ABL
+
+    memory[8*16'HCCE3+:8] = 8'HE8;//INX
+
+    memory[8*16'HCCE4+:8] = 8'HE4;//CPX
+    memory[8*16'HCCE5+:8] = 8'H01;//zpg ABL
+
+    memory[8*16'HCCE6+:8] = 8'HD0;//BNE
+    memory[8*16'HCCE7+:8] = 8'HF8;//move 1111 1000 or -8
+
+    memory[8*16'HCCE8+:8] = 8'H8D;//STA
+    memory[8*16'HCCE9+:8] = 8'H02;//ABS ABL
+    memory[8*16'HCCEA+:8] = 8'H00;//ABS ABH
   end
 
   //Memory loop
@@ -112,8 +115,8 @@ module tb_8227_template ();
     .interruptRequest(tb_interruptRequest),
     .dataBusInput(tb_dataBusInput),
     .dataBusOutput(tb_dataBusOutput),
-    .addressBusHigh(tb_AddressBusHigh),
-    .addressBusLow(tb_AddressBusLow),
+    .AddressBusHigh(tb_AddressBusHigh),
+    .AddressBusLow(tb_AddressBusLow),
     .dataBusEnable(tb_dataBusEnable), 
     .ready(tb_ready),
     .sync(tb_sync), 
@@ -154,6 +157,10 @@ module tb_8227_template ();
     tb_nrst = 1'b0;
     @(negedge tb_clk);
     @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
 
     //Clk 1
     @(negedge tb_clk);
@@ -163,139 +170,147 @@ module tb_8227_template ();
 
     //Clk 2
     @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
 
     @(posedge tb_clk);
     test_name = "Boot Seq clk 2";
 
-    @(negedge tb_clk);
-    tb_ready = 1'b0;
-    @(negedge tb_clk);
+    //CLK 3
     @(negedge tb_clk);
     @(negedge tb_clk);
     @(negedge tb_clk);
-    
-
-    //Clk 3
-    @(negedge tb_clk);
-    tb_ready = 1'b1;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 3";
 
     //Clk 4
     @(negedge tb_clk);
-
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 4";
 
     //Clk 5
     @(negedge tb_clk);
-    
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 5";
 
     //Clk 6
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HDD;
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 6";
 
     //Clk 7
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HCC;
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 7";
 
     //Clk 0
     @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
-    @(posedge tb_clk);
-    test_name = "BCC";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
     
-    test_name = "Set Carry";
     @(posedge tb_clk);
-    @(posedge tb_clk);
-
-    test_name = "BCC";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
+    test_name = "CLI";
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     
-    test_name = "Clr Carry";
     @(posedge tb_clk);
+    test_name = "LDA";
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
 
-    test_name = "BCS";
     @(posedge tb_clk);
-    @(posedge tb_clk);
+    test_name = "LDX";
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    for(int i = 0; i < 10; i++)
+    begin
+      @(posedge tb_clk);
+      test_name = "CLC";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+
+      @(posedge tb_clk);
+      test_name = "ADC";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      
+      @(posedge tb_clk);
+      test_name = "INX";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      
+      @(posedge tb_clk);
+      test_name = "CPX";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      
+      @(posedge tb_clk);
+      test_name = "BNE";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(posedge tb_clk);
+    end
+    test_name = "BYE,BYE";
     
-    test_name = "Set Carry";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-
-    test_name = "BCS";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "DEC";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "DEC";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "INC";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "DEX";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "INX";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "JMP";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "DEX";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "INX";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "Repeat";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-
-
-
-
-
-    test_name = "thats all";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
+    
+    
+    for(int i = 0; i < 300; i++)
+    begin
+      //Clk 1
+      @(negedge tb_clk);
+      //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
+      @(posedge tb_clk);
+    end
 
 //--------------------------------------------------------------------------------------------
 //----------------------------------------Next Instruction------------------------------------

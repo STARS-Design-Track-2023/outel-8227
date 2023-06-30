@@ -20,6 +20,7 @@ module processStatusRegisterWrapper(
     input logic setOverflow,     
     input logic rcl_V,          //directly set V to 1 from rcl
     input logic break_set,
+    input logic man_I,
     output logic [7:0] PSR_RCL,
     output logic [7:0] PSR_DB,
     input logic enableDBWrite
@@ -45,6 +46,7 @@ processStatusReg processStatusReg(
     .DB7_N(DB7_N),
     .manual_C(manual_C),
     .manual_I(manual_I),
+    .man_I(man_I),
     .manual_D(manual_D),
     .carry_C(carry_C),
     .DBall_Z(DBall_Z),

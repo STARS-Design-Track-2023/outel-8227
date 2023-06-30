@@ -7,9 +7,9 @@ module resetDetector (
 
     always_ff @(posedge clk, negedge nrst) begin : nextStateAssignment
         if(~nrst)
-            state = 1'b1;
+            state <= 1'b1;
         else
-            state = nextState;
+            state <= nextState;
     end
 
     always_comb begin : nextStateLogic

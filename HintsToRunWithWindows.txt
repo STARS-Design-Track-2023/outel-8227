@@ -29,3 +29,9 @@ sudo apt-get install yosys
 
 Adding GTKWave
 sudo apt-get install gtkwave
+
+Install vcpkg
+https://vcpkg.io/en/getting-started.html
+
+
+

@@ -26,9 +26,9 @@ end
 
 always_ff @( posedge clk, negedge nrst ) begin : ff_enableFFs
     if(nrst == 1'b0)
-        currentEnableState = 2'b00;
+        currentEnableState <= 2'b00;
     else
-        currentEnableState = nextEnableState;
+        currentEnableState <= nextEnableState;
 end
 
 endmodule
