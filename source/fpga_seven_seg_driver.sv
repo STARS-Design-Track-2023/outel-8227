@@ -131,7 +131,7 @@ endmodule
       8'd19:
         disp = 8'b01010000; // r
       default:
-        disp = 8'b00000000;
+        disp = 8'b00111111; // defaults to 0
     endcase
 
     end
