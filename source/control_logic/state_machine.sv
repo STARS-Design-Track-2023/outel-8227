@@ -85,7 +85,7 @@ end
 always_ff @( posedge clk, negedge nrst) begin : ff_OPCode
     if(nrst == 1'b0) begin
         currentInstruction <= 0;
-        currentAddress = 0; 
+        currentAddress <= 0; 
     end
     else begin
         currentInstruction <= nextInstruction;
