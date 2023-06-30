@@ -133,6 +133,7 @@ always_comb begin : blockName
                         outflags[`SET_INPUT_B_TO_DB] = 1;
                         outflags[`SET_SB_TO_X] = 1;
                         outflags[`SET_INPUT_A_TO_SB] = 1;
+                        outflags[`SET_FREE_CARRY_FLAG_TO_ALU] = 1;
                     end else if(state == `A1)begin
                         //Move ALU output to ABL
                         outflags[`SET_ADL_TO_ALU] = 1;
@@ -142,8 +143,8 @@ always_comb begin : blockName
                         outflags[`ALU_ADD] = 1;
                         outflags[`SET_DB_TO_DATA] = 1;
                         outflags[`SET_INPUT_B_TO_DB] = 1;
-                        outflags[`SET_SB_TO_X] = 1;
-                        outflags[`SET_INPUT_A_TO_SB] = 1;
+                        outflags[`SET_INPUT_A_TO_LOW] = 1;
+                        outflags[`SET_ALU_CARRY_TO_FREE_CARRY] = 1;
                     end else if(state == `A2)begin
                         //Move ALU output to ADL
                         outflags[`SET_SB_TO_ALU] = 1;
@@ -174,6 +175,7 @@ always_comb begin : blockName
                         outflags[`SET_INPUT_B_TO_DB] = 1;
                         outflags[`SET_SB_TO_Y] = 1;
                         outflags[`SET_INPUT_A_TO_SB] = 1;
+                        outflags[`SET_FREE_CARRY_FLAG_TO_ALU] = 1;
                     end else if(state == `A1)begin
                         //Move ALU output to ABL
                         outflags[`SET_ADL_TO_ALU] = 1;
@@ -183,8 +185,8 @@ always_comb begin : blockName
                         outflags[`ALU_ADD] = 1;
                         outflags[`SET_DB_TO_DATA] = 1;
                         outflags[`SET_INPUT_B_TO_DB] = 1;
-                        outflags[`SET_SB_TO_Y] = 1;
-                        outflags[`SET_INPUT_A_TO_SB] = 1;
+                        outflags[`SET_INPUT_A_TO_LOW] = 1;
+                        outflags[`SET_ALU_CARRY_TO_FREE_CARRY] = 1;
                     end else if(state == `A2)begin
                         //Move ALU output to ADL
                         outflags[`SET_SB_TO_ALU] = 1;
