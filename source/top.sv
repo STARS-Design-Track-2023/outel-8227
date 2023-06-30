@@ -65,10 +65,7 @@ module top
     .addressBusHigh(addressBusHigh),
     .addressBusLow(addressBusLow),
     .sync(sync),
-    .readNotWrite(rnw),
-    .debug(),
-    .debug2(),
-    .debugRed()
+    .readNotWrite(rnw)
   );
 
   //Memory Select (only 01 and 00 can be written to and overlap)

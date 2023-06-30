@@ -45,14 +45,14 @@ always_comb begin : comb_7seg_decoder
     
     if(writeEnable) begin
         case( {addressbusHigh, addressbusLow} ) // DECODER_BASE_ADDRESS is the address of the first byte used to represent the displays
-            (DECODER_BASE_ADDRESS + 0): nextSevenSegs[0] = decodedData;  
-            (DECODER_BASE_ADDRESS + 1): nextSevenSegs[1] = decodedData;
-            (DECODER_BASE_ADDRESS + 2): nextSevenSegs[2] = decodedData;
-            (DECODER_BASE_ADDRESS + 3): nextSevenSegs[3] = decodedData;
-            (DECODER_BASE_ADDRESS + 4): nextSevenSegs[4] = decodedData;
-            (DECODER_BASE_ADDRESS + 5): nextSevenSegs[5] = decodedData;
-            (DECODER_BASE_ADDRESS + 6): nextSevenSegs[6] = decodedData;
-            (DECODER_BASE_ADDRESS + 7): nextSevenSegs[7] = decodedData;
+            (`DECODER_BASE_ADDRESS + 0): nextSevenSegs[0] = decodedData;  
+            (`DECODER_BASE_ADDRESS + 1): nextSevenSegs[1] = decodedData;
+            (`DECODER_BASE_ADDRESS + 2): nextSevenSegs[2] = decodedData;
+            (`DECODER_BASE_ADDRESS + 3): nextSevenSegs[3] = decodedData;
+            (`DECODER_BASE_ADDRESS + 4): nextSevenSegs[4] = decodedData;
+            (`DECODER_BASE_ADDRESS + 5): nextSevenSegs[5] = decodedData;
+            (`DECODER_BASE_ADDRESS + 6): nextSevenSegs[6] = decodedData;
+            (`DECODER_BASE_ADDRESS + 7): nextSevenSegs[7] = decodedData;
         endcase
     end
 end

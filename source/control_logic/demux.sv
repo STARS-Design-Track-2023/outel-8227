@@ -10,9 +10,7 @@ module demux(
     output logic [`NUMFLAGS - 1:0] outflags,
     input logic setInterruptFlag,
     input logic enableFFs,
-    input logic branchForwardFF, branchBackwardFF,
-    output logic [7:0] debug, debug2,
-    output logic debugRed
+    input logic branchForwardFF, branchBackwardFF
 );
 
 logic  [`NUMFLAGS - 1:0] outputListAddressing [13:0] ;
@@ -51,13 +49,8 @@ state_machine state_machine(
     .currentInstruction(instructionCode),
     .currentAddress(addressingCode),
     .timeState(state),
-    .mode(isAddressing),
-    .debug()
+    .mode(isAddressing)
 );
-
-assign debugRed = isAddressing;
-assign debug2[7:5] = state;
-assign debug2[0] = passAddressing;
 
 always_comb begin : blockName
 
@@ -71,7 +64,7 @@ always_comb begin : blockName
         `STX: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
-    if((preFFAddressingCode == `IMMEDIATE | preFFAddressingCode == `impl | preFFAddressingCode == `rel | preFFAddressingCode == `A) & getInstructionPostInjection) // bypasses Addressing (impl from param_file)
+    if(addressingCode == `IMMEDIATE | addressingCode == `impl | addressingCode == `rel | addressingCode == `A) // bypasses Addressing (impl from param_file)
         passAddressing = 1'b1;
     else
         passAddressing = 1'b0;

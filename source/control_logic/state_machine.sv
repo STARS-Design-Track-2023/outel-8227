@@ -9,8 +9,7 @@ module state_machine(
     output logic [3:0] currentAddress,
     output logic [2:0] timeState,
     output logic mode,
-    input logic enableFFs,
-    output logic [7:0] debug
+    input logic enableFFs
 );
 
 logic nextMode;
