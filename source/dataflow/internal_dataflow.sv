@@ -37,7 +37,7 @@ module internalDataflow(
                 dbPresetOutput, sbPresetOutput, adlPresetOutput, adhPresetOutput,//Preset Outputs
                 sbToADH, adhToSB,//SB/ADH Bridge Outputs
                 sbToDB, dbToSB,//SB/DB Bridge Outputs
-                dataToDB, dataToADL, dataToADH;//External DB Interface Outputs
+                dataToDB, dataToADL, dataToADH;//External DB Interface Outputs    
 
     assign pclMSB = pclRegToDB[7];//Assign this to the MSB of the PCL's current value to pass to control logic
 
@@ -154,7 +154,7 @@ module internalDataflow(
     register #(
         .INPUT_COUNT(2), 
         .OUTPUT_COUNT(3),
-        .DEFAULT_VALUE(8'HAA)
+        .DEFAULT_VALUE(8'H00)
     ) pchRegister (
         .nrst(nrst),
         .clk(clk), 
@@ -167,7 +167,7 @@ module internalDataflow(
     register #(
         .INPUT_COUNT(2), 
         .OUTPUT_COUNT(3),
-        .DEFAULT_VALUE(8'HBB)
+        .DEFAULT_VALUE(8'H00)
     ) pclRegister (
         .nrst(nrst),
         .clk(clk), 

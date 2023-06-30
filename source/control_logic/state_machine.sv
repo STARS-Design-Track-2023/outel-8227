@@ -70,26 +70,26 @@ end
 
 always_ff @( posedge clk, negedge nrst) begin : ff_timingGeneration_mode
     if(nrst == 1'b0)
-        mode = `ADDRESS;
+        mode <= `ADDRESS;
     else
-        mode = nextMode;
+        mode <= nextMode;
 end
 
 always_ff @( posedge clk, negedge nrst) begin : ff_timingGeneration_timeState
     if(nrst == 1'b0)
-        timeState = `T0;
+        timeState <= `T0;
     else
-        timeState = nextTime;
+        timeState <= nextTime;
 end
 
 always_ff @( posedge clk, negedge nrst) begin : ff_OPCode
     if(nrst == 1'b0) begin
-        currentInstruction = 0;
-        currentAddress = 0; 
+        currentInstruction <= 0;
+        currentAddress <= 0; 
     end
     else begin
-        currentInstruction = nextInstruction;
-        currentAddress = nextAddress;
+        currentInstruction <= nextInstruction;
+        currentAddress <= nextAddress;
     end
 end
 
