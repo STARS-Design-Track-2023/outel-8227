@@ -40,11 +40,11 @@ module register
   always_ff @(posedge clk, negedge nrst) begin
     if(~nrst)
     begin
-      currentState = DEFAULT_VALUE;
+      currentState <= DEFAULT_VALUE;
     end
     else
     begin
-      currentState = nextState;
+      currentState <= nextState;
     end
   end
 
