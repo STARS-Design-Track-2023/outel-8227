@@ -6,8 +6,8 @@ module top8227 (
     input  logic clk, nrst, nonMaskableInterrupt, interruptRequest, dataBusEnable, ready, setOverflow,
     input  logic [7:0] dataBusInput,
     output logic [7:0] dataBusOutput,
-    output logic [7:0] AddressBusHigh,
-    output logic [7:0] AddressBusLow,
+    output logic [7:0] addressBusHigh,
+    output logic [7:0] addressBusLow,
     output logic sync, readNotWrite
 );
     logic [7:0] PSRCurrentValue;
@@ -55,8 +55,8 @@ module top8227 (
         .psrCarry(PSRCurrentValue[0]),
         .externalDBRead(dataBusInput),
         .externalDBWrite(dataBusOutput),
-        .externalAddressBusLowOutput(AddressBusLow),
-        .externalAddressBusHighOutput(AddressBusHigh),
+        .externalAddressBusLowOutput(addressBusLow),
+        .externalAddressBusHighOutput(addressBusHigh),
         .psrRegToLogicController(PSRCurrentValue),
         .aluCarryOut(aluCarryOut),
         .pclMSB(pclMSB),

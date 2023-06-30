@@ -53,7 +53,6 @@ state_machine state_machine(
     .mode(isAddressing)
 );
 
-
 always_comb begin : blockName
 
     IS_STORE_ACC_INSTRUCT = 1'b0;
@@ -71,7 +70,7 @@ always_comb begin : blockName
     else
         passAddressing = 1'b0;
 
-
+    outflags = 0;
     if(isAddressing & ~passAddressing) begin
 
         case(addressingCode)
@@ -514,7 +513,7 @@ always_comb begin : blockName
                     outflags[`SET_DB_TO_SB] = 1;
                     outflags[`LOAD_ACC] = 1;
 
-                    //Set PSR from ALU outflags
+                    // //Set PSR from ALU outflags
                     
                     outflags[`WRITE_ZERO_FLAG] = 1;
                     outflags[`SET_PSR_N_TO_DB7] = 1;
@@ -2992,7 +2991,7 @@ always_comb begin : blockName
         load_psr_I = 1'b0;
         psr_data_to_load = 1'b0;
     end
-
+  
 if(~enableFFs) // VERY IMPORTANT: THIS HALTS 2/3RDS OF CLOCK CYCLES
     outflags = 0;
 end
