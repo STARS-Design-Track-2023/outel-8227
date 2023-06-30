@@ -8,6 +8,7 @@ module demux(
     input logic getInstructionPostInjection,
     output logic getInstructionPreInjection,
     output logic [`NUMFLAGS - 1:0] outflags,
+    output logic load_psr_I, psr_data_to_load,
     input logic setInterruptFlag,
     input logic enableFFs,
     input logic branchForwardFF, branchBackwardFF
@@ -2571,7 +2572,7 @@ always_comb begin : blockName
             case (state)
                 `T0: begin
                     //Set FLAG
-                    outflags[`PSR_DATA_TO_LOAD] = 1;
+                    outflags[`PSR_DATA_TO_LOAD] = 0;
                     outflags[`LOAD_CARRY_PSR_FLAG] = 1;
                 
                 end
@@ -2595,7 +2596,7 @@ always_comb begin : blockName
             case (state)
                 `T0: begin
                     //Set FLAG
-                    outflags[`PSR_DATA_TO_LOAD] = 1;
+                    outflags[`PSR_DATA_TO_LOAD] = 0;
                     outflags[`LOAD_DECIMAL_PSR_FLAG] = 1;
                 
                 end
@@ -2619,8 +2620,8 @@ always_comb begin : blockName
             case (state)
                 `T0: begin
                     //Set FLAG
-                    outflags[`PSR_DATA_TO_LOAD] = 1;
-                    outflags[`LOAD_INTERUPT_PSR_FLAG] = 1;
+                    outflags[`PSR_DATA_TO_LOAD] = 0;
+                    outflags[`LOAD_INTERUPT_PSR_FLAG] = 0;
                 
                 end
                 `T1: begin
@@ -2981,12 +2982,16 @@ always_comb begin : blockName
 
     end
 
+    //*
     if(setInterruptFlag)
     begin
-        outflags[`LOAD_INTERUPT_PSR_FLAG] = 1'b1;
-        outflags[`PSR_DATA_TO_LOAD] = 1'b1;
+        load_psr_I = 1'b1;
+        psr_data_to_load = 1'b1;
+    end else //*/
+    begin
+        load_psr_I = 1'b0;
+        psr_data_to_load = 1'b0;
     end
-
 
 if(~enableFFs) // VERY IMPORTANT: THIS HALTS 2/3RDS OF CLOCK CYCLES
     outflags = 0;
