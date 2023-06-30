@@ -65,7 +65,7 @@ always_comb begin : blockName
         `STX: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
-    if((preFFAddressingCode == `IMMEDIATE | preFFAddressingCode == `impl | preFFAddressingCode == `rel | preFFAddressingCode == `A) & getInstructionPostInjection) // bypasses Addressing (impl from param_file)
+    if(addressingCode == `IMMEDIATE | addressingCode == `impl | addressingCode == `rel | addressingCode == `A) // bypasses Addressing (impl from param_file)
         passAddressing = 1'b1;
     else
         passAddressing = 1'b0;
