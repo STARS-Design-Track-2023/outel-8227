@@ -5,7 +5,8 @@ module top8227 (
     output logic [7:0] addressBusHigh,
     output logic [7:0] addressBusLow,
     output logic sync, readNotWrite,
-    output logic [7:0] debug, debug2
+    output logic [7:0] debug, debug2,
+    output logic debugRed
 );
     logic [7:0] PSRCurrentValue;
     logic [7:0] opcodeCurrentValue;
@@ -83,6 +84,7 @@ module top8227 (
     );
 
     assign debug[3:0] = addressingCode;
+    assign debug2[1] = slow_pulse;
 
     demux demux(
         .preFFInstructionCode(instructionCode),
@@ -105,7 +107,8 @@ module top8227 (
         .branchForwardFF(branchForward),
         .branchBackwardFF(branchBackward),
         .debug(),
-        .debug2(debug2)
+        .debug2(debug2),
+        .debugRed(debugRed)
     );
 
     free_carry_ff free_carry_ff (
