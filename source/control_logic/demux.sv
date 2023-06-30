@@ -11,7 +11,8 @@ module demux(
     output logic load_psr_I, psr_data_to_load,
     input logic setInterruptFlag,
     input logic enableFFs,
-    input logic branchForwardFF, branchBackwardFF
+    input logic branchForwardFF, branchBackwardFF,
+    output logic readNotWrite
 );
 
 logic  [`NUMFLAGS - 1:0] outputListAddressing [13:0] ;
@@ -54,7 +55,7 @@ state_machine state_machine(
 );
 
 always_comb begin : blockName
-
+    readNotWrite = 0;
     IS_STORE_ACC_INSTRUCT = 1'b0;
     IS_STORE_X_INSTRUCT = 1'b0;
     IS_STORE_Y_INSTRUCT = 1'b0;
@@ -606,11 +607,11 @@ always_comb begin : blockName
                     outflags[`SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
                 end
                 `T2: begin
                     //write modified data
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
 
                     //Increment PC
                     outflags[`PC_INC] = 1;
@@ -842,7 +843,7 @@ always_comb begin : blockName
                 end
                 `T1: begin
                     //Write DOR
-                    outflags[`SET_WRITE_FLAG] = ~reset;
+                    readNotWrite = ~reset;
 
                     //Go to next Stack
                     outflags[`SET_ADL_TO_ALU] = 1;
@@ -866,7 +867,7 @@ always_comb begin : blockName
                 end
                 `T2: begin
                     //Write DOR
-                    outflags[`SET_WRITE_FLAG] = ~reset;
+                    readNotWrite = ~reset;
 
                     //Go to next Stack
                     outflags[`SET_ADL_TO_ALU] = 1;
@@ -890,7 +891,7 @@ always_comb begin : blockName
                 end
                 `T3: begin
                     //Write DOR
-                    outflags[`SET_WRITE_FLAG] = ~reset;
+                    readNotWrite = ~reset;
 
                     //set ABH and ABL to presets
                     outflags[`SET_ADH_FF] = 1;
@@ -1240,11 +1241,11 @@ always_comb begin : blockName
                     outflags[`SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
                 end
                 `T2: begin
                     //write modified data
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
 
                     //Increment PC
                     outflags[`PC_INC] = 1;
@@ -1428,11 +1429,11 @@ always_comb begin : blockName
                     outflags[`SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
                 end
                 `T2: begin
                     //write modified data
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
 
                     //Increment PC
                     outflags[`PC_INC] = 1;
@@ -1602,7 +1603,7 @@ always_comb begin : blockName
                 end
                 `T2: begin
                     //Write DOR
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
 
                     //Get PCL to DOR
                     outflags[`SET_DB_TO_PCL] = 1;
@@ -1614,7 +1615,7 @@ always_comb begin : blockName
                 end
                 `T3: begin
                     //Write DOR
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
 
                     //set ABH and ABL to PC
                     outflags[`SET_ADH_TO_PCH] = 1;
@@ -1815,11 +1816,11 @@ always_comb begin : blockName
                     outflags[`SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
                 end
                 `T2: begin
                     //write modified data
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
 
                     //Increment PC
                     outflags[`PC_INC] = 1;
@@ -1941,7 +1942,7 @@ always_comb begin : blockName
                 end
                 `T1: begin
                     //write modified data
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
                     
                     //Increment PC
                     outflags[`PC_INC] = 1;
@@ -2005,7 +2006,7 @@ always_comb begin : blockName
                 end
                 `T1: begin
                     //write modified data
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
                     
                     //Increment PC
                     outflags[`PC_INC] = 1;
@@ -2211,11 +2212,11 @@ always_comb begin : blockName
                     outflags[`SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
                 end
                 `T2: begin
                     //write modified data
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
 
                     //Increment PC
                     outflags[`PC_INC] = 1;
@@ -2271,11 +2272,11 @@ always_comb begin : blockName
                     outflags[`SET_PSR_N_TO_DB7] = 1;
 
                     //Get ready to write
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
                 end
                 `T2: begin
                     //write modified data
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
 
                     //Increment PC
                     outflags[`PC_INC] = 1;
@@ -2645,7 +2646,7 @@ always_comb begin : blockName
             case (state)
                 `T0: begin
                     //Set FLAG
-                    outflags[`SET_WRITE_FLAG] = 1;
+                    readNotWrite = 1;
 
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
