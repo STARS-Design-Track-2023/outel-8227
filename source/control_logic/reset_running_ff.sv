@@ -20,9 +20,9 @@ module resetRunningFF (
 
     always_ff @(posedge clk, negedge nrst) begin : nmiAssignment
         if(~nrst)
-            resetRunning = 1'b0;
+            resetRunning <= 1'b0;
         else
-            resetRunning = nextResetRunning;
+            resetRunning <= nextResetRunning;
     end
 
 endmodule

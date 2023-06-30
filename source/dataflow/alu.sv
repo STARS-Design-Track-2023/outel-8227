@@ -40,17 +40,18 @@ module alu(
     logic [3:0] lo_nib_c, hi_nib_c;                         //for bcd ops
     logic half_carry;
 
+    logic garbage;
     //NOTE: ALU is only directly responsible for outputting carry and overflow
 
     //Constant selects in Always_* processes are unsupported so much of this is done outside of always_comb blocks
     
     //Assign the output and carryout from the sum 
-    //assign {sum_carry_out, sum} = a + b + {7'b0000000, carry_in};
-    
+    assign {sum_carry_out, sum} = a + b + {7'b0000000, carry_in};
+    //assign {garbage, sum} = a + b + {7'b0000000, carry_in};
+    //assign sum_carry_out = 1'b0;
     //Set the overflow flag (right now it is only set in sum, it might need to be selected later)
     assign overflow = (a[7] ^ sum[7]) & (b[7] ^ sum[7]) & (~(enable_dec && e_sum));
     
-
     always_comb begin
         alu_out = 0;                                    //default to 0
         carry_out = 0;
@@ -109,7 +110,6 @@ module alu(
             //Set Carry Out
             if(hi_nib_a + hi_nib_b + {3'b0, half_carry} > 5'b01001)
                 carry_out = 1;
-
 
             alu_out = {hi_nib_c, lo_nib_c};
          end
