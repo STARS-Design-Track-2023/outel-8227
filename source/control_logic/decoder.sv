@@ -1,7 +1,7 @@
 module decoder (
     input  logic [7:0] opcode,
-    output logic [5:0] CMD,
-    output logic [3:0] ADDRESS
+    output logic [5:0] cmd,
+    output logic [3:0] address
 );
 
     logic [2:0] a;
@@ -19,8 +19,8 @@ module decoder (
     always_comb begin : comb_decoder
 
     
-    CMD = 6'b0;
-    ADDRESS = 4'b0;
+    cmd = 6'b0;
+    address = 4'b0;
     
     casez(c)
         2'b00: begin
@@ -98,7 +98,7 @@ module decoder (
                     endcase
                 end
                 3'b100: begin
-                    ADDRESS=rel;
+                    address=rel;
                     case(a)
                         3'b000: CMD=`BPL;
                         3'b001: CMD=`BMI;
@@ -236,51 +236,51 @@ module decoder (
                         end
                         3'b001: begin
                              CMD=`ROL;
-                             ADDRESS=zpgX;
+                             ADDRESS=`zpgX;
                         end
                         3'b010: begin
-                             CMD=LSR;
-                             ADDRESS=zpgX;
+                             cmd=`LSR;
+                             address=`zpgX;
                         end
                         3'b011: begin
-                             CMD=ROR;
-                             ADDRESS=zpgX;
+                             cmd=`ROR;
+                             address=`zpgX;
                         end
                         3'b100: begin
-                             CMD=STX;
-                             ADDRESS=zpgY;
+                             cmd=STX;
+                             address=zpgY;
                         end
                         3'b101: begin
-                             CMD=LDX;
-                             ADDRESS=zpgY;
+                             cmd=LDX;
+                             address=zpgY;
                         end
                         3'b110: begin
-                             CMD=DEC;
-                             ADDRESS=zpgX;
+                             cmd=DEC;
+                             address=zpgX;
                         end
                         default: begin // ACTUAL 3'b111
-                             CMD=INC;
-                             ADDRESS=zpgX;
+                             cmd=INC;
+                             address=zpgX;
                         end
                     endcase
                 end
                 3'b110: begin
-                    ADDRESS=impl;
+                    address=impl;
                     case(a)
-                        3'b100: CMD=TXS;
-                        default: CMD=TSX; // ACTUAL 3'b101
+                        3'b100: cmd=TXS;
+                        default: cmd=TSX; // ACTUAL 3'b101
                     endcase
                 end
                 default: begin // ACTUAL 3'b101
-                    ADDRESS=absX;
+                    address=absX;
                     case(a)
-                        3'b000: CMD=ASL;
-                        3'b001: CMD=ROL;
-                        3'b010: CMD=LSR;
-                        3'b011: CMD=ROR;
-                        3'b101: CMD=LDX;
-                        3'b110: CMD=DEC;
-                        default: CMD=INC; // ACTUAL 3'b101
+                        3'b000: cmd=ASL;
+                        3'b001: cmd=ROL;
+                        3'b010: cmd=LSR;
+                        3'b011: cmd=ROR;
+                        3'b101: cmd=LDX;
+                        3'b110: cmd=DEC;
+                        default: cmd=INC; // ACTUAL 3'b101
                     endcase
                 end
             endcase
