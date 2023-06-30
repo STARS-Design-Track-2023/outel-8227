@@ -1,6 +1,5 @@
 `default_nettype none
 
-
 // `include "source/control_logic/state_machine.sv" 
 // `include "source/param_file.sv" 
 
