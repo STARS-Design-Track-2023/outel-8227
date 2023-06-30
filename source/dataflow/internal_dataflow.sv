@@ -7,6 +7,7 @@ module internalDataflow(
     input logic setOverflow,
     input logic [`NUMFLAGS-1:0] flags,
     input logic [7:0] externalDBRead,
+    input logic load_psr_I, psr_data_to_load,
     output logic [7:0] externalDBWrite,
     output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput,
     output logic [7:0] psrRegToLogicController,
@@ -269,13 +270,12 @@ module internalDataflow(
         .alu_out(aluOutput),
         .subtracting(flags[`SET_ALU_DEC_TO_PSR_DEC]&flags[`SET_INPUT_B_TO_NOT_DB])
     );
-
     // Process Status Register
     processStatusRegisterWrapper psr(
         .clk(clk),
         .nrst(nrst),
         .DB_in(dataBus),
-        .manual_set(flags[`PSR_DATA_TO_LOAD]),
+        .manual_set(flags[`PSR_DATA_TO_LOAD] | psr_data_to_load),
         .carry(aluCarryOut),
         .overflow(aluOverflowOut),
         .DB0_C(flags[`SET_PSR_C_TO_DB0] | flags[`SET_PSR_TO_DB]),
@@ -286,6 +286,7 @@ module internalDataflow(
         .DB7_N(flags[`SET_PSR_N_TO_DB7] | flags[`SET_PSR_TO_DB]),
         .manual_C(flags[`LOAD_CARRY_PSR_FLAG]),
         .manual_I(flags[`LOAD_INTERUPT_PSR_FLAG]),
+        .man_I(load_psr_I),
         .manual_D(flags[`LOAD_DECIMAL_PSR_FLAG]),
         .carry_C(flags[`SET_PSR_CARRY_TO_ALU_CARRY]),
         .DBall_Z(flags[`WRITE_ZERO_FLAG]),//NOR databus (equivalent to databus=0)
