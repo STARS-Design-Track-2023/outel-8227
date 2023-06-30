@@ -24,6 +24,7 @@ module top8227 (
     logic slow_pulse; // used to slow down the cpu so it can access memory
     logic pclMSB;
     logic branchBackward, branchForward;
+    logic load_psr_I, psr_data_to_load;
 
     assign readNotWrite = ~preFlags[`SET_WRITE_FLAG];
     assign enableFFs = (ready | ~readNotWrite) & slow_pulse;
@@ -59,7 +60,9 @@ module top8227 (
         .psrRegToLogicController(PSRCurrentValue),
         .aluCarryOut(aluCarryOut),
         .pclMSB(pclMSB),
-        .setOverflow(setOverflow)
+        .setOverflow(setOverflow),
+        .load_psr_I(load_psr_I), 
+        .psr_data_to_load(psr_data_to_load)
     );
 
     instructionLoader instructionLoader(
@@ -103,7 +106,9 @@ module top8227 (
         .outflags(preFlags),
         .setInterruptFlag(setIFlag),
         .branchForwardFF(branchForward),
-        .branchBackwardFF(branchBackward)
+        .branchBackwardFF(branchBackward),
+        .load_psr_I(load_psr_I), 
+        .psr_data_to_load(psr_data_to_load)
     );
 
     free_carry_ff free_carry_ff (
