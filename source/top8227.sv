@@ -107,7 +107,7 @@ module top8227 (
         .branchForwardFF(branchForward),
         .branchBackwardFF(branchBackward),
         .debug(),
-        .debug2(debug2),
+        .debug2(/*debug2*/),
         .debugRed(debugRed)
     );
 

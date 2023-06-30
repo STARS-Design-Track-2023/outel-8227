@@ -263,7 +263,7 @@ module internalDataflow(
         .e_eor(flags[ALU_XOR]),
         .e_or(flags[ALU_OR]),
         .e_shiftr(flags[ALU_R_SHIFT]),
-        .carry_out(),//aluCarryOut),
+        .carry_out(aluCarryOut),       //aluCarryOut),
         .overflow(aluOverflowOut),
         .alu_out(aluOutput),
         .subtracting(flags[SET_ALU_DEC_TO_PSR_DEC]&flags[SET_INPUT_B_TO_NOT_DB])
