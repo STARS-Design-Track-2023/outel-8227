@@ -40,29 +40,29 @@ module tb_8227_template ();
     memory[8*16'H0001+:8] = 8'b00000111;//second number to multiply
     memory[8*16'H0002+:8] = 8'H00;//result, less than 256 unsigned or 127 and greater than -128 signed
     
-    memory[8*16'HCCDB+:8] = 8'H58;//LDA
+    memory[8*16'HCCDB+:8] = 8'H58;//CLI
     memory[8*16'HCCDC+:8] = 8'HA9;//LDA
     memory[8*16'HCCDD+:8] = 8'H00;//data to load
 
     memory[8*16'HCCDE+:8] = 8'HA2;//LDX
-    memory[8*16'HCCDD+:8] = 8'H00;//data to load
+    memory[8*16'HCCDF+:8] = 8'H00;//data to load
 
-    memory[8*16'HCCDF+:8] = 8'H18;//CLC
+    memory[8*16'HCCE0+:8] = 8'H18;//CLC
 
-    memory[8*16'HCCE0+:8] = 8'H65;//ADC
-    memory[8*16'HCCE1+:8] = 8'H00;//zpg ABL
+    memory[8*16'HCCE1+:8] = 8'H65;//ADC
+    memory[8*16'HCCE2+:8] = 8'H00;//zpg ABL
 
-    memory[8*16'HCCE2+:8] = 8'HE8;//INX
+    memory[8*16'HCCE3+:8] = 8'HE8;//INX
 
-    memory[8*16'HCCE3+:8] = 8'HE4;//CPX
-    memory[8*16'HCCE4+:8] = 8'H01;//zpg ABL
+    memory[8*16'HCCE4+:8] = 8'HE4;//CPX
+    memory[8*16'HCCE5+:8] = 8'H01;//zpg ABL
 
-    memory[8*16'HCCE5+:8] = 8'HD0;//BNE
-    memory[8*16'HCCE6+:8] = 8'HF8;//move 1111 1000 or -8
+    memory[8*16'HCCE6+:8] = 8'HD0;//BNE
+    memory[8*16'HCCE7+:8] = 8'HF8;//move 1111 1000 or -8
 
-    memory[8*16'HCCE7+:8] = 8'H8D;//STA
-    memory[8*16'HCCE8+:8] = 8'H02;//ABS ABL
-    memory[8*16'HCCE9+:8] = 8'H00;//ABS ABH
+    memory[8*16'HCCE8+:8] = 8'H8D;//STA
+    memory[8*16'HCCE9+:8] = 8'H02;//ABS ABL
+    memory[8*16'HCCEA+:8] = 8'H00;//ABS ABH
   end
 
   //Memory loop
@@ -233,182 +233,73 @@ module tb_8227_template ();
     @(negedge tb_clk);
     @(negedge tb_clk);
     @(negedge tb_clk);
-    @(negedge tb_clk);
-    
     @(posedge tb_clk);
-    test_name = "ADC";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "SEC";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "PHP";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "CLC";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "CLV";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "PHP";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "JSR";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
 
     @(posedge tb_clk);
-    test_name = "LDA";
+    test_name = "LDX";
     @(negedge tb_clk);
     @(negedge tb_clk);
     @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    for(int i = 0; i < 10; i++)
+    begin
+      @(posedge tb_clk);
+      test_name = "CLC";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
 
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-
-    @(posedge tb_clk);
-    test_name = "RTS";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-
-    @(posedge tb_clk);
-    test_name = "LDA";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    
-    @(posedge tb_clk);
-    test_name = "BRK";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//1
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//2
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//3
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//4
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//5
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//6
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//7
-    
-    @(posedge tb_clk);
-    test_name = "RTI";
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//1
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//2
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//3
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//4
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//5
-    @(negedge tb_clk);
-    @(negedge tb_clk);
-    @(negedge tb_clk);//6
-    @(posedge tb_clk);
+      @(posedge tb_clk);
+      test_name = "ADC";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      
+      @(posedge tb_clk);
+      test_name = "INX";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      
+      @(posedge tb_clk);
+      test_name = "CPX";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      
+      @(posedge tb_clk);
+      test_name = "BNE";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(posedge tb_clk);
+    end
     test_name = "BYE,BYE";
     
     
