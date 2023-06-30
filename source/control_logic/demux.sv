@@ -61,12 +61,12 @@ always_comb begin : blockName
     IS_STORE_Y_INSTRUCT = 1'b0;
 
     case(instructionCode) 
-        STA: IS_STORE_ACC_INSTRUCT = 1'b1;
-        STY: IS_STORE_X_INSTRUCT = 1'b1;
-        STX: IS_STORE_Y_INSTRUCT = 1'b1;
+        `STA: IS_STORE_ACC_INSTRUCT = 1'b1;
+        `STY: IS_STORE_X_INSTRUCT = 1'b1;
+        `STX: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
-    if((preFFAddressingCode == IMMEDIATE | preFFAddressingCode == impl | preFFAddressingCode == rel | preFFAddressingCode == `A) & getInstructionPostInjection) // bypasses `Addressing (impl from param_file)
+    if((preFFAddressingCode == `IMMEDIATE | preFFAddressingCode == `impl | preFFAddressingCode == `rel | preFFAddressingCode == `A) & getInstructionPostInjection) // bypasses `Addressing (impl from param_file)
         passAddressing = 1'b1;
     else
         passAddressing = 1'b0;
@@ -636,7 +636,7 @@ always_comb begin : blockName
             endcase
 
             end
-            BCC, BCS, BEQ, BMI, BNE, BPL, BVC, BVS: begin       // code BCC                  BRANCH CHECKING ONE`THAT IS HARD
+            `BCC, `BCS, `BEQ, `BMI, `BNE, `BPL, `BVC, `BVS: begin       // code BCC                  BRANCH CHECKING ONE`THAT IS HARD
             
             outflags = 0;
             case (state)
@@ -758,7 +758,7 @@ always_comb begin : blockName
             endcase
 
             end
-            BIT: begin                                          // code BIT
+            `BIT: begin                                          // code BIT
             
             outflags = 0;
             case (state)
@@ -812,7 +812,7 @@ always_comb begin : blockName
             endcase
 
             end
-            BRK: begin                                          // code BRK
+            `BRK: begin                                          // code BRK
 
             outflags = 0;
             case (state)
@@ -950,7 +950,7 @@ always_comb begin : blockName
             endcase
 
             end
-            CLC: begin                                          // code CLC
+            `CLC: begin                                          // code CLC
 
             outflags = 0;
             case (state)
@@ -974,7 +974,7 @@ always_comb begin : blockName
             endcase
 
             end
-            CLD: begin                                          // code CLD
+            `CLD: begin                                          // code CLD
 
             outflags = 0;
             case (state)
@@ -998,7 +998,7 @@ always_comb begin : blockName
             endcase
 
             end
-            CLI: begin                                          // code CLI
+            `CLI: begin                                          // code CLI
 
             outflags = 0;
             case (state)
@@ -1022,7 +1022,7 @@ always_comb begin : blockName
             endcase
 
             end
-            CLV: begin                                          // code CLV
+            `CLV: begin                                          // code CLV
 
             outflags = 0;
             case (state)
@@ -1046,7 +1046,7 @@ always_comb begin : blockName
             endcase
 
             end
-            CMP: begin                                          // code CMP
+            `CMP: begin                                          // code CMP
 
             outflags = 0;
             case (state)
@@ -1101,7 +1101,7 @@ always_comb begin : blockName
             endcase
 
             end
-            CPX: begin                                          // code CPX
+            `CPX: begin                                          // code CPX
 
             outflags = 0;
             case (state)
@@ -1156,7 +1156,7 @@ always_comb begin : blockName
             endcase
 
             end
-            CPY: begin                                          // code CPY
+            `CPY: begin                                          // code CPY
 
             outflags = 0;
             case (state)
@@ -1211,7 +1211,7 @@ always_comb begin : blockName
             endcase
 
             end
-            DEC: begin                                          // code DEC
+            `DEC: begin                                          // code DEC
 
             outflags = 0;
             case (state)
@@ -1271,7 +1271,7 @@ always_comb begin : blockName
             endcase
 
             end
-            DEX: begin                                          // code DEX
+            `DEX: begin                                          // code DEX
 
             outflags = 0;
             case (state)
@@ -1310,7 +1310,7 @@ always_comb begin : blockName
             endcase
 
             end
-            DEY: begin                                          // code DEY
+            `DEY: begin                                          // code DEY
 
             outflags = 0;
             case (state)
@@ -1349,7 +1349,7 @@ always_comb begin : blockName
             endcase
 
             end
-            EOR: begin                                          // code EOR
+            `EOR: begin                                          // code EOR
 
             outflags = 0;
             case (state)
@@ -1402,7 +1402,7 @@ always_comb begin : blockName
             endcase
 
             end
-            INC: begin                                          // code INC
+            `INC: begin                                          // code INC
             
             outflags = 0;
             case (state)
@@ -1459,7 +1459,7 @@ always_comb begin : blockName
             endcase
 
             end
-            INX: begin                                          // code INX
+            `INX: begin                                          // code INX
 
             outflags = 0;
             case (state)
@@ -1498,7 +1498,7 @@ always_comb begin : blockName
             endcase
 
             end
-            INY: begin                                          // code INY
+            `INY: begin                                          // code INY
 
             outflags = 0;
             case (state)
@@ -1537,7 +1537,7 @@ always_comb begin : blockName
             endcase
 
             end
-            JMP: begin                                          // code JMP
+            `JMP: begin                                          // code JMP
 
             outflags = 0;
             case (state)
@@ -1558,7 +1558,7 @@ always_comb begin : blockName
             endcase
 
             end
-            JSR: begin                                          // code JSR
+            `JSR: begin                                          // code JSR
 
             outflags = 0;
             case (state)
@@ -1667,7 +1667,7 @@ always_comb begin : blockName
             endcase
 
             end
-            LDA: begin                                          // code LDA
+            `LDA: begin                                          // code LDA
 
             outflags = 0;
             case (state)
@@ -1707,7 +1707,7 @@ always_comb begin : blockName
             endcase
 
             end
-            LDX: begin                                          // code LDX
+            `LDX: begin                                          // code LDX
 
             outflags = 0;
             case (state)
@@ -1747,7 +1747,7 @@ always_comb begin : blockName
             endcase
 
             end
-            LDY: begin                                          // code LDY
+            `LDY: begin                                          // code LDY
 
             outflags = 0;
             case (state)
@@ -1787,7 +1787,7 @@ always_comb begin : blockName
             endcase
 
             end
-            LSR: begin                                          // code LSR
+            `LSR: begin                                          // code LSR
 
             outflags = 0;
             case (state)
@@ -1846,7 +1846,7 @@ always_comb begin : blockName
             endcase
 
             end
-            NOP: begin                                          // code NOP
+            `NOP: begin                                          // code NOP
 
             outflags = 0;
             case (state)
@@ -1867,7 +1867,7 @@ always_comb begin : blockName
             endcase
 
             end
-            ORA: begin                                          // code ORA
+            `ORA: begin                                          // code ORA
 
             outflags = 0;
             case (state)
@@ -1920,7 +1920,7 @@ always_comb begin : blockName
             endcase
 
             end
-            PHA: begin                                          // code PHA
+            `PHA: begin                                          // code PHA
 
             outflags = 0;
             case (state)
@@ -1984,7 +1984,7 @@ always_comb begin : blockName
             endcase
 
             end
-            PHP: begin                                          // code PHP
+            `PHP: begin                                          // code PHP
 
             outflags = 0;
             case (state)
@@ -2048,7 +2048,7 @@ always_comb begin : blockName
             endcase
 
             end
-            PLA: begin                                          // code PLA
+            `PLA: begin                                          // code PLA
 
             outflags = 0;
             case (state)
@@ -2118,7 +2118,7 @@ always_comb begin : blockName
             endcase
 
             end
-            PLP: begin                                          // code PLP
+            `PLP: begin                                          // code PLP
 
             outflags = 0;
             case (state)
@@ -2182,7 +2182,7 @@ always_comb begin : blockName
             endcase
 
             end
-            ROL: begin                                          // code ROL
+            `ROL: begin                                          // code ROL
 
             outflags = 0;
             case (state)
@@ -2242,7 +2242,7 @@ always_comb begin : blockName
             endcase
 
             end
-            ROR: begin                                          // code ROR
+            `ROR: begin                                          // code ROR
 
             outflags = 0;
             case (state)
@@ -2302,7 +2302,7 @@ always_comb begin : blockName
             endcase
 
             end
-            RTI: begin                                          // code RTI
+            `RTI: begin                                          // code RTI
             
             outflags = 0;
             case (state)
@@ -2406,7 +2406,7 @@ always_comb begin : blockName
             endcase
 
             end
-            RTS: begin                                          // code RTS // STILL NEEDS WORK
+            `RTS: begin                                          // code RTS // STILL NEEDS WORK
 
             outflags = 0;
             case (state)
@@ -2489,7 +2489,7 @@ always_comb begin : blockName
             endcase
 
             end
-            SBC: begin                                          // code SBC
+            `SBC: begin                                          // code SBC
 
             outflags = 0;
             case (state)
@@ -2549,7 +2549,7 @@ always_comb begin : blockName
             endcase
 
             end
-            SEC: begin                                          // code SEC
+            `SEC: begin                                          // code SEC
 
             outflags = 0;
             case (state)
@@ -2573,7 +2573,7 @@ always_comb begin : blockName
             endcase
 
             end
-            SED: begin                                          // code SED
+            `SED: begin                                          // code SED
 
             outflags = 0;
             case (state)
@@ -2597,7 +2597,7 @@ always_comb begin : blockName
             endcase
 
             end
-            SEI: begin                                          // code SEI
+            `SEI: begin                                          // code SEI
 
             outflags = 0;
             case (state)
@@ -2621,7 +2621,7 @@ always_comb begin : blockName
             endcase
 
             end
-            STA, STX, STY: begin                                          // code STO (STA, STX, STY) WE NEED`TO `ADD LOGIC`TO STORE`TO `A, X, OR Y
+            `STA, `STX, `STY: begin                                          // code STO (STA, STX, STY) WE NEED`TO `ADD LOGIC`TO STORE`TO `A, X, OR Y
             
             outflags = 0;
             case (state)
@@ -2816,7 +2816,7 @@ always_comb begin : blockName
             endcase
 
             end
-            ROLA: begin                                          // code ROLA
+            `ROLA: begin                                          // code ROLA
                 outflags = 0;
             case (state)
                `T0: begin
@@ -2855,7 +2855,7 @@ always_comb begin : blockName
                 default: outflags = 0;
             endcase
             end
-            LSRA: begin                                          // code LSRA
+            `LSRA: begin                                          // code LSRA
             
             outflags = 0;
             case (state)
@@ -2895,7 +2895,7 @@ always_comb begin : blockName
 
             end
 
-            RORA: begin                                          // code RORA
+            `RORA: begin                                          // code RORA
 
             outflags = 0;
             case (state)
