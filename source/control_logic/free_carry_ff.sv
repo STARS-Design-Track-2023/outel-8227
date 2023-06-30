@@ -15,9 +15,9 @@ end
 
 always_ff @( posedge clk, negedge nrst ) begin : ff_free_carry_ff
     if(nrst == 1'b0)         // resets to 0
-        freeCarry = 1'b0;
+        freeCarry <= 1'b0;
     else
-        freeCarry = freeCarryNext;
+        freeCarry <= freeCarryNext;
 end
 
 endmodule
