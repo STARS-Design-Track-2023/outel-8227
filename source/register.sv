@@ -29,8 +29,9 @@ module register
 
   logic [WIDTH - 1:0] busOutputUnpacked [INPUT_COUNT];
 
+  genvar i;
   generate // Unpack array
-    for (genvar i = 0; i < INPUT_COUNT; i = i + 1) begin
+    for (i = 0; i < INPUT_COUNT; i = i + 1) begin
       assign busOutputUnpacked[i] = busInputs[WIDTH*(i+1) - 1:WIDTH*i];
     end
   endgenerate
@@ -103,11 +104,11 @@ endmodule
   //   always_ff @(posedge clk, negedge nrst) begin
   //   if(~nrst)
   //   begin
-  //     currentState = DEFAULT_VALUE;
+  //     currentState <= DEFAULT_VALUE;
   //   end
   //   else
   //   begin
-  //     currentState = nextState;
+  //     currentState <= nextState;
   //   end
   // end
 
