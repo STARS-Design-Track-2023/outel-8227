@@ -12,7 +12,8 @@ module internalDataflow(
     output logic [7:0] externalAddressBusLowOutput, externalAddressBusHighOutput,
     output logic [7:0] psrRegToLogicController,
     output logic aluCarryOut,
-    output logic pclMSB
+    output logic pclMSB,
+    input logic initiateInterruptWithPCDecrement
 );
     //outputs from registers
     //ABL = address bus low
@@ -232,8 +233,8 @@ module internalDataflow(
     programCounterLogic pcIncrementor (
         .input_lowbyte(pclRegToPcIncrementer), 
         .input_highbyte(pchRegToPcIncrementer),
-        .increment(flags[`PC_INC]), 
-        .decrement(flags[`PC_DEC]),
+        .increment(flags[`PC_INC] & ~initiateInterruptWithPCDecrement), 
+        .decrement(flags[`PC_DEC] | initiateInterruptWithPCDecrement),
         .output_lowbyte(pcIncrementerToPclReg), 
         .output_highbyte(pcIncrementerToPchReg)
     );
@@ -242,8 +243,8 @@ module internalDataflow(
     programCounterLogic adlADHIncrementor (
         .input_lowbyte(addressLowBus), 
         .input_highbyte(addressHighBus),
-        .increment(flags[`PC_INC]), 
-        .decrement(flags[`PC_DEC]),
+        .increment(flags[`PC_INC] & ~initiateInterruptWithPCDecrement), 
+        .decrement(flags[`PC_DEC] | initiateInterruptWithPCDecrement),
         .output_lowbyte(adlADHIncrementerToPclReg), 
         .output_highbyte(adlADHIncrementerToPchReg)
     );

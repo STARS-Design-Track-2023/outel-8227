@@ -4,11 +4,13 @@ module instructionLoader (
     input logic [7:0] externalDB,
     // output logic [7:0] currentInstruction,
     output logic enableIFlag,
-    output logic nmiRunning, resetRunning, instructionRegReadEnable, //instructionRegReadEnable: Normally the same as 'loadNextInstruction' but needs to go high if a reset is detected
-    output logic [7:0] nextInstruction 
+    output logic nmiRunning, nmiGenerated, resetRunning, instructionRegReadEnable, //instructionRegReadEnable: Normally the same as 'loadNextInstruction' but needs to go high if a reset is detected
+    output logic [7:0] nextInstruction,
+    output logic initiateInterruptWithPCDecrement,
+    input logic interruptFlagWasSet
 );
 
-    logic resetDetected, irqGenerated, nmiGenerated;
+    logic resetDetected, irqGenerated;
 
 
     //Interrupt
@@ -19,12 +21,13 @@ module instructionLoader (
         .nonMaskableInterrupt(nonMaskableInterrupt),
         .interruptRequest(interruptRequest), //Inputs from exterior (could be buttons outside IC)
         .processStatusRegIFlag(processStatusRegIFlag),
-        .interruptAcknowleged(instructionRegReadEnable), //instructionRegReadEnable is high going into the clock cycle where the interrupt request will be processed
         .irqGenerated(irqGenerated), 
         .nmiGenerated(nmiGenerated), 
-        .nmiRunning(nmiRunning), 
+        .nmiRunning(nmiRunning),
         .resetRunning(resetRunning),
-        .resetDetected(resetDetected)
+        .resetDetected(resetDetected),
+        .interruptStarted(interruptFlagWasSet), //Input saying that the I flag has been written
+        .pendingInterrupt(enableIFlag) //Output saying that the I flag should be written
     );
 
     //Instruction Register Loading Logic
@@ -46,8 +49,9 @@ module instructionLoader (
     end
 
     //Set the PSR I flag to high if a reset is detected or an interrupt is beginning its instruction cycle
-    assign enableIFlag = resetDetected | ((irqGenerated | nmiGenerated) & instructionRegReadEnable);
+    //assign enableIFlag = resetDetected | ((irqGenerated | nmiGenerated) & instructionRegReadEnable);
 
+    assign initiateInterruptWithPCDecrement = (irqGenerated | nmiGenerated) & instructionRegReadEnable;
     //Instruction Register
     // register #(
     //     .INPUT_COUNT(1),
