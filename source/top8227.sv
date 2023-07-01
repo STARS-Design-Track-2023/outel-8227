@@ -101,7 +101,7 @@ module top8227 (
         .clk(clk), 
         .enableFFs(enableFFs),
         .nmi(nmiGenerated), 
-        .irq(PSRCurrentValue[2] & ~resetRunning), //High I flag in PSR, reset not running
+        .irq(setIFlag & ~resetRunning), //High I flag in PSR, reset not running
         .reset(resetRunning), 
         .PSR_C(PSRCurrentValue[0]), 
         .PSR_N(PSRCurrentValue[7]), 

@@ -2582,7 +2582,7 @@ always_comb begin : blockName
             case (state)
                 `T0: begin
                     //Set FLAG
-                    outflags[`PSR_DATA_TO_LOAD] = 0;
+                    outflags[`PSR_DATA_TO_LOAD] = 1;
                     outflags[`LOAD_CARRY_PSR_FLAG] = 1;
                 
                 end
@@ -2606,7 +2606,7 @@ always_comb begin : blockName
             case (state)
                 `T0: begin
                     //Set FLAG
-                    outflags[`PSR_DATA_TO_LOAD] = 0;
+                    outflags[`PSR_DATA_TO_LOAD] = 1;
                     outflags[`LOAD_DECIMAL_PSR_FLAG] = 1;
                 
                 end
@@ -2630,7 +2630,7 @@ always_comb begin : blockName
             case (state)
                 `T0: begin
                     //Set FLAG
-                    outflags[`PSR_DATA_TO_LOAD] = 0;
+                    outflags[`PSR_DATA_TO_LOAD] = 1;
                     outflags[`LOAD_INTERUPT_PSR_FLAG] = 0;
                 
                 end

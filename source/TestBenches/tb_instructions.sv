@@ -45,28 +45,31 @@ module tb_8227_template ();
     memory[8*16'HFFFB+:8] = 8'HAA;//ADH of reset Pointer
     //Start with AA00 after this
 
+    //NMI Procedure
     memory[8*16'HAA00+:8] = 8'H58;//CLI
-    memory[8*16'HAA01+:8] = 8'HA9;//Loop
-    memory[8*16'HAA02+:8] = 8'H22;//Loop
+    memory[8*16'HAA01+:8] = 8'H00;
+    memory[8*16'HAA02+:8] = 8'HEA;
     memory[8*16'HAA03+:8] = 8'H40;
 
 
     //IRQ Procedure
-    memory[8*16'HBB00+:8] = 8'HA9 ;//LDA
-    memory[8*16'HBB01+:8] = 8'H55 ;//LDA
-    memory[8*16'HBB02+:8] = 8'H58 ;//CLI
-    memory[8*16'HBB03+:8] = 8'H4C;//Loop
-    memory[8*16'HBB04+:8] = 8'H00;//Loop
-    memory[8*16'HBB05+:8] = 8'HBB;//Loop
+    memory[8*16'HBB00+:8] = 8'H18;//CLC
+    memory[8*16'HBB01+:8] = 8'HF8;//SED
+    memory[8*16'HBB02+:8] = 8'HEA;//NOP
+    memory[8*16'HBB03+:8] = 8'HEA;//NOP
+    memory[8*16'HBB04+:8] = 8'HEA;//NOP
+    memory[8*16'HBB05+:8] = 8'H40;//RTI
 
 
     //Normal Reset procedure
     memory[8*16'HCCF0+:8] = 8'H58;//CLI
-    memory[8*16'HCCF1+:8] = 8'HA9;//Loop
-    memory[8*16'HCCF2+:8] = 8'H22;//Loop
-    memory[8*16'HCCF3+:8] = 8'H4C;//Loop
-    memory[8*16'HCCF4+:8] = 8'HF1;//Loop
-    memory[8*16'HCCF5+:8] = 8'HCC;//Loop
+    memory[8*16'HCCF1+:8] = 8'H38;//SEC
+    memory[8*16'HCCF2+:8] = 8'HF8;//SED
+    memory[8*16'HCCF3+:8] = 8'HA9;//Loop
+    memory[8*16'HCCF4+:8] = 8'H22;//Loop
+    memory[8*16'HCCF5+:8] = 8'H4C;//Loop
+    memory[8*16'HCCF6+:8] = 8'HF3;//Loop
+    memory[8*16'HCCF7+:8] = 8'HCC;//Loop
 
 
   end
@@ -259,7 +262,7 @@ module tb_8227_template ();
     tb_nonMaskableInterrupt = 1'b0;
 
 
-    for(int i = 0; i < 100; i++)
+    for(int i = 0; i < 200; i++)
     begin
       //Clk 1
       @(negedge tb_clk);

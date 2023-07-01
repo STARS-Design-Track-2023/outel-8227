@@ -37,6 +37,8 @@ module processStatusReg(
     assign    stat_buf_nxt[1] = (DB1_Z & DB_in[1]) | (DBall_Z & ~|DB_in)     | (~DBall_Z & ~DB1_Z & status_buffer[1]);
     assign    stat_buf_nxt[2] = (DB2_I & DB_in[2]) | ((manual_I | man_I) & manual_set) | (~(manual_I | man_I) & ~DB2_I & status_buffer[2]);
     assign    stat_buf_nxt[3] = (DB3_D & DB_in[3]) | (manual_D & manual_set) | (~manual_D & ~DB3_D & status_buffer[3]);
+    assign    stat_buf_nxt[4] = 1'b0;
+    assign    stat_buf_nxt[5] = 1'b1;
     assign    stat_buf_nxt[6] = (DB6_V & DB_in[6]) | (overflow_V & overflow) | (~rcl_V & ~overflow_V & ~DB6_V & status_buffer[6]) | setOverflow;
     assign    stat_buf_nxt[7] = (DB7_N & DB_in[7]) | (~DB7_N & status_buffer[7]);
 
@@ -60,6 +62,6 @@ module processStatusReg(
     // end
 
     // Set Final outputs
-    assign PSR_Output = {status_buffer[7:6], break_set, break_set, status_buffer[3:0]}; //Set the break flag high if break_set is true
+    assign PSR_Output = {status_buffer[7:6], 1'b1, break_set, status_buffer[3:0]}; //Set the break flag high if break_set is true
 
 endmodule
