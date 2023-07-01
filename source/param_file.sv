@@ -62,7 +62,6 @@
 `define LOAD_DECIMAL_PSR_FLAG 39 //Will load PSR_DATA_TO_LOAD into the PSR
 `define LOAD_OVERFLOW_PSR_FLAG 40 //Will load 1 into the PSR's V (overflow) FlipFlop
 `define PSR_DATA_TO_LOAD 41 //This is the data that will be loaded into the PSR by flags like LOAD_CARRY_PSR_FLAG,  LOAD_DECIMAL_PSR_FLAG, LOAD_INTERUPT_PSR_FLAG, LOAD_OVERFLOW_PSR_FLAG
-`define SET_WRITE_FLAG 42
 `define LOAD_DOR 43
 `define SET_ADL_TO_SP 44
 `define LOAD_PC 45 //load from ADL else it just loads from itself

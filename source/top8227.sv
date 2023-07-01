@@ -26,7 +26,6 @@ module top8227 (
     logic branchBackward, branchForward;
     logic load_psr_I, psr_data_to_load;
 
-    assign readNotWrite = ~preFlags[`SET_WRITE_FLAG];
     assign enableFFs = (ready | ~readNotWrite) & slow_pulse;
     
     assign sync = flags[`END_INSTRUCTION];
@@ -93,7 +92,6 @@ module top8227 (
         .nrst(nrst), 
         .clk(clk), 
         .enableFFs(enableFFs),
-        .free_carry(freeCarry), 
         .nmi(nmiRunning), 
         .irq(PSRCurrentValue[2] & ~resetRunning), //High I flag in PSR, reset not running
         .reset(resetRunning), 
@@ -108,7 +106,8 @@ module top8227 (
         .branchForwardFF(branchForward),
         .branchBackwardFF(branchBackward),
         .load_psr_I(load_psr_I), 
-        .psr_data_to_load(psr_data_to_load)
+        .psr_data_to_load(psr_data_to_load),
+        .readNotWrite(readNotWrite)
     );
 
     free_carry_ff free_carry_ff (
