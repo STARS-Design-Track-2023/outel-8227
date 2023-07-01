@@ -35,30 +35,50 @@ module tb_8227_template ();
     memory[8*16'HFFFD+:8] = 8'HCC;//ADH of reset Pointer
     //Start with CCDD after this
 
+    //IRQ/BRK Pointer
+    memory[8*16'HFFFE+:8] = 8'H00;//ADL of reset pointer
+    memory[8*16'HFFFF+:8] = 8'HBB;//ADH of reset Pointer
+    //Start with BB00 after this
 
-    memory[8*16'H4433+:8] = 8'b11100000;
+    //NMI Pointer
+    memory[8*16'HFFFA+:8] = 8'H00;//ADL of reset pointer
+    memory[8*16'HFFFB+:8] = 8'HAA;//ADH of reset Pointer
+    //Start with AA00 after this
 
-    //LDA
-    memory[8*16'HCCF0+:8] = 8'HA9;
-    memory[8*16'HCCF1+:8] = 8'b00111111;
+    //NMI Procedure
+    memory[8*16'HAA00+:8] = 8'H58;//CLI
+    memory[8*16'HAA01+:8] = 8'H00;
+    memory[8*16'HAA02+:8] = 8'HEA;
+    memory[8*16'HAA03+:8] = 8'H40;
 
-    //BIT
-    memory[8*16'HCCF2+:8] = 8'H2C;
-    memory[8*16'HCCF3+:8] = 8'H33;
-    memory[8*16'HCCF4+:8] = 8'H44;
 
-    //CLI
-    memory[8*16'HCCF5+:8] = 8'H58;
+    //IRQ Procedure
+    memory[8*16'HBB00+:8] = 8'H18;//CLC
+    memory[8*16'HBB01+:8] = 8'HF8;//SED
+    memory[8*16'HBB02+:8] = 8'HEA;//NOP
+    memory[8*16'HBB03+:8] = 8'HEA;//NOP
+    memory[8*16'HBB04+:8] = 8'HEA;//NOP
+    memory[8*16'HBB05+:8] = 8'H40;//RTI
+
+
+    //Normal Reset procedure
+    memory[8*16'HCCF0+:8] = 8'H58;//CLI
+    memory[8*16'HCCF1+:8] = 8'H38;//SEC
+    memory[8*16'HCCF2+:8] = 8'HF8;//SED
+    memory[8*16'HCCF3+:8] = 8'HA9;//Loop
+    memory[8*16'HCCF4+:8] = 8'H22;//Loop
+    memory[8*16'HCCF5+:8] = 8'H4C;//Loop
+    memory[8*16'HCCF6+:8] = 8'HF3;//Loop
+    memory[8*16'HCCF7+:8] = 8'HCC;//Loop
 
 
   end
 
+  assign tb_dataBusInput = memory[8*(256*tb_AddressBusHigh + tb_AddressBusLow) +:8];
   //Memory loop
   always_ff @(negedge tb_clk) begin
-    //Update the memory and databuses on negative clock edges
-    if(tb_readNotWrite)
-      tb_dataBusInput = memory[8*(256*tb_AddressBusHigh + tb_AddressBusLow) +:8];//8*(8*(tb_AddressBusHigh) + tb_AddressBusLow) +:8];
-    else
+    //Update the memory on negative clock edges
+    if(~tb_readNotWrite)
       memory[8*(256*tb_AddressBusHigh + tb_AddressBusLow) +:8] = tb_dataBusOutput;
   end
 
@@ -103,8 +123,8 @@ module tb_8227_template ();
     .interruptRequest(tb_interruptRequest),
     .dataBusInput(tb_dataBusInput),
     .dataBusOutput(tb_dataBusOutput),
-    .AddressBusHigh(tb_AddressBusHigh),
-    .AddressBusLow(tb_AddressBusLow),
+    .addressBusHigh(tb_AddressBusHigh),
+    .addressBusLow(tb_AddressBusLow),
     .dataBusEnable(tb_dataBusEnable), 
     .ready(tb_ready),
     .sync(tb_sync), 
@@ -121,6 +141,8 @@ module tb_8227_template ();
   // Test Cases
   initial begin
     test_name = "Reset";
+    tb_interruptRequest = 1'b0;
+    tb_nonMaskableInterrupt = 1'b0;
     reset_dut();
 
     // Initialize all of the test inputs
@@ -219,6 +241,34 @@ module tb_8227_template ();
       @(posedge tb_clk);
     end
 
+    tb_interruptRequest = 1'b1;
+    for(int i = 0; i < 25; i++)
+    begin
+      //Clk 1
+      @(negedge tb_clk);
+      //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
+      @(posedge tb_clk);
+    end
+    tb_interruptRequest = 1'b0;
+
+    tb_nonMaskableInterrupt = 1'b1;
+    for(int i = 0; i < 5; i++)
+    begin
+      //Clk 1
+      @(negedge tb_clk);
+      //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
+      @(posedge tb_clk);
+    end
+    tb_nonMaskableInterrupt = 1'b0;
+
+
+    for(int i = 0; i < 200; i++)
+    begin
+      //Clk 1
+      @(negedge tb_clk);
+      //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
+      @(posedge tb_clk);
+    end
 //--------------------------------------------------------------------------------------------
 //----------------------------------------Next Instruction------------------------------------
 //--------------------------------------------------------------------------------------------

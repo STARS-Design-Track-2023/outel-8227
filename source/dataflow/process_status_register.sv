@@ -33,14 +33,14 @@ module processStatusReg(
     end
 
     //This implementation should match the below commented implementation.  Unfortunately, it looks like one of the tools does not support connstant selects like (DB_in[0]) in always_comb blocks for some reason
-    always_comb begin
-        stat_buf_nxt[0] = (DB0_C & DB_in[0]) | (manual_C & manual_set) | (carry_C & carry) | (~DB0_C & ~manual_C & !carry_C & status_buffer[0]);
-        stat_buf_nxt[1] = (DB1_Z & DB_in[1]) | (DBall_Z & ~|DB_in)     | (~DBall_Z & ~DB1_Z & status_buffer[1]);
-        stat_buf_nxt[2] = (DB2_I & DB_in[2]) | ((manual_I | man_I) & manual_set) | (~(manual_I | man_I) & ~DB2_I & status_buffer[2]);
-        stat_buf_nxt[3] = (DB3_D & DB_in[3]) | (manual_D & manual_set) | (~manual_D & ~DB3_D & status_buffer[3]);
-        stat_buf_nxt[6] = (DB6_V & DB_in[6]) | (overflow_V & overflow) | (~rcl_V & ~overflow_V & ~DB6_V & status_buffer[6]) | setOverflow;
-        stat_buf_nxt[7] = (DB7_N & DB_in[7]) | (~DB7_N & status_buffer[7]);
-    end
+    assign    stat_buf_nxt[0] = (DB0_C & DB_in[0]) | (manual_C & manual_set) | (carry_C & carry) | (~DB0_C & ~manual_C & !carry_C & status_buffer[0]);
+    assign    stat_buf_nxt[1] = (DB1_Z & DB_in[1]) | (DBall_Z & ~|DB_in)     | (~DBall_Z & ~DB1_Z & status_buffer[1]);
+    assign    stat_buf_nxt[2] = (DB2_I & DB_in[2]) | ((manual_I | man_I) & manual_set) | (~(manual_I | man_I) & ~DB2_I & status_buffer[2]);
+    assign    stat_buf_nxt[3] = (DB3_D & DB_in[3]) | (manual_D & manual_set) | (~manual_D & ~DB3_D & status_buffer[3]);
+    assign    stat_buf_nxt[4] = 1'b0;
+    assign    stat_buf_nxt[5] = 1'b1;
+    assign    stat_buf_nxt[6] = (DB6_V & DB_in[6]) | (overflow_V & overflow) | (~rcl_V & ~overflow_V & ~DB6_V & status_buffer[6]) | setOverflow;
+    assign    stat_buf_nxt[7] = (DB7_N & DB_in[7]) | (~DB7_N & status_buffer[7]);
 
     // always_comb begin                                   //comb block to handle next state logic
     //     stat_buf_nxt = status_buffer;
@@ -62,6 +62,6 @@ module processStatusReg(
     // end
 
     // Set Final outputs
-    assign PSR_Output = {status_buffer[7:6], break_set, break_set, status_buffer[3:0]}; //Set the break flag high if break_set is true
+    assign PSR_Output = {status_buffer[7:6], 1'b1, break_set, status_buffer[3:0]}; //Set the break flag high if break_set is true
 
 endmodule

@@ -55,10 +55,12 @@ state_machine state_machine(
 );
 
 always_comb begin : blockName
-    readNotWrite = 0;
+    readNotWrite = 1;
     IS_STORE_ACC_INSTRUCT = 1'b0;
     IS_STORE_X_INSTRUCT = 1'b0;
     IS_STORE_Y_INSTRUCT = 1'b0;
+    load_psr_I = 1'b0;
+    psr_data_to_load = 1'b0;
 
     case(instructionCode) 
         `STA: IS_STORE_ACC_INSTRUCT = 1'b1;
@@ -843,7 +845,7 @@ always_comb begin : blockName
                 end
                 `T1: begin
                     //Write DOR
-                    readNotWrite = ~reset;
+                    readNotWrite = reset;
 
                     //Go to next Stack
                     outflags[`SET_ADL_TO_ALU] = 1;
@@ -867,7 +869,7 @@ always_comb begin : blockName
                 end
                 `T2: begin
                     //Write DOR
-                    readNotWrite = ~reset;
+                    readNotWrite = reset;
 
                     //Go to next Stack
                     outflags[`SET_ADL_TO_ALU] = 1;
@@ -891,7 +893,7 @@ always_comb begin : blockName
                 end
                 `T3: begin
                     //Write DOR
-                    readNotWrite = ~reset;
+                    readNotWrite = reset;
 
                     //set ABH and ABL to presets
                     outflags[`SET_ADH_FF] = 1;
@@ -935,6 +937,12 @@ always_comb begin : blockName
                     //Update PC
                     outflags[`LOAD_PC] = 1;
                     outflags[`PC_INC] = 1;
+                    
+                    //Set I flag if nmi or irq after PSR has been written
+                    if(setInterruptFlag) begin
+                        load_psr_I = 1'b1;
+                        psr_data_to_load = 1'b1;
+                    end
                 end
                 `T6:  begin
                     //Increment PC
@@ -2574,7 +2582,7 @@ always_comb begin : blockName
             case (state)
                 `T0: begin
                     //Set FLAG
-                    outflags[`PSR_DATA_TO_LOAD] = 0;
+                    outflags[`PSR_DATA_TO_LOAD] = 1;
                     outflags[`LOAD_CARRY_PSR_FLAG] = 1;
                 
                 end
@@ -2598,7 +2606,7 @@ always_comb begin : blockName
             case (state)
                 `T0: begin
                     //Set FLAG
-                    outflags[`PSR_DATA_TO_LOAD] = 0;
+                    outflags[`PSR_DATA_TO_LOAD] = 1;
                     outflags[`LOAD_DECIMAL_PSR_FLAG] = 1;
                 
                 end
@@ -2622,7 +2630,7 @@ always_comb begin : blockName
             case (state)
                 `T0: begin
                     //Set FLAG
-                    outflags[`PSR_DATA_TO_LOAD] = 0;
+                    outflags[`PSR_DATA_TO_LOAD] = 1;
                     outflags[`LOAD_INTERUPT_PSR_FLAG] = 0;
                 
                 end
@@ -2984,16 +2992,16 @@ always_comb begin : blockName
 
     end
 
-    //*
-    if(setInterruptFlag)
-    begin
-        load_psr_I = 1'b1;
-        psr_data_to_load = 1'b1;
-    end else //*/
-    begin
-        load_psr_I = 1'b0;
-        psr_data_to_load = 1'b0;
-    end
+    // //*
+    // if(setInterruptFlag)
+    // begin
+    //     load_psr_I = 1'b1;
+    //     psr_data_to_load = 1'b1;
+    // end else //*/
+    // begin
+    //     load_psr_I = 1'b0;
+    //     psr_data_to_load = 1'b0;
+    // end
   
 if(~enableFFs) // VERY IMPORTANT: THIS HALTS 2/3RDS OF CLOCK CYCLES
     outflags = 0;
