@@ -3003,8 +3003,10 @@ always_comb begin : blockName
     //     psr_data_to_load = 1'b0;
     // end
   
-if(~enableFFs) // VERY IMPORTANT: THIS HALTS 2/3RDS OF CLOCK CYCLES
-    outflags = 0;
+    if(~enableFFs)  begin // VERY IMPORTANT: THIS HALTS 2/3RDS OF CLOCK CYCLES
+        outflags = 0;
+        load_psr_I = 0;
+    end
 end
 
 endmodule

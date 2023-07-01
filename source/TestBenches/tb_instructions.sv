@@ -47,8 +47,8 @@ module tb_8227_template ();
 
     //NMI Procedure
     memory[8*16'HAA00+:8] = 8'H58;//CLI
-    memory[8*16'HAA01+:8] = 8'H00;
-    memory[8*16'HAA02+:8] = 8'HEA;
+    memory[8*16'HAA01+:8] = 8'HA9;
+    memory[8*16'HAA02+:8] = 8'H22;
     memory[8*16'HAA03+:8] = 8'H40;
 
 

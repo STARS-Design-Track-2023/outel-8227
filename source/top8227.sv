@@ -60,7 +60,7 @@ module top8227 (
         .psrRegToLogicController(PSRCurrentValue),
         .aluCarryOut(aluCarryOut),
         .pclMSB(pclMSB),
-        .setOverflow(setOverflow),
+        .setOverflow(setOverflow & enableFFs),//Only set when enableFFs is true
         .load_psr_I(load_psr_I), 
         .psr_data_to_load(psr_data_to_load),
         .initiateInterruptWithPCDecrement(initiateInterruptWithPCDecrement)
@@ -76,13 +76,13 @@ module top8227 (
         .loadNextInstruction(getInstructionPreInjection),
         .externalDB(dataBusInput),
         .nextInstruction(opcodeCurrentValue),
-        .enableIFlag(setIFlag),
+        .enableIFlag(setIFlag),//Output
         .nmiRunning(nmiRunning),
         .nmiGenerated(nmiGenerated),
         .resetRunning(resetRunning),
         .instructionRegReadEnable(getInstructionPostInjection),
         .initiateInterruptWithPCDecrement(initiateInterruptWithPCDecrement),
-        .interruptFlagWasSet(load_psr_I) 
+        .interruptFlagWasSet(load_psr_I) //Input
 
     );
 
@@ -110,10 +110,10 @@ module top8227 (
         .getInstructionPostInjection(getInstructionPostInjection),
         .getInstructionPreInjection(getInstructionPreInjection),
         .outflags(preFlags),
-        .setInterruptFlag(setIFlag),
+        .setInterruptFlag(setIFlag), //Input
         .branchForwardFF(branchForward),
         .branchBackwardFF(branchBackward),
-        .load_psr_I(load_psr_I), 
+        .load_psr_I(load_psr_I), //Output
         .psr_data_to_load(psr_data_to_load),
         .readNotWrite(readNotWrite)
     );
