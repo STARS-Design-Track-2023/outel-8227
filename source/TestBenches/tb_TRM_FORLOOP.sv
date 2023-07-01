@@ -31,35 +31,22 @@ module tb_8227_template ();
     memory = 0;
     memory[8*16'HFFFC+:8] = 8'HDD;//ADL of reset pointer
     memory[8*16'HFFFD+:8] = 8'HCC;//ADH of reset Pointer
-    memory[8*16'HCCDD+:8] = 8'H90;//BCC
-    memory[8*16'HCCDE+:8] = 8'H32;//move 33(HEX) if c=0
-    memory[8*16'HCD12+:8] = 8'H38;//set carry
-    memory[8*16'HCD13+:8] = 8'H90;//BCC
-    memory[8*16'HCD14+:8] = 8'H99;//BAD DATA
-    memory[8*16'HCD15+:8] = 8'H18;//clear carry
-    memory[8*16'HCD16+:8] = 8'HB0;//BCS
-    memory[8*16'HCD17+:8] = 8'H98;//BAD data
-    memory[8*16'HCD18+:8] = 8'H38;//set carry
-    memory[8*16'HCD19+:8] = 8'HB0;//BCS
-    memory[8*16'HCD1A+:8] = 8'H10;//move 10
-    memory[8*16'HCD2B+:8] = 8'HCE;//DEC
-    memory[8*16'HCD2C+:8] = 8'H31;//ADL
-    memory[8*16'HCD2D+:8] = 8'HCD;//ADH
-    memory[8*16'HCD2E+:8] = 8'HCE;//DEC
-    memory[8*16'HCD2F+:8] = 8'H31;//ADL
-    memory[8*16'HCD30+:8] = 8'HCD;//ADH
-    memory[8*16'HCD31+:8] = 8'HF0;//INC+2
-    memory[8*16'HCD32+:8] = 8'H00;//ADL
-    memory[8*16'HCD33+:8] = 8'H01;//ADH
-    memory[8*16'H0100+:8] = 8'HFF;//DATA
-    memory[8*16'HCD34+:8] = 8'HCA;//DEX
-    memory[8*16'HCD35+:8] = 8'HE8;//INX
-    memory[8*16'HCD36+:8] = 8'H6C;//JMP
-    memory[8*16'HCD37+:8] = 8'H00;//IML
-    memory[8*16'HCD38+:8] = 8'H03;//IMH
-    memory[8*16'H0300+:8] = 8'H34;//ADL
-    memory[8*16'H0301+:8] = 8'HCD;//ADH
+    
+    memory[8*16'HCCDD+:8] = 8'HA0;//LDY
+    memory[8*16'HCCDE+:8] = 8'H0A;
+    
+    memory[8*16'HCCDF+:8] = 8'H88;//DEY
+    
+    memory[8*16'HCCE0+:8] = 8'HF0;//BEQ,Z=1
+    memory[8*16'HCCE1+:8] = 8'H03;//MOVE 3 or 4
+    
+    memory[8*16'HCCE2+:8] = 8'H4C;//JMP
+    memory[8*16'HCCE3+:8] = 8'HDF;//ADL
+    memory[8*16'HCCE4+:8] = 8'HCC;//ADH
 
+    memory[8*16'HCCE5+:8] = 8'H2E;//ROL
+    memory[8*16'HCCE6+:8] = 8'HDE;//ADL
+    memory[8*16'HCCE7+:8] = 8'HCC;//ADH
   end
 
   //Memory loop
@@ -112,8 +99,8 @@ module tb_8227_template ();
     .interruptRequest(tb_interruptRequest),
     .dataBusInput(tb_dataBusInput),
     .dataBusOutput(tb_dataBusOutput),
-    .addressBusHigh(tb_AddressBusHigh),
-    .addressBusLow(tb_AddressBusLow),
+    .AddressBusHigh(tb_AddressBusHigh),
+    .AddressBusLow(tb_AddressBusLow),
     .dataBusEnable(tb_dataBusEnable), 
     .ready(tb_ready),
     .sync(tb_sync), 
@@ -154,6 +141,10 @@ module tb_8227_template ();
     tb_nrst = 1'b0;
     @(negedge tb_clk);
     @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
 
     //Clk 1
     @(negedge tb_clk);
@@ -163,107 +154,72 @@ module tb_8227_template ();
 
     //Clk 2
     @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
 
     @(posedge tb_clk);
     test_name = "Boot Seq clk 2";
 
-    @(negedge tb_clk);
-    tb_ready = 1'b0;
-    @(negedge tb_clk);
+    //CLK 3
     @(negedge tb_clk);
     @(negedge tb_clk);
     @(negedge tb_clk);
-    
-
-    //Clk 3
-    @(negedge tb_clk);
-    tb_ready = 1'b1;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 3";
 
     //Clk 4
     @(negedge tb_clk);
-
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 4";
 
     //Clk 5
     @(negedge tb_clk);
-    
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 5";
 
     //Clk 6
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HDD;
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 6";
 
     //Clk 7
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HCC;
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 7";
 
     //Clk 0
     @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
     @(posedge tb_clk);
-    test_name = "BCC";
+    test_name = "LDY";
     @(posedge tb_clk);
     @(posedge tb_clk);
     @(posedge tb_clk);
     @(posedge tb_clk);
-    
-    test_name = "Set Carry";
     @(posedge tb_clk);
     @(posedge tb_clk);
-
-    test_name = "BCC";
+    test_name = "DEY";
     @(posedge tb_clk);
     @(posedge tb_clk);
-    
-    test_name = "Clr Carry";
     @(posedge tb_clk);
     @(posedge tb_clk);
-
-    test_name = "BCS";
     @(posedge tb_clk);
     @(posedge tb_clk);
-    
-    test_name = "Set Carry";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-
     test_name = "BCS";
     @(posedge tb_clk);
     @(posedge tb_clk);
     @(posedge tb_clk);
-    test_name = "DEC";
     @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "DEC";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "INC";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "DEX";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "INX";
     @(posedge tb_clk);
     @(posedge tb_clk);
     test_name = "JMP";
@@ -272,23 +228,229 @@ module tb_8227_template ();
     @(posedge tb_clk);
     @(posedge tb_clk);
     @(posedge tb_clk);
-    test_name = "DEX";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "INX";
-    @(posedge tb_clk);
-    @(posedge tb_clk);
-    test_name = "Repeat";
     @(posedge tb_clk);
     @(posedge tb_clk);
     @(posedge tb_clk);
     @(posedge tb_clk);
+    test_name = "DEY";
     @(posedge tb_clk);
-
-
-
-
-
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "BCS";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "JMP";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "DEY";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "BCS";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "JMP";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "DEY";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "BCS";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "JMP";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "DEY";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "BCS";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "JMP";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "DEY";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "BCS";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "JMP";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "DEY";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "BCS";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "JMP";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "DEY";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "BCS";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "JMP";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "DEY";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "BCS";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "JMP";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "DEY";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "BCS";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    test_name = "ROL";
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
+    @(posedge tb_clk);
     test_name = "thats all";
     @(posedge tb_clk);
     @(posedge tb_clk);

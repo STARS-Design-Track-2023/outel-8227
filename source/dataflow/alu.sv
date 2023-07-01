@@ -40,18 +40,14 @@ module alu(
     logic [3:0] lo_nib_c, hi_nib_c;                         //for bcd ops
     logic half_carry;
 
+    logic temp;
     //NOTE: ALU is only directly responsible for outputting carry and overflow
-
-    //Constant selects in Always_* processes are unsupported so much of this is done outside of always_comb blocks
-    
-    //Assign the output and carryout from the sum 
-    assign {sum_carry_out, sum} = a + b + {7'b0000000, carry_in};
     
     //Set the overflow flag (right now it is only set in sum, it might need to be selected later)
     assign overflow = (a[7] ^ sum[7]) & (b[7] ^ sum[7]) & (~(enable_dec && e_sum));
     
-
     always_comb begin
+        
         alu_out = 0;                                    //default to 0
         carry_out = 0;
         rot_buffer = 0;
@@ -63,55 +59,56 @@ module alu(
         hi_nib_c = 0;                         //for bcd ops
         half_carry = 0;
 
-        if(e_sum) begin                                 //handle addition with carry and overflow
-            alu_out = sum;
-            carry_out = sum_carry_out;
-        end
-        if(e_and) begin                                 //other ops are simple
-            alu_out = a & b;
-        end
-        if(e_eor) begin
-            alu_out = a ^ b;
-        end
-        if(e_or) begin
-            alu_out = a | b;
-        end
-        if(e_shiftr) begin
-            {alu_out, carry_out} = {carry_in, a};
-        end
+        {temp, sum} = {1'b0, a} + {1'b0, b} + {8'b0000000, carry_in};
+        sum_carry_out = ({1'b0, a} + {1'b0, b} + {8'b0000000, carry_in} > {9'b011111111});
 
         if(enable_dec && e_sum) begin                            //handle add/subtract in bcd
             {hi_nib_a, lo_nib_a} = a;
             {hi_nib_b, lo_nib_b} = b;
             //Determine Low Nibble
-            if((lo_nib_a + lo_nib_b + carry_in > 5'b01001) & (lo_nib_a + lo_nib_b + carry_in < 5'b10000)) begin
+            if(({1'b0, lo_nib_a} + {1'b0, lo_nib_b} + {4'b0, carry_in} > 5'b01001) & (lo_nib_a + lo_nib_b + {3'b0, carry_in} < 5'b10000)) begin
                 if(~subtracting)
-                    lo_nib_c = lo_nib_a + lo_nib_b + carry_in + 4'b0110;
+                    lo_nib_c = lo_nib_a + lo_nib_b + {3'b0, carry_in} + 4'b0110;
                 else
-                    lo_nib_c = lo_nib_a + lo_nib_b + carry_in + 4'b1010;
+                    lo_nib_c = lo_nib_a + lo_nib_b + {3'b0, carry_in} + 4'b1010;
             end else
-                lo_nib_c = lo_nib_a + lo_nib_b + carry_in;
+                lo_nib_c = lo_nib_a + lo_nib_b + {3'b0, carry_in};
 
             //Set half_Carry
-            if(lo_nib_a + lo_nib_b + carry_in > 5'b01001)
+            if(lo_nib_a + lo_nib_b + {3'b0, carry_in} > 5'b01001)
                 half_carry = 1;
             
             
             //Determine Low Nibble
-            if((hi_nib_a + hi_nib_b + half_carry > 5'b01001) & (hi_nib_a + hi_nib_b + half_carry < 5'b10000)) begin
+            if(({1'b0, hi_nib_a} + {1'b0, hi_nib_b} + {4'b0, half_carry} > 5'b01001) & (hi_nib_a + hi_nib_b + {3'b0, half_carry} < 5'b10000)) begin
                 if(~subtracting)
-                    hi_nib_c = hi_nib_a + hi_nib_b + half_carry + 4'b0110;
+                    hi_nib_c = hi_nib_a + hi_nib_b + {3'b0, half_carry} + 4'b0110;
                 else
-                    hi_nib_c = hi_nib_a + hi_nib_b + half_carry + 4'b1010;
+                    hi_nib_c = hi_nib_a + hi_nib_b + {3'b0, half_carry} + 4'b1010;
             end else
-                hi_nib_c = hi_nib_a + hi_nib_b + half_carry;
+                hi_nib_c = hi_nib_a + hi_nib_b + {3'b0, half_carry};
 
             //Set Carry Out
-            if(hi_nib_a + hi_nib_b + half_carry > 5'b01001)
+            if(hi_nib_a + hi_nib_b + {3'b0, half_carry} > 5'b01001)
                 carry_out = 1;
 
-
             alu_out = {hi_nib_c, lo_nib_c};
-         end
+        end
+        else if(e_sum) begin                                 //handle addition with carry and overflow
+            alu_out = sum;
+            carry_out = sum_carry_out;
+        end
+        else if(e_and) begin                                 //other ops are simple
+            alu_out = a & b;
+        end
+        else if(e_eor) begin
+            alu_out = a ^ b;
+        end
+        else if(e_or) begin
+            alu_out = a | b;
+        end
+        else if(e_shiftr) begin
+            {alu_out, carry_out} = {carry_in, a};
+        end
     end
 endmodule

@@ -15,7 +15,7 @@ export LD_LIBRARY_PATH := /home/shay/a/ece270/lib:$(LD_LIBRARY_PATH)
 
 # Specify the name of the top level file (do not include the source folder in the name)
 # NOTE: YOU WILL NEED TO SET THIS VARIABLE'S VALUE WHEN WORKING WITH HEIRARCHICAL DESIGNS
-TOP_FILE         := 
+TOP_FILE         := insert_project_name_here.sv
 
 # List internal component/block files here (separate the filenames with spaces)
 # NOTE: YOU WILL NEED TO SET THIS VARIABLE'S VALUE WHEN WORKING WITH HEIRARCHICAL DESIGNS
@@ -61,7 +61,7 @@ PINMAP 	         := $(PROJ)/pinmap.pcf
 ICE   	         := $(PROJ)/ice40hx8k.sv
 UART	         := $(addprefix $(PROJ)/uart/, uart.v uart_tx.v uart_rx.v)
 FILES            := $(ICE) $(SRC)/top.sv $(addprefix $(SRC)/, $(TOP_FILE) $(COMPONENT_FILES)) $(UART)
-FPGA_BUILD       := ./$(PROJ)/build
+FPGA_BUILD       := $(PROJ)\build
 
 # FPGA specific configuration
 DEVICE           := 8k
@@ -184,7 +184,7 @@ $(MAP): $(addprefix $(SRC)/, $(TOP_FILE) $(COMPONENT_FILES) $(TB))
 	@echo ----------------------------------------------------------------
 	@if not exist $(MAP) mkdir $(MAP)
 	@if not exist $(BUILD) mkdir $(BUILD)
-	@touch -c $(TOP).log
+	@if not exist $(TOP).log echo > $(TOP).log
 	@$(DC) -d -p 'read_verilog -sv -noblackbox $(addprefix $(SRC)/, $(TOP_FILE) $(COMPONENT_FILES)); synth -top $(TOP_MODULE); dfflibmap -liberty $(LIBERTY); abc -liberty $(LIBERTY); clean; write_verilog -noattr -noexpr -nohex -nodec -defparam $@/$(TOP_MODULE).v' > $(TOP_MODULE).log
 	@echo "Synthesis complete .....\n\n"
 	@$(VC) $(CFLAGS) -o $(BUILD)/$(SIM_MAPPED).vvp -DFUNCTIONAL -DUNIT_DELAY=#1 $@/$(TOP_MODULE).v $(SRC)/$(TB) $(VERILOG)
@@ -202,7 +202,7 @@ $(SIM_SOURCE): $(SRC)
 	@echo Simulating source .....
 	@echo ----------------------------------------------------------------
 	@vvp -lxt -s $(BUILD)/$@.vvp
-	@wsl gtkwave TestFormat.gtkw
+	@wsl gtkwave TestFormat_Aidan.gtkw
 
 # This rule defines how to simulate the mapped form of the full design
 $(SIM_MAPPED): $(MAP)
@@ -220,12 +220,12 @@ $(FPGA_BUILD)/$(PROJ).json : $(ICE) $(addprefix $(SRC)/, $(COMPONENT_FILES) $(TO
 	@echo ----------------------------------------------------------------
 	@echo Checking Syntax .....
 	@echo ---------------------------------------------------------------- & echo: & echo:
-	@wsl verilator --lint-only -Werror-WIDTH -Werror-SELRANGE -Werror-COMBDLY -Werror-MULTIDRIVEN $(SRC)/top.sv $(addprefix $(SRC)/, $(COMPONENT_FILES) $(TOP_FILE))
+	@wsl verilator --lint-only -Werror-WIDTH -Werror-SELRANGE -Werror-COMBDLY -Werror-MULTIDRIVEN -Wno-UNOPTFLAT $(SRC)/top.sv $(addprefix $(SRC)/, $(COMPONENT_FILES) $(TOP_FILE))
 	@if not exist $(FPGA_BUILD) mkdir $(FPGA_BUILD)
 	@echo ----------------------------------------------------------------
-	@echo Synthesizing to ice40 ....."
+	@echo Synthesizing to ice40 .....
 	@echo ---------------------------------------------------------------- & echo: & echo:
-	@$(DC) -p "read_verilog -sv -noblackbox $(FILES); synth_ice40 -top ice40hx8k -json $(FPGA_BUILD)/$(PROJ).json" > $(PROJ).log
+	@$(DC) -p "read_verilog -sv -noblackbox $(FILES); synth_ice40 -top ice40hx8k -json ice40/build/$(PROJ).json" > $(PROJ).log
 	@echo: & echo: & echo:
 	@echo Synthesis Complete & echo:
 

@@ -1,9 +1,13 @@
+`ifndef NUMFLAGS
+`include "source/param_file.sv"
+`endif
+
 module top8227 (
     input  logic clk, nrst, nonMaskableInterrupt, interruptRequest, dataBusEnable, ready, setOverflow,
     input  logic [7:0] dataBusInput,
     output logic [7:0] dataBusOutput,
-    output logic [7:0] AddressBusHigh,
-    output logic [7:0] AddressBusLow,
+    output logic [7:0] addressBusHigh,
+    output logic [7:0] addressBusLow,
     output logic sync, readNotWrite
 );
     logic [7:0] PSRCurrentValue;
@@ -13,25 +17,24 @@ module top8227 (
     logic       getInstruction;
     logic       aluCarryOut, freeCarry;
     logic       nmiRunning, resetRunning;
-    logic [NUMFLAGS-1:0] flags, preFlags;
+    logic [`NUMFLAGS-1:0] flags, preFlags;
     logic getInstructionPreInjection, getInstructionPostInjection;
     logic setIFlag;
     logic enableFFs;
     logic slow_pulse; // used to slow down the cpu so it can access memory
     logic pclMSB;
     logic branchBackward, branchForward;
+    logic load_psr_I, psr_data_to_load;
 
-    assign readNotWrite = ~preFlags[SET_WRITE_FLAG];
     assign enableFFs = (ready | ~readNotWrite) & slow_pulse;
     
-    assign sync = flags[END_INSTRUCTION];
+    assign sync = flags[`END_INSTRUCTION];
 
     //Disable all flags
     always_comb begin
         if(enableFFs)
         begin
             flags = preFlags;
-            flags[LOAD_OVERFLOW_PSR_FLAG] = setOverflow;
         end
         else
             flags = 0;
@@ -51,11 +54,14 @@ module top8227 (
         .psrCarry(PSRCurrentValue[0]),
         .externalDBRead(dataBusInput),
         .externalDBWrite(dataBusOutput),
-        .externalAddressBusLowOutput(AddressBusLow),
-        .externalAddressBusHighOutput(AddressBusHigh),
+        .externalAddressBusLowOutput(addressBusLow),
+        .externalAddressBusHighOutput(addressBusHigh),
         .psrRegToLogicController(PSRCurrentValue),
         .aluCarryOut(aluCarryOut),
-        .pclMSB(pclMSB)
+        .pclMSB(pclMSB),
+        .setOverflow(setOverflow),
+        .load_psr_I(load_psr_I), 
+        .psr_data_to_load(psr_data_to_load)
     );
 
     instructionLoader instructionLoader(
@@ -76,8 +82,8 @@ module top8227 (
 
     decoder decoder(
         .opcode(opcodeCurrentValue),
-        .CMD(instructionCode),
-        .ADDRESS(addressingCode)
+        .cmd(instructionCode),
+        .address(addressingCode)
     );
 
     demux demux(
@@ -86,7 +92,6 @@ module top8227 (
         .nrst(nrst), 
         .clk(clk), 
         .enableFFs(enableFFs),
-        .free_carry(freeCarry), 
         .nmi(nmiRunning), 
         .irq(PSRCurrentValue[2] & ~resetRunning), //High I flag in PSR, reset not running
         .reset(resetRunning), 
@@ -99,7 +104,10 @@ module top8227 (
         .outflags(preFlags),
         .setInterruptFlag(setIFlag),
         .branchForwardFF(branchForward),
-        .branchBackwardFF(branchBackward)
+        .branchBackwardFF(branchBackward),
+        .load_psr_I(load_psr_I), 
+        .psr_data_to_load(psr_data_to_load),
+        .readNotWrite(readNotWrite)
     );
 
     free_carry_ff free_carry_ff (
@@ -107,7 +115,7 @@ module top8227 (
         .nrst(nrst),
         .enableFFs(enableFFs),
         .ALUcarry(aluCarryOut),
-        .en(flags[SET_FREE_CARRY_FLAG_TO_ALU]),
+        .en(flags[`SET_FREE_CARRY_FLAG_TO_ALU]),
         .freeCarry(freeCarry)
     );
 
@@ -116,7 +124,7 @@ module top8227 (
         .nrst(nrst),
         .branchForwardIn(  pclMSB & ~dataBusInput[7] &  aluCarryOut),
         .branchBackwardIn(~pclMSB &  dataBusInput[7] & ~aluCarryOut),
-        .enable(flags[SET_BRANCH_PAGE_CROSS_FLAGS]),
+        .enable(flags[`SET_BRANCH_PAGE_CROSS_FLAGS]),
         .enableFFs(enableFFs),
         .branchForward(branchForward),
         .branchBackward(branchBackward)

@@ -20,13 +20,13 @@ module synchronizer (
     always_ff @(posedge clk, negedge nrst) begin : nextStateAssignment
         if(~nrst)
         begin
-            q1 = 1'b0;
-            q2 = 1'b0;
+            q1 <= 1'b0;
+            q2 <= 1'b0;
         end
         else
         begin
-            q1 = nextQ1;
-            q2 = nextQ2;
+            q1 <= nextQ1;
+            q2 <= nextQ2;
         end
     end
 

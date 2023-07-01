@@ -112,6 +112,12 @@ module tb_8227_template ();
     .sync(tb_sync), 
     .readNotWrite(tb_readNotWrite),
     .setOverflow(tb_setOverflow)
+    .AddressBusLow(tb_AddressBusLow),
+    .dataBusEnable(tb_dataBusEnable), 
+    .ready(tb_ready),
+    .sync(tb_sync), 
+    .readNotWrite(tb_readNotWrite),
+    .setOverflow(tb_setOverflow)
   );
 
   // Signal Dump
@@ -133,6 +139,10 @@ module tb_8227_template ();
     @(negedge tb_clk);
     targetLowAddress = 8'bx;
     targetHighAddress = 8'bx;
+
+    tb_ready = 1'b1;
+    tb_setOverflow = 1'b0;
+    
 
     tb_ready = 1'b1;
     tb_setOverflow = 1'b0;
@@ -168,8 +178,17 @@ module tb_8227_template ();
     @(negedge tb_clk);
     
 
+    @(negedge tb_clk);
+    tb_ready = 1'b0;
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    
+
     //Clk 3
     @(negedge tb_clk);
+    tb_ready = 1'b1;
     tb_ready = 1'b1;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 3";
@@ -189,11 +208,13 @@ module tb_8227_template ();
     //Clk 6
     @(negedge tb_clk);
     //tb_dataBusInput = 8'HDD;
+    //tb_dataBusInput = 8'HDD;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 6";
 
     //Clk 7
     @(negedge tb_clk);
+    //tb_dataBusInput = 8'HCC;
     //tb_dataBusInput = 8'HCC;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 7";
@@ -205,14 +226,24 @@ module tb_8227_template ();
     //Clk 0
     @(negedge tb_clk);
     //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
+    //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
     @(posedge tb_clk);
+    test_name = "Program Start";
     test_name = "Program Start";
 
     //Clk 1
     @(negedge tb_clk);
     //tb_dataBusInput = 8'H99;//Put goal address on ZPG
+    //tb_dataBusInput = 8'H99;//Put goal address on ZPG
     @(posedge tb_clk);
 
+    for(int i = 0; i < 100; i++)
+    begin
+      //Clk 1
+      @(negedge tb_clk);
+      //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
+      @(posedge tb_clk);
+    end
     for(int i = 0; i < 100; i++)
     begin
       //Clk 1
@@ -230,6 +261,7 @@ module tb_8227_template ();
 
     //Clk 0
     @(negedge tb_clk);
+    //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
     //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
     @(posedge tb_clk);
 

@@ -11,11 +11,11 @@ module insert_project_name_here (
   top8227 top8227(
     .clk(clk), 
     .nrst(nrst), 
-    .nonMaskableInterrupt(pb[18]), 
-    .interruptRequest(gpio[7:0]), 
-    .dataBusInput(gpio[7:0]),
-    .dataBusOutput(gpio[7:0]),
-    .AddressBusHigh(gpio[7:0]),
+    .nonMaskableInterrupt(gpio[33]), 
+    .interruptRequest(gpio[32]), 
+    .dataBusInput(gpio[31:24]),
+    .dataBusOutput(gpio[23:16]),
+    .AddressBusHigh(gpio[15:8]),
     .AddressBusLow(gpio[7:0])
   );
 
