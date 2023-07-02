@@ -137,7 +137,15 @@ module fpga_io_driver
 
   // Should be replaced with a more elegant solution
   // 20 is number of buttons
-  assign dout = (`PB_ADDR <= addr && addr <= `PB_ADDR + 20) ? {7'b0, pb[addr - `PB_ADDR]} : 0;
+  logic [3:0] oneHotOutput;
+
+  oneHotEncoder #(
+    .INPUT_COUNT(16),
+  ) oneHotEncoder(
+    .select(pb[15:0]),
+    .encodedSelect(oneHotOutput)
+  );
+  assign dout = {4'b0, oneHotOutput};
 
 endmodule
 
