@@ -15,10 +15,6 @@ module decoder (
     assign b = opcode[4:2];
     assign c = opcode[1:0];
 
-    logic storeA;
-    logic storeX;
-    logic storeY;
-
     always_comb begin : comb_decoder
 
     
