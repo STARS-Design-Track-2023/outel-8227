@@ -40,19 +40,26 @@ module top
   logic [7:0] romOut, ramOut;
 
   assign left = addressBusHigh;
-  assign right = addressBusLow;
+  assign right = addressBusLow; 
 
   assign clk = hwclk; 
   assign nrst = ~reset;
   assign nmi = 1'b0;
-  assign irq = |pb; 
+  //assign irq = |pb[15:0]; 
   assign dbe = 1'b0;
   assign rdy = 1'b1;
   assign sv = 1'b0;
   assign red = sync;
 
+  edgeDetector edgeDetector (
+    .clk(clk),
+    .nrst(nrst),
+    .in(|pb[15:0]),
+    .out(irq)
+  );
+
   top8227 top8227 (
-    .clk(hwclk),
+    .clk(clk),
     .nrst(nrst),
     .nonMaskableInterrupt(nmi),
     .interruptRequest(irq),
@@ -87,4 +94,32 @@ module top
     .right() 
 );
     
+endmodule
+
+module edgeDetector (
+  input logic clk, nrst,
+  input logic in,
+  output logic out
+);
+
+  logic q1, nextQ1;
+
+  always_comb begin : nextStateLogic
+    nextQ1 = in;
+  end
+
+  always_ff @( posedge clk, negedge nrst ) begin : nextStateAssignment
+    if(~nrst)
+    begin
+      q1 <= 1'b0;
+    end
+    else
+    begin
+      q1 <= nextQ1;
+
+    end
+  end
+
+  assign out = ~q1 & in;
+
 endmodule
