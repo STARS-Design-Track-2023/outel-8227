@@ -80,14 +80,14 @@ module fpga_io_driver
 
   always_ff @( posedge clk, negedge nrst ) begin : ff_7seg_decoder
       if(nrst == 1'b0) begin
-          ss0 <= 8'b00111111;
-          ss1 <= 8'b00111111;
-          ss2 <= 8'b00111111;
-          ss3 <= 8'b00111111;
-          ss4 <= 8'b00111111;
-          ss5 <= 8'b00111111;
-          ss6 <= 8'b00111111;
-          ss7 <= 8'b00111111;
+          ss0 <= 8'b00000000;
+          ss1 <= 8'b00000000;
+          ss2 <= 8'b00000000;
+          ss3 <= 8'b00000000;
+          ss4 <= 8'b00000000;
+          ss5 <= 8'b00000000;
+          ss6 <= 8'b00000000;
+          ss7 <= 8'b00000000;
       end
       else begin
           ss0 <= nextSevenSegs0;
@@ -177,7 +177,7 @@ module byteTo7Seg(
       8'd17:   disp = 8'b00111110; // w-ish
       8'd18:   disp = 8'b01011100; // small o
       8'd19:   disp = 8'b01010000; // r
-      default: disp = 8'b00111111; // defaults to 0
+      default: disp = 8'b00000000; // defaults to 0
     endcase
   end
 endmodule
