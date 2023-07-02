@@ -1,7 +1,6 @@
 module nmiRunningFF (
     input logic clk, nrst, enableFFs,
     input logic processStatusRegIFlag,
-    input logic synchronizedNMI,
     input logic interruptAcknowleged,
     input logic nmiGenerated,
     output logic nmiRunning

@@ -14,9 +14,8 @@ module top8227 (
     logic [7:0] opcodeCurrentValue;
     logic [3:0] addressingCode;
     logic [5:0] instructionCode;
-    logic       getInstruction;
     logic       aluCarryOut, freeCarry;
-    logic       nmiRunning, resetRunning;
+    logic       nmiRunning, nmiGenerated, resetRunning;
     logic [`NUMFLAGS-1:0] flags, preFlags;
     logic getInstructionPreInjection, getInstructionPostInjection;
     logic setIFlag;
@@ -25,6 +24,7 @@ module top8227 (
     logic pclMSB;
     logic branchBackward, branchForward;
     logic load_psr_I, psr_data_to_load;
+    logic initiateInterruptWithPCDecrement;
 
     assign enableFFs = (ready | ~readNotWrite) & slow_pulse;
     
@@ -59,9 +59,10 @@ module top8227 (
         .psrRegToLogicController(PSRCurrentValue),
         .aluCarryOut(aluCarryOut),
         .pclMSB(pclMSB),
-        .setOverflow(setOverflow),
+        .setOverflow(setOverflow & enableFFs),//Only set when enableFFs is true
         .load_psr_I(load_psr_I), 
-        .psr_data_to_load(psr_data_to_load)
+        .psr_data_to_load(psr_data_to_load),
+        .initiateInterruptWithPCDecrement(initiateInterruptWithPCDecrement)
     );
 
     instructionLoader instructionLoader(
@@ -74,11 +75,17 @@ module top8227 (
         .loadNextInstruction(getInstructionPreInjection),
         .externalDB(dataBusInput),
         .nextInstruction(opcodeCurrentValue),
-        .enableIFlag(setIFlag),
-        .nmiRunning(nmiRunning), 
+        .enableIFlag(setIFlag),//Output
+        .nmiRunning(nmiRunning),
+        .nmiGenerated(nmiGenerated),
         .resetRunning(resetRunning),
-        .instructionRegReadEnable(getInstructionPostInjection)
+        .instructionRegReadEnable(getInstructionPostInjection),
+        .initiateInterruptWithPCDecrement(initiateInterruptWithPCDecrement),
+        .interruptFlagWasSet(load_psr_I) //Input
+
     );
+
+    //If supposed to load a new instruction (getInstructionPreInjection) and it is a zero due to an interrupt
 
     decoder decoder(
         .opcode(opcodeCurrentValue),
@@ -92,8 +99,8 @@ module top8227 (
         .nrst(nrst), 
         .clk(clk), 
         .enableFFs(enableFFs),
-        .nmi(nmiRunning), 
-        .irq(PSRCurrentValue[2] & ~resetRunning), //High I flag in PSR, reset not running
+        .nmi(nmiGenerated), 
+        .irq(setIFlag & ~resetRunning), //High I flag in PSR, reset not running
         .reset(resetRunning), 
         .PSR_C(PSRCurrentValue[0]), 
         .PSR_N(PSRCurrentValue[7]), 
@@ -102,10 +109,10 @@ module top8227 (
         .getInstructionPostInjection(getInstructionPostInjection),
         .getInstructionPreInjection(getInstructionPreInjection),
         .outflags(preFlags),
-        .setInterruptFlag(setIFlag),
+        .setInterruptFlag(setIFlag), //Input
         .branchForwardFF(branchForward),
         .branchBackwardFF(branchBackward),
-        .load_psr_I(load_psr_I), 
+        .load_psr_I(load_psr_I), //Output
         .psr_data_to_load(psr_data_to_load),
         .readNotWrite(readNotWrite)
     );

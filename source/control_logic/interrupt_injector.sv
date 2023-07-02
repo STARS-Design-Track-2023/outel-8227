@@ -2,8 +2,9 @@ module interruptInjector (
     input logic clk, nrst, enableFFs,
     input logic nonMaskableInterrupt, interruptRequest, //Inputs from exterior (could be buttons outside IC)
     input logic processStatusRegIFlag,
-    input logic interruptAcknowleged, //Should be high going into the clock cycle when the Instruction Register is loaded
-    output logic irqGenerated, nmiGenerated, nmiRunning, resetRunning, resetDetected //output signals that state whether an interrupt has been generated and whether a nonmaskable interrupt is running
+    output logic irqGenerated, nmiGenerated, nmiRunning, resetRunning, resetDetected, //output signals that state whether an interrupt has been generated and whether a nonmaskable interrupt is running
+    input logic interruptStarted, //Input saying that the I flag has been written
+    output logic pendingInterrupt //Output saying that the I flag should be written
 );
 
     logic synchronizedNMI, synchronizedIRQ;
@@ -31,9 +32,9 @@ module interruptInjector (
         .clk(clk),
         .nrst(nrst),
         .enableFFs(enableFFs),
-        .processStatusRegIFlag(processStatusRegIFlag),
+        .processStatusRegIFlag(processStatusRegIFlag | pendingInterrupt),
         .synchronizedNMI(synchronizedNMI),
-        .interruptAcknowleged(interruptAcknowleged),
+        .interruptAcknowleged(interruptStarted),
         .nmiGenerated(nmiGenerated),
         .nmiRunning(nmiRunning)
     );
@@ -43,9 +44,8 @@ module interruptInjector (
         .clk(clk),
         .nrst(nrst),
         .enableFFs(enableFFs),
-        .processStatusRegIFlag(processStatusRegIFlag),
-        .synchronizedNMI(synchronizedNMI),
-        .interruptAcknowleged(interruptAcknowleged),
+        .processStatusRegIFlag(processStatusRegIFlag | pendingInterrupt),
+        .interruptAcknowleged(interruptStarted),
         .nmiGenerated(nmiGenerated),
         .nmiRunning(nmiRunning)
     );
@@ -55,9 +55,9 @@ module interruptInjector (
         .clk(clk),
         .nrst(nrst),
         .enableFFs(enableFFs),
-        .processStatusRegIFlag(processStatusRegIFlag),
+        .processStatusRegIFlag(processStatusRegIFlag | pendingInterrupt),
         .synchronizedIRQ(synchronizedIRQ),
-        .interruptAcknowleged(interruptAcknowleged),
+        .interruptAcknowleged(interruptStarted),
         .irqGenerated(irqGenerated)
     );
 
@@ -74,9 +74,18 @@ module interruptInjector (
         .clk(clk),
         .nrst(nrst),
         .enableFFs(enableFFs),
-        .processStatusRegIFlag(processStatusRegIFlag),
+        .processStatusRegIFlag(processStatusRegIFlag | pendingInterrupt),
         .resetInitiated(resetDetected),
         .resetRunning(resetRunning)
+    );
+
+    interruptStartedFF interruptStartedFF (
+        .clk(clk),
+        .nrst(nrst),
+        .enableFFs(enableFFs),
+        .set(nmiGenerated | irqGenerated | resetDetected),
+        .reset(interruptStarted),
+        .out(pendingInterrupt)
     );
 
 endmodule
