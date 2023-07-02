@@ -68,8 +68,8 @@ always_comb begin : blockName
 
     case(instructionCode) 
         `STA: IS_STORE_ACC_INSTRUCT = 1'b1;
-        `STY: IS_STORE_X_INSTRUCT = 1'b1;
-        `STX: IS_STORE_Y_INSTRUCT = 1'b1;
+        `STX: IS_STORE_X_INSTRUCT = 1'b1;
+        `STY: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
 
