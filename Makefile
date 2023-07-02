@@ -298,3 +298,6 @@ rtl: $(addprefix $(SRC)/, $(TOP_FILE) $(COMPONENT_FILES))
 # Designate targerts that whose runtime warnings/errors may be ignored
 ###########################################################################################
 .IGNORE: lint
+
+# Cleans the fpga and the ices
+program: clean ice
