@@ -33,7 +33,6 @@ module alu(
 
     logic [7:0] sum;                                    //buffer to hold sum and cout
     logic sum_carry_out;              //holds the carry out from sum function
-    logic [6:0] rot_buffer;                             //buffer to hold shifted part of rotate
 
     logic [3:0] lo_nib_a, hi_nib_a;                         //for bcd ops
     logic [3:0] lo_nib_b, hi_nib_b;                         //for bcd ops
@@ -42,21 +41,14 @@ module alu(
 
     logic temp;
     //NOTE: ALU is only directly responsible for outputting carry and overflow
-
-    //Constant selects in Always_* processes are unsupported so much of this is done outside of always_comb blocks
-    
-    //Assign the output and carryout from the sum 
-    
-    assign {temp, sum} = {1'b0, a} + {1'b0, b} + {8'b0000000, carry_in};
-    assign sum_carry_out = ({1'b0, a} + {1'b0, b} + {8'b0000000, carry_in} > {9'b011111111});
     
     //Set the overflow flag (right now it is only set in sum, it might need to be selected later)
     assign overflow = (a[7] ^ sum[7]) & (b[7] ^ sum[7]) & (~(enable_dec && e_sum));
     
     always_comb begin
+        
         alu_out = 0;                                    //default to 0
         carry_out = 0;
-        rot_buffer = 0;
         lo_nib_a = 0;
         hi_nib_a = 0;                         //for bcd ops
         lo_nib_b = 0;
@@ -65,22 +57,8 @@ module alu(
         hi_nib_c = 0;                         //for bcd ops
         half_carry = 0;
 
-        if(e_sum) begin                                 //handle addition with carry and overflow
-            alu_out = sum;
-            carry_out = sum_carry_out;
-        end
-        if(e_and) begin                                 //other ops are simple
-            alu_out = a & b;
-        end
-        if(e_eor) begin
-            alu_out = a ^ b;
-        end
-        if(e_or) begin
-            alu_out = a | b;
-        end
-        if(e_shiftr) begin
-            {alu_out, carry_out} = {carry_in, a};
-        end
+        {temp, sum} = {1'b0, a} + {1'b0, b} + {8'b0000000, carry_in};
+        sum_carry_out = ({1'b0, a} + {1'b0, b} + {8'b0000000, carry_in} > {9'b011111111});
 
         if(enable_dec && e_sum) begin                            //handle add/subtract in bcd
             {hi_nib_a, lo_nib_a} = a;
@@ -113,6 +91,22 @@ module alu(
                 carry_out = 1;
 
             alu_out = {hi_nib_c, lo_nib_c};
-         end
+        end
+        else if(e_sum) begin                                 //handle addition with carry and overflow
+            alu_out = sum;
+            carry_out = sum_carry_out;
+        end
+        else if(e_and) begin                                 //other ops are simple
+            alu_out = a & b;
+        end
+        else if(e_eor) begin
+            alu_out = a ^ b;
+        end
+        else if(e_or) begin
+            alu_out = a | b;
+        end
+        else if(e_shiftr) begin
+            {alu_out, carry_out} = {carry_in, a};
+        end
     end
 endmodule

@@ -80,14 +80,14 @@ module fpga_io_driver
 
   always_ff @( posedge clk, negedge nrst ) begin : ff_7seg_decoder
       if(nrst == 1'b0) begin
-          ss0 <= 8'b00111111;
-          ss1 <= 8'b00111111;
-          ss2 <= 8'b00111111;
-          ss3 <= 8'b00111111;
-          ss4 <= 8'b00111111;
-          ss5 <= 8'b00111111;
-          ss6 <= 8'b00111111;
-          ss7 <= 8'b00111111;
+          ss0 <= 8'b00000000;
+          ss1 <= 8'b00000000;
+          ss2 <= 8'b00000000;
+          ss3 <= 8'b00000000;
+          ss4 <= 8'b00000000;
+          ss5 <= 8'b00000000;
+          ss6 <= 8'b00000000;
+          ss7 <= 8'b00000000;
       end
       else begin
           ss0 <= nextSevenSegs0;
@@ -137,7 +137,15 @@ module fpga_io_driver
 
   // Should be replaced with a more elegant solution
   // 20 is number of buttons
-  assign dout = (`PB_ADDR <= addr && addr <= `PB_ADDR + 20) ? {7'b0, pb[addr - `PB_ADDR]} : 0;
+  logic [3:0] oneHotOutput;
+
+  oneHotEncoder #(
+    .INPUT_COUNT(16),
+  ) oneHotEncoder(
+    .select(pb[15:0]),
+    .encodedSelect(oneHotOutput)
+  );
+  assign dout = {4'b0, oneHotOutput};
 
 endmodule
 

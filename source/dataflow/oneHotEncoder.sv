@@ -4,10 +4,7 @@ module oneHotEncoder #(
 )(
   input logic [INPUT_COUNT-1:0] select,
   output logic [OUTPUT_SIZE-1:0] encodedSelect
-);
-
-  logic [OUTPUT_SIZE-1:0] filteredOutputs [INPUT_COUNT];
-  
+);  
   genvar i;
   genvar j;
   generate
