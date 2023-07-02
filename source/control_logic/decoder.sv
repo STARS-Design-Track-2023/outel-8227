@@ -190,11 +190,11 @@ module decoder (
                         end
                         3'b100: begin
                              cmd=`STX;
-                             address=`impl;
+                             address=`zpg;
                         end
                         3'b101: begin
                              cmd=`LDX;
-                             address=`impl;
+                             address=`zpg;
                         end
                         3'b110: begin
                              cmd=`DEC;
@@ -219,7 +219,7 @@ module decoder (
                     endcase
                 end
                 3'b011: begin
-                address=`abs;
+                    address=`abs;
                     case(a)
                         3'b000: cmd=`ASL;
                         3'b001: cmd=`ROL;
