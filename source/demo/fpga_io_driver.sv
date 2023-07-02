@@ -169,6 +169,7 @@ module byteTo7Seg(
       8'd17:   disp = 8'b00111110; // w-ish
       8'd18:   disp = 8'b01011100; // small o
       8'd19:   disp = 8'b01010000; // r
+      8'd21:   disp = 8'b11010000; // r
       default: disp = 8'b10000000; // defaults to 0
     endcase
   end
