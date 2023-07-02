@@ -12,7 +12,6 @@ module interruptInjector (
     synchronizer nmiSync(
         .nrst(nrst),
         .clk(clk),
-        .enableFFs(enableFFs),
         .in(nonMaskableInterrupt),
         .out(synchronizedNMI)
     );
@@ -20,7 +19,6 @@ module interruptInjector (
     synchronizer irqSync(
         .nrst(nrst),
         .clk(clk),
-        .enableFFs(enableFFs),
         .in(interruptRequest),
         .out(synchronizedIRQ)
     );

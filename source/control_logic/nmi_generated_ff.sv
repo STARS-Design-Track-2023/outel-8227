@@ -31,7 +31,7 @@ module nmiGeneratedFF (
         begin
             nextNMIGenerated = nmiGenerated;
         end
-        if(~enableFFs)
+        if(~enableFFs & ~(~nmiRunning & ~nmiGenerated)) //Only freeze when not listening for a signal
             nextNMIGenerated = nmiGenerated;
     end
 
