@@ -1,20 +1,12 @@
 module synchronizer (
-    input logic in, nrst, clk, enableFFs,
+    input logic in, nrst, clk,
     output logic out
 );
     logic q1, q2, nextQ1, nextQ2;
 
     always_comb begin : nextStateLogic
-        if(enableFFs)
-        begin
-            nextQ1 = in;
-            nextQ2 = q1;
-        end
-        else
-        begin
-            nextQ1 = q1;
-            nextQ2 = q2;
-        end
+        nextQ1 = in;
+        nextQ2 = q1;
     end
 
     always_ff @(posedge clk, negedge nrst) begin : nextStateAssignment

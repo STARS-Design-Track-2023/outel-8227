@@ -29,7 +29,7 @@ module irqGeneratedFF (
         begin
             nextIRQGenerated = irqGenerated;
         end
-        if(~enableFFs)
+        if(~enableFFs & ~(~irqGenerated & ~processStatusRegIFlag)) //Only freeze when not listening
             nextIRQGenerated = irqGenerated;
     end
 
