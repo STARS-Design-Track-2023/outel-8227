@@ -45,7 +45,6 @@ module interruptInjector (
         .nrst(nrst),
         .enableFFs(enableFFs),
         .processStatusRegIFlag(processStatusRegIFlag | pendingInterrupt),
-        .synchronizedNMI(synchronizedNMI),
         .interruptAcknowleged(interruptStarted),
         .nmiGenerated(nmiGenerated),
         .nmiRunning(nmiRunning)

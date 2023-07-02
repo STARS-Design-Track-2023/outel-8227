@@ -33,7 +33,6 @@ module alu(
 
     logic [7:0] sum;                                    //buffer to hold sum and cout
     logic sum_carry_out;              //holds the carry out from sum function
-    logic [6:0] rot_buffer;                             //buffer to hold shifted part of rotate
 
     logic [3:0] lo_nib_a, hi_nib_a;                         //for bcd ops
     logic [3:0] lo_nib_b, hi_nib_b;                         //for bcd ops
@@ -50,7 +49,6 @@ module alu(
         
         alu_out = 0;                                    //default to 0
         carry_out = 0;
-        rot_buffer = 0;
         lo_nib_a = 0;
         hi_nib_a = 0;                         //for bcd ops
         lo_nib_b = 0;
