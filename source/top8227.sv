@@ -14,7 +14,6 @@ module top8227 (
     logic [7:0] opcodeCurrentValue;
     logic [3:0] addressingCode;
     logic [5:0] instructionCode;
-    logic       getInstruction;
     logic       aluCarryOut, freeCarry;
     logic       nmiRunning, nmiGenerated, resetRunning;
     logic [`NUMFLAGS-1:0] flags, preFlags;

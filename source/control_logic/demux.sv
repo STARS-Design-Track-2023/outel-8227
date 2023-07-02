@@ -15,8 +15,6 @@ module demux(
     output logic readNotWrite
 );
 
-logic  [`NUMFLAGS - 1:0] outputListAddressing [13:0] ;
-logic  [`NUMFLAGS - 1:0] outputListInstruction [61:0];
 logic [2:0] state;
 logic isAddressing;
 logic IS_STORE_ACC_INSTRUCT;
@@ -54,8 +52,14 @@ state_machine state_machine(
     .mode(isAddressing)
 );
 
+always_comb begin : passAddressingAssignment
+    if(addressingCode == `IMMEDIATE | addressingCode == `impl | addressingCode == `rel | addressingCode == `A) // bypasses Addressing (impl from param_file)
+        passAddressing = 1'b1;
+    else
+        passAddressing = 1'b0;
+end
+
 always_comb begin : blockName
-    readNotWrite = 1;
     IS_STORE_ACC_INSTRUCT = 1'b0;
     IS_STORE_X_INSTRUCT = 1'b0;
     IS_STORE_Y_INSTRUCT = 1'b0;
@@ -68,10 +72,6 @@ always_comb begin : blockName
         `STX: IS_STORE_Y_INSTRUCT = 1'b1;
         default: IS_STORE_ACC_INSTRUCT = 1'b0;
     endcase
-    if(addressingCode == `IMMEDIATE | addressingCode == `impl | addressingCode == `rel | addressingCode == `A) // bypasses Addressing (impl from param_file)
-        passAddressing = 1'b1;
-    else
-        passAddressing = 1'b0;
 
     outflags = 0;
     if(isAddressing & ~passAddressing) begin
@@ -607,14 +607,8 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[`WRITE_ZERO_FLAG] = 1;
                     outflags[`SET_PSR_N_TO_DB7] = 1;
-
-                    //Get ready to write
-                    readNotWrite = 0;
                 end
                 `T2: begin
-                    //write modified data
-                    readNotWrite = 0;
-
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -844,9 +838,6 @@ always_comb begin : blockName
                     
                 end
                 `T1: begin
-                    //Write DOR
-                    readNotWrite = reset;
-
                     //Go to next Stack
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL] = 1;
@@ -868,9 +859,6 @@ always_comb begin : blockName
                     
                 end
                 `T2: begin
-                    //Write DOR
-                    readNotWrite = reset;
-
                     //Go to next Stack
                     outflags[`SET_ADL_TO_ALU] = 1;
                     outflags[`LOAD_ABL] = 1;
@@ -892,9 +880,6 @@ always_comb begin : blockName
                     outflags[`LOAD_DOR] = 1;
                 end
                 `T3: begin
-                    //Write DOR
-                    readNotWrite = reset;
-
                     //set ABH and ABL to presets
                     outflags[`SET_ADH_FF] = 1;
                     outflags[`LOAD_ABH] = 1;
@@ -1247,14 +1232,8 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[`WRITE_ZERO_FLAG] = 1;
                     outflags[`SET_PSR_N_TO_DB7] = 1;
-
-                    //Get ready to write
-                    readNotWrite = 0;
                 end
                 `T2: begin
-                    //write modified data
-                    readNotWrite = 0;
-
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1435,14 +1414,8 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[`WRITE_ZERO_FLAG] = 1;
                     outflags[`SET_PSR_N_TO_DB7] = 1;
-
-                    //Get ready to write
-                    readNotWrite = 0;
                 end
                 `T2: begin
-                    //write modified data
-                    readNotWrite = 0;
-
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1610,9 +1583,6 @@ always_comb begin : blockName
                     outflags[`LOAD_ALU] = 1;
                 end
                 `T2: begin
-                    //Write DOR
-                    readNotWrite = 0;
-
                     //Get PCL to DOR
                     outflags[`SET_DB_TO_PCL] = 1;
                     outflags[`LOAD_DOR] = 1;
@@ -1622,9 +1592,6 @@ always_comb begin : blockName
                     outflags[`LOAD_ABL] = 1;
                 end
                 `T3: begin
-                    //Write DOR
-                    readNotWrite = 0;
-
                     //set ABH and ABL to PC
                     outflags[`SET_ADH_TO_PCH] = 1;
                     outflags[`LOAD_ABH] = 1;
@@ -1822,14 +1789,8 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[`WRITE_ZERO_FLAG] = 1;
                     outflags[`SET_PSR_N_TO_DB7] = 1;
-
-                    //Get ready to write
-                    readNotWrite = 0;
                 end
                 `T2: begin
-                    //write modified data
-                    readNotWrite = 0;
-
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -1949,9 +1910,6 @@ always_comb begin : blockName
                     outflags[`LOAD_DOR] = 1;
                 end
                 `T1: begin
-                    //write modified data
-                    readNotWrite = 0;
-                    
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2013,9 +1971,6 @@ always_comb begin : blockName
                     outflags[`LOAD_DOR] = 1;
                 end
                 `T1: begin
-                    //write modified data
-                    readNotWrite = 0;
-                    
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2218,14 +2173,8 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[`WRITE_ZERO_FLAG] = 1;
                     outflags[`SET_PSR_N_TO_DB7] = 1;
-
-                    //Get ready to write
-                    readNotWrite = 0;
                 end
                 `T2: begin
-                    //write modified data
-                    readNotWrite = 0;
-
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2278,14 +2227,8 @@ always_comb begin : blockName
                     //Set PSR outflags
                     outflags[`WRITE_ZERO_FLAG] = 1;
                     outflags[`SET_PSR_N_TO_DB7] = 1;
-
-                    //Get ready to write
-                    readNotWrite = 0;
                 end
                 `T2: begin
-                    //write modified data
-                    readNotWrite = 0;
-
                     //Increment PC
                     outflags[`PC_INC] = 1;
 
@@ -2653,9 +2596,6 @@ always_comb begin : blockName
             outflags = 0;
             case (state)
                 `T0: begin
-                    //Set FLAG
-                    readNotWrite = 0;
-
                     outflags[`PC_INC] = 1;
                     outflags[`SET_ADH_TO_PCH] = 1;
                     outflags[`LOAD_ABH] = 1;
@@ -3006,6 +2946,39 @@ always_comb begin : blockName
     if(~enableFFs)  begin // VERY IMPORTANT: THIS HALTS 2/3RDS OF CLOCK CYCLES
         outflags = 0;
         load_psr_I = 0;
+    end
+end
+
+always_comb begin : readNotWriteAssignment
+    readNotWrite = 1;
+    if(~isAddressing | passAddressing) begin
+        //Store Instructions
+        if (instructionCode == `STA | instructionCode == `STX | instructionCode == `STY)
+        begin
+            if (state == `T0)
+                readNotWrite = 0;
+        end
+        //RMW Instructions
+        else if( instructionCode == `ASL | instructionCode == `DEC | instructionCode == `INC | instructionCode == `LSR | instructionCode == `ROL | instructionCode == `ROR )
+        begin
+            if (state == `T1 | state == `T2)
+                    readNotWrite = 0;
+        end
+        else if (instructionCode == `BRK)
+        begin
+            if (state == `T1 | state == `T2 | state == `T3)
+                readNotWrite = reset;
+        end
+        else if (instructionCode == `JSR)
+        begin
+            if(state == `T2 | state == `T3)
+                readNotWrite = 0;
+        end
+        else if (instructionCode == `PHA | instructionCode == `PHP)
+        begin
+            if(state == `T1)
+                readNotWrite = 0;
+        end
     end
 end
 

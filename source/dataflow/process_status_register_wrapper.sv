@@ -22,14 +22,10 @@ module processStatusRegisterWrapper(
     input logic break_set,
     input logic man_I,
     output logic [7:0] PSR_RCL,
-    output logic [7:0] PSR_DB,
-    input logic enableDBWrite
+    output logic [7:0] PSR_DB
 );
 
-logic [7:0] internalFFInput, internalFFOutput;//The input and output to the internal register inside the bus interfaces
-
-//Always pass the input through the bus interface.  This module is left to accomodate potential future needs.
-busInterface inputInterface(.interfaceInput(DB_in), .enable(1'b1), .interfaceOutput(internalFFInput));
+logic [7:0] internalFFOutput;//The input and output to the internal register inside the bus interfaces
 
 processStatusReg processStatusReg(
     .clk(clk),
@@ -60,6 +56,5 @@ processStatusReg processStatusReg(
 //Output Logic:  PSR_RCL always has the signal.  PSR_DB can be disabled (but will write to the internal data bus when enabled)
 assign PSR_RCL = internalFFOutput;
 assign PSR_DB = internalFFOutput;
-//busInterface outputInterface(.interfaceInput(internalFFOutput), .enable(enableDBWrite), .interfaceOutput(PSR_DB));
 
 endmodule

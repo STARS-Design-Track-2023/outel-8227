@@ -35,10 +35,7 @@ module internalDataflow(
                 adlADHIncrementerToPchReg, adlADHIncrementerToPclReg,//PCIncrementer Outputs from the ADH,ADL lines
                 aluOutput, //Output line from ALU
                 psrRegToDB,//Output from Process Status Register
-                dbPresetOutput, sbPresetOutput, adlPresetOutput, adhPresetOutput,//Preset Outputs
-                sbToADH, adhToSB,//SB/ADH Bridge Outputs
-                sbToDB, dbToSB,//SB/DB Bridge Outputs
-                dataToDB, dataToADL, dataToADH;//External DB Interface Outputs    
+                dbPresetOutput, sbPresetOutput, adlPresetOutput, adhPresetOutput;//Preset Outputs
 
     assign pclMSB = pclRegToDB[7];//Assign this to the MSB of the PCL's current value to pass to control logic
 
@@ -296,7 +293,6 @@ module internalDataflow(
         .break_set(flags[`SET_PSR_OUTPUT_BRK_HIGH]),
         .PSR_RCL(psrRegToLogicController),
         .PSR_DB(psrRegToDB),
-        .enableDBWrite(flags[`SET_DB_TO_PSR]),
         .setOverflow(setOverflow)
     );
 
@@ -358,27 +354,5 @@ module internalDataflow(
         .bus_out(adhPresetOutput)
     );
     assign adhPresetWriteEnable = flags[`SET_ADH_FF] | flags[`SET_ADH_LOW] | flags[`SET_ADH_TO_ONE];
-
-    //Input Latch to DB
-    busInterface externalDBToDB(
-        .interfaceInput(externalDBRead),
-        .enable(flags[`SET_DB_TO_DATA]),
-        .interfaceOutput(dataToDB)
-    );
-
-    //Input Latch to ADL
-    busInterface externalDBToADL(
-        .interfaceInput(externalDBRead),
-        .enable(flags[`SET_ADL_TO_DATA]),
-        .interfaceOutput(dataToADL)
-    );
-
-    //Input Latch to ADH
-    busInterface externalDBToADH(
-        .interfaceInput(externalDBRead),
-        .enable(flags[`SET_ADH_TO_DATA]),
-        .interfaceOutput(dataToADH)
-    );
-
 
 endmodule
