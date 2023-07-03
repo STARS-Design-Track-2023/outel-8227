@@ -1,0 +1,105 @@
+.ORG $FE00
+
+LDA #$16  ;  H
+STA $000C
+
+LDA #$15  ;  E
+STA $000B
+
+LDA #$01  ;  L
+STA $000A
+
+LDA #$01  ;  L
+STA $8009
+STA $0009
+
+LDA #$12  ;  0
+STA $0008
+
+LDA #$FF  ; ' ' 
+STA $8007
+STA $0007
+
+LDA #$11  ;  W
+STA $8006
+STA $0006
+
+LDA #$12  ;  0
+STA $8005
+STA $0005
+
+LDA #$13  ;  R
+STA $8004
+STA $0004
+
+LDA #$01  ;  L
+STA $8003
+STA $0003
+
+LDA #$17  ;  D
+STA $8002
+STA $0002
+
+LDA #$FF  ;  ' '
+STA $8001
+STA $0001
+
+LDA #$FF  ;  ' '
+STA $8000
+STA $0000
+
+jumpstart:
+LDY $0000  ;  saves the first bit in Y
+LDA $0001
+STA $8000
+STA $0000
+
+LDA $0002
+STA $8001
+STA $0001
+
+LDA $0003
+STA $8002
+STA $0002
+
+LDA $0004
+STA $8003
+STA $0003
+
+LDA $0005
+STA $8004
+STA $0004
+
+LDA $0006
+STA $8005
+STA $0005
+
+LDA $0007
+STA $8006
+STA $0006
+
+LDA $0008
+STA $8007
+STA $0007
+
+LDA $0009
+STA $0008
+
+LDA $000A
+STA $0009
+
+LDA $000B
+STA $000A
+
+LDA $000C
+STA $000B
+
+TYA 
+STA $000C
+
+LDX #$FF
+wait:
+DEX
+BNE wait
+
+JMP jumpstart

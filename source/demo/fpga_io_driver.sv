@@ -80,14 +80,14 @@ module fpga_io_driver
 
   always_ff @( posedge clk, negedge nrst ) begin : ff_7seg_decoder
       if(nrst == 1'b0) begin
-          ss0 <= 8'b00111111;
-          ss1 <= 8'b00111111;
-          ss2 <= 8'b00111111;
-          ss3 <= 8'b00111111;
-          ss4 <= 8'b00111111;
-          ss5 <= 8'b00111111;
-          ss6 <= 8'b00111111;
-          ss7 <= 8'b00111111;
+          ss0 <= 8'b00000000;
+          ss1 <= 8'b00000000;
+          ss2 <= 8'b00000000;
+          ss3 <= 8'b00000000;
+          ss4 <= 8'b00000000;
+          ss5 <= 8'b00000000;
+          ss6 <= 8'b00000000;
+          ss7 <= 8'b00000000;
       end
       else begin
           ss0 <= nextSevenSegs0;
@@ -137,7 +137,15 @@ module fpga_io_driver
 
   // Should be replaced with a more elegant solution
   // 20 is number of buttons
-  assign dout = (`PB_ADDR <= addr && addr <= `PB_ADDR + 20) ? {7'b0, pb[addr - `PB_ADDR]} : 0;
+  logic [3:0] oneHotOutput;
+
+  oneHotEncoder #(
+    .INPUT_COUNT(16),
+  ) oneHotEncoder(
+    .select(pb[15:0]),
+    .encodedSelect(oneHotOutput)
+  );
+  assign dout = {4'b0, oneHotOutput};
 
 endmodule
 
@@ -166,10 +174,14 @@ module byteTo7Seg(
       8'd14:   disp = 8'b01111001;
       8'd15:   disp = 8'b01110001;
       8'd16:   disp = 8'b01110110; // H
-      8'd17:   disp = 8'b00111110; // w-ish
+      8'd17:   disp = 8'b00011100; // w-ish
       8'd18:   disp = 8'b01011100; // small o
       8'd19:   disp = 8'b01010000; // r
-      default: disp = 8'b00111111; // defaults to 0
+      8'd20:   disp = 8'b01111000; // t
+      8'd21:   disp = 8'b01011000; // small e
+      8'd22:   disp = 8'b01110100; // small h
+      8'd23:   disp = 8'b01011110; // small d
+      default: disp = 8'b00000000; // defaults to 0
     endcase
   end
 endmodule

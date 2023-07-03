@@ -35,27 +35,37 @@ module top
   input  logic txready, rxready
 );
 
-  logic clk, nrst, nmi, irq, dbe, rdy, sv, sync, rnw;
+  logic clk, nrst, nmi, irq, irqNot, dbe, rdy, sv, sync, rnw;
   logic [7:0] addressBusHigh, addressBusLow, dataBusOut, dataBusIn;
   logic [7:0] romOut, ramOut;
-
-  assign left = addressBusHigh;
-  assign right = addressBusLow;
+  logic dataBusSelect;
+  logic functionalClockOut, M10ClkOut;
 
   assign clk = hwclk; 
   assign nrst = ~reset;
-  assign nmi = 1'b0;
-  assign irq = |pb; 
-  assign dbe = 1'b0;
-  assign rdy = 1'b1;
-  assign sv = 1'b0;
-  assign red = sync;
+  assign nmi = 1'b1;
+  //assign irq = |pb[15:0]; 
+  assign dbe = pb[18];
+  assign rdy = pb[17];
+  assign sv = ~pb[16];
+
+  posEdgeDetector posEdgeDetector (
+    .clk(clk),
+    .nrst(nrst),
+    .in(|pb[15:0]),
+    .out(irq)
+  );
+
+  assign left[7] = clk;
+  assign left[6] = functionalClockOut;
+
+  assign irqNot = ~irq;
 
   top8227 top8227 (
-    .clk(hwclk),
+    .clk(clk),
     .nrst(nrst),
     .nonMaskableInterrupt(nmi),
-    .interruptRequest(irq),
+    .interruptRequest(irqNot),
     .dataBusEnable(dbe),
     .ready(rdy),
     .setOverflow(sv),
@@ -64,7 +74,10 @@ module top
     .addressBusHigh(addressBusHigh),
     .addressBusLow(addressBusLow),
     .sync(sync),
-    .readNotWrite(rnw)
+    .readNotWrite(rnw),
+    .functionalClockOut(functionalClockOut),
+    .dataBusSelect(dataBusSelect),
+    .M10ClkOut(M10ClkOut)
   );
 
   demo_mapped_io demo_mapped_io (
@@ -72,7 +85,7 @@ module top
     .nrst(nrst),
     .addr({addressBusHigh, addressBusLow}),
     .din(dataBusOut),
-    .read_en(rnw),
+    .read_en(dataBusSelect),
     .dout(dataBusIn),
     .pb(pb),
     .ss0(ss0), 
