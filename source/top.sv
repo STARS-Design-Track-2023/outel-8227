@@ -38,18 +38,16 @@ module top
   logic clk, nrst, nmi, irq, irqNot, dbe, rdy, sv, sync, rnw;
   logic [7:0] addressBusHigh, addressBusLow, dataBusOut, dataBusIn;
   logic [7:0] romOut, ramOut;
-
-  assign left = addressBusHigh;
-  assign right = addressBusLow; 
+  logic dataBusSelect;
+  logic functionalClockOut, M10ClkOut;
 
   assign clk = hwclk; 
   assign nrst = ~reset;
   assign nmi = 1'b1;
   //assign irq = |pb[15:0]; 
-  assign dbe = 1'b1;
-  assign rdy = 1'b1;
+  assign dbe = pb[18];
+  assign rdy = pb[17];
   assign sv = ~pb[16];
-  assign red = sync;
 
   posEdgeDetector posEdgeDetector (
     .clk(clk),
@@ -57,6 +55,9 @@ module top
     .in(|pb[15:0]),
     .out(irq)
   );
+
+  assign left[7] = clk;
+  assign left[6] = functionalClockOut;
 
   assign irqNot = ~irq;
 
@@ -74,8 +75,9 @@ module top
     .addressBusLow(addressBusLow),
     .sync(sync),
     .readNotWrite(rnw),
-    .functionalClockOut(),
-    .dataBusSelect()
+    .functionalClockOut(functionalClockOut),
+    .dataBusSelect(dataBusSelect),
+    .M10ClkOut(M10ClkOut)
   );
 
   demo_mapped_io demo_mapped_io (
@@ -83,7 +85,7 @@ module top
     .nrst(nrst),
     .addr({addressBusHigh, addressBusLow}),
     .din(dataBusOut),
-    .read_en(rnw),
+    .read_en(dataBusSelect),
     .dout(dataBusIn),
     .pb(pb),
     .ss0(ss0), 
