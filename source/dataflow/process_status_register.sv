@@ -20,7 +20,8 @@ module processStatusReg(
     input logic setOverflow,     
     input logic rcl_V,          //directly set V to 1 from rcl (random control logic)
     input logic break_set,      //Sets break high for interrupt / break control
-    output logic [7:0] PSR_Output //status register to control unit
+    output logic [7:0] PSR_Output, //status register to control unit
+    output logic [7:0] PSR_Output_RCL
 );
 
     logic [7:0] status_buffer, stat_buf_nxt;            //reg to hold status flags
@@ -63,5 +64,6 @@ module processStatusReg(
 
     // Set Final outputs
     assign PSR_Output = {status_buffer[7:6], 1'b1, break_set, status_buffer[3:0]}; //Set the break flag high if break_set is true
+    assign PSR_Output_RCL = {status_buffer[7:6], 1'b1, 1'b0, status_buffer[3:0]}; //Set the break flag high if break_set is true
 
 endmodule
