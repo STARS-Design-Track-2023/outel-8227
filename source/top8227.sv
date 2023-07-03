@@ -5,28 +5,36 @@ module top8227 (
     output logic [7:0] addressBusHigh,
     output logic [7:0] addressBusLow,
     output logic sync, readNotWrite,
-    output logic [7:0] debug, debug2,
-    output logic debugRed
+    output logic functionalClockOut,
+    output logic dataBusSelect,
+    output logic M10ClkOut
 );
     logic [7:0] PSRCurrentValue;
     logic [7:0] opcodeCurrentValue;
     logic [3:0] addressingCode;
     logic [5:0] instructionCode;
-    logic       getInstruction;
     logic       aluCarryOut, freeCarry;
-    logic       nmiRunning, resetRunning;
-    logic [NUMFLAGS-1:0] flags, preFlags;
+    logic       nmiRunning, nmiGenerated, resetRunning;
+    logic [`NUMFLAGS-1:0] flags, preFlags;
     logic getInstructionPreInjection, getInstructionPostInjection;
     logic setIFlag;
     logic enableFFs;
     logic slow_pulse; // used to slow down the cpu so it can access memory
     logic pclMSB;
     logic branchBackward, branchForward;
+    logic load_psr_I, psr_data_to_load;
+    logic initiateInterruptWithPCDecrement;
+    logic setOverflowEdge;
 
-    assign readNotWrite = ~preFlags[SET_WRITE_FLAG];
+    assign M10ClkOut = clk; //10MHz ClockOut
+
+    assign dataBusSelect = readNotWrite | ~dataBusEnable; //High if supposed to be reading or if dbe is low (disabling the drivers)
+
+    assign functionalClockOut = slow_pulse & clk;
+
     assign enableFFs = (ready | ~readNotWrite) & slow_pulse;
     
-    assign sync = flags[END_INSTRUCTION];
+    assign sync = flags[`END_INSTRUCTION];
 
     //Disable all flags
     always_comb begin
@@ -38,11 +46,19 @@ module top8227 (
             flags = 0;
     end
 
- pulse_slower pulse_slower(
-.clk(clk), 
-.nrst(nrst), 
-.slow_pulse(slow_pulse)
-);
+    negEdgeDetector negEdgeDetector (
+        .clk(clk),
+        .nrst(nrst),
+        .enableFFs(enableFFs),
+        .in(setOverflow),
+        .out(setOverflowEdge)
+    );
+
+    pulse_slower pulse_slower(
+        .clk(clk), 
+        .nrst(nrst), 
+        .slow_pulse(slow_pulse)
+    );
 
     internalDataflow internalDataflow(
         .nrst(nrst),
@@ -57,24 +73,35 @@ module top8227 (
         .psrRegToLogicController(PSRCurrentValue),
         .aluCarryOut(aluCarryOut),
         .pclMSB(pclMSB),
-        .debug(debug2)
+        .setOverflow(setOverflowEdge & enableFFs),//Only set when enableFFs is true
+        .load_psr_I(load_psr_I), 
+        .psr_data_to_load(psr_data_to_load),
+        .initiateInterruptWithPCDecrement(initiateInterruptWithPCDecrement)
     );
+
+    
 
     instructionLoader instructionLoader(
         .clk(clk), 
         .nrst(nrst),
         .enableFFs(enableFFs),
-        .nonMaskableInterrupt(nonMaskableInterrupt), 
-        .interruptRequest(interruptRequest), 
+        .nonMaskableInterrupt(~nonMaskableInterrupt), 
+        .interruptRequest(~interruptRequest), 
         .processStatusRegIFlag(PSRCurrentValue[2]), 
         .loadNextInstruction(getInstructionPreInjection),
         .externalDB(dataBusInput),
         .nextInstruction(opcodeCurrentValue),
-        .enableIFlag(setIFlag),
-        .nmiRunning(nmiRunning), 
+        .enableIFlag(setIFlag),//Output
+        .nmiRunning(nmiRunning),
+        .nmiGenerated(nmiGenerated),
         .resetRunning(resetRunning),
-        .instructionRegReadEnable(getInstructionPostInjection)
+        .instructionRegReadEnable(getInstructionPostInjection),
+        .initiateInterruptWithPCDecrement(initiateInterruptWithPCDecrement),
+        .interruptFlagWasSet(load_psr_I) //Input
+
     );
+
+    //If supposed to load a new instruction (getInstructionPreInjection) and it is a zero due to an interrupt
 
     decoder decoder(
         .opcode(opcodeCurrentValue),
@@ -82,17 +109,14 @@ module top8227 (
         .address(addressingCode)
     );
 
-    assign debug[3:0] = addressingCode;
-
     demux demux(
         .preFFInstructionCode(instructionCode),
         .preFFAddressingCode(addressingCode),
         .nrst(nrst), 
         .clk(clk), 
         .enableFFs(enableFFs),
-        .free_carry(freeCarry), 
-        .nmi(nmiRunning), 
-        .irq(PSRCurrentValue[2] & ~resetRunning), //High I flag in PSR, reset not running
+        .nmi(nmiGenerated), 
+        .irq(setIFlag & ~resetRunning), //High I flag in PSR, reset not running
         .reset(resetRunning), 
         .PSR_C(PSRCurrentValue[0]), 
         .PSR_N(PSRCurrentValue[7]), 
@@ -101,12 +125,12 @@ module top8227 (
         .getInstructionPostInjection(getInstructionPostInjection),
         .getInstructionPreInjection(getInstructionPreInjection),
         .outflags(preFlags),
-        .setInterruptFlag(setIFlag),
+        .setInterruptFlag(setIFlag), //Input
         .branchForwardFF(branchForward),
         .branchBackwardFF(branchBackward),
-        .debug(),
-        .debug2(/*debug2*/),
-        .debugRed(debugRed)
+        .load_psr_I(load_psr_I), //Output
+        .psr_data_to_load(psr_data_to_load),
+        .readNotWrite(readNotWrite)
     );
 
     free_carry_ff free_carry_ff (
@@ -114,7 +138,7 @@ module top8227 (
         .nrst(nrst),
         .enableFFs(enableFFs),
         .ALUcarry(aluCarryOut),
-        .en(flags[SET_FREE_CARRY_FLAG_TO_ALU]),
+        .en(flags[`SET_FREE_CARRY_FLAG_TO_ALU]),
         .freeCarry(freeCarry)
     );
 
@@ -123,7 +147,7 @@ module top8227 (
         .nrst(nrst),
         .branchForwardIn(  pclMSB & ~dataBusInput[7] &  aluCarryOut),
         .branchBackwardIn(~pclMSB &  dataBusInput[7] & ~aluCarryOut),
-        .enable(flags[SET_BRANCH_PAGE_CROSS_FLAGS]),
+        .enable(flags[`SET_BRANCH_PAGE_CROSS_FLAGS]),
         .enableFFs(enableFFs),
         .branchForward(branchForward),
         .branchBackward(branchBackward)

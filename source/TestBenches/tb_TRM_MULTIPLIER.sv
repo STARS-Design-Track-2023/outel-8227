@@ -21,9 +21,6 @@ module tb_8227_template ();
   logic                tb_sync; 
   logic                tb_readNotWrite;
   logic                tb_setOverflow;
-  logic                tb_functionalClockOut;
-  logic                tb_dataBusSelect;
-  logic                tb_M10ClkOut;
 
   logic [7:0]          targetLowAddress;
   logic [7:0]          targetHighAddress;
@@ -32,56 +29,48 @@ module tb_8227_template ();
 
   always_comb begin : memoryAssignment
     memory = 0;
-
-    //Reset Pointer
-    memory[8*16'HFFFC+:8] = 8'HF0;//ADL of reset pointer
+    //for brk
+    memory[8*16'HFFFE+:8] = 8'HCA;//ADL of reset pointer
+    memory[8*16'HFFFF+:8] = 8'HCC;//ADH of reset Pointer
+    //for 
+    memory[8*16'HFFFC+:8] = 8'HDB;//ADL of reset pointer
     memory[8*16'HFFFD+:8] = 8'HCC;//ADH of reset Pointer
-    //Start with CCDD after this
 
-    //IRQ/BRK Pointer
-    memory[8*16'HFFFE+:8] = 8'H00;//ADL of reset pointer
-    memory[8*16'HFFFF+:8] = 8'HBB;//ADH of reset Pointer
-    //Start with BB00 after this
+    memory[8*16'H0000+:8] = 8'b00000101;//first number to multiply
+    memory[8*16'H0001+:8] = 8'b00000111;//second number to multiply
+    memory[8*16'H0002+:8] = 8'H00;//result, less than 256 unsigned or 127 and greater than -128 signed
+    
+    memory[8*16'HCCDB+:8] = 8'H58;//CLI
+    memory[8*16'HCCDC+:8] = 8'HA9;//LDA
+    memory[8*16'HCCDD+:8] = 8'H00;//data to load
 
-    //NMI Pointer
-    memory[8*16'HFFFA+:8] = 8'H00;//ADL of reset pointer
-    memory[8*16'HFFFB+:8] = 8'HAA;//ADH of reset Pointer
-    //Start with AA00 after this
+    memory[8*16'HCCDE+:8] = 8'HA2;//LDX
+    memory[8*16'HCCDF+:8] = 8'H00;//data to load
 
-    //NMI Procedure
-    memory[8*16'HAA00+:8] = 8'H58;//CLI
-    memory[8*16'HAA01+:8] = 8'HA9;
-    memory[8*16'HAA02+:8] = 8'H22;
-    memory[8*16'HAA03+:8] = 8'H40;
+    memory[8*16'HCCE0+:8] = 8'H18;//CLC
 
+    memory[8*16'HCCE1+:8] = 8'H65;//ADC
+    memory[8*16'HCCE2+:8] = 8'H00;//zpg ABL
 
-    //IRQ Procedure
-    memory[8*16'HBB00+:8] = 8'H18;//CLC
-    memory[8*16'HBB01+:8] = 8'HF8;//SED
-    memory[8*16'HBB02+:8] = 8'HEA;//NOP
-    memory[8*16'HBB03+:8] = 8'HEA;//NOP
-    memory[8*16'HBB04+:8] = 8'HEA;//NOP
-    memory[8*16'HBB05+:8] = 8'H40;//RTI
+    memory[8*16'HCCE3+:8] = 8'HE8;//INX
 
+    memory[8*16'HCCE4+:8] = 8'HE4;//CPX
+    memory[8*16'HCCE5+:8] = 8'H01;//zpg ABL
 
-    //Normal Reset procedure
-    memory[8*16'HCCF0+:8] = 8'H58;//CLI
-    memory[8*16'HCCF1+:8] = 8'HA9;//SEC
-    memory[8*16'HCCF2+:8] = 8'H80;//SED
-    memory[8*16'HCCF3+:8] = 8'H69;//Loop
-    memory[8*16'HCCF4+:8] = 8'H80;//Set Overflow
-    memory[8*16'HCCF5+:8] = 8'HEA;//Loop
-    memory[8*16'HCCF6+:8] = 8'HB8;//Loop
-    memory[8*16'HCCF7+:8] = 8'HCC;//Loop
+    memory[8*16'HCCE6+:8] = 8'HD0;//BNE
+    memory[8*16'HCCE7+:8] = 8'HF8;//move 1111 1000 or -8
 
-
+    memory[8*16'HCCE8+:8] = 8'H8D;//STA
+    memory[8*16'HCCE9+:8] = 8'H02;//ABS ABL
+    memory[8*16'HCCEA+:8] = 8'H00;//ABS ABH
   end
 
-  assign tb_dataBusInput = memory[8*(256*tb_AddressBusHigh + tb_AddressBusLow) +:8];
   //Memory loop
   always_ff @(negedge tb_clk) begin
-    //Update the memory on negative clock edges
-    if(~tb_readNotWrite)
+    //Update the memory and databuses on negative clock edges
+    if(tb_readNotWrite)
+      tb_dataBusInput = memory[8*(256*tb_AddressBusHigh + tb_AddressBusLow) +:8];//8*(8*(tb_AddressBusHigh) + tb_AddressBusLow) +:8];
+    else
       memory[8*(256*tb_AddressBusHigh + tb_AddressBusLow) +:8] = tb_dataBusOutput;
   end
 
@@ -126,16 +115,13 @@ module tb_8227_template ();
     .interruptRequest(tb_interruptRequest),
     .dataBusInput(tb_dataBusInput),
     .dataBusOutput(tb_dataBusOutput),
-    .addressBusHigh(tb_AddressBusHigh),
-    .addressBusLow(tb_AddressBusLow),
-    .dataBusEnable(tb_dataBusEnable),
+    .AddressBusHigh(tb_AddressBusHigh),
+    .AddressBusLow(tb_AddressBusLow),
+    .dataBusEnable(tb_dataBusEnable), 
     .ready(tb_ready),
     .sync(tb_sync), 
     .readNotWrite(tb_readNotWrite),
-    .setOverflow(tb_setOverflow),
-    .functionalClockOut(tb_functionalClockOut),
-    .dataBusSelect(tb_dataBusSelect),
-    .M10ClkOut(tb_M10ClkOut)
+    .setOverflow(tb_setOverflow)
   );
 
   // Signal Dump
@@ -147,8 +133,6 @@ module tb_8227_template ();
   // Test Cases
   initial begin
     test_name = "Reset";
-    tb_interruptRequest = 1'b1;
-    tb_nonMaskableInterrupt = 1'b1;
     reset_dut();
 
     // Initialize all of the test inputs
@@ -161,8 +145,7 @@ module tb_8227_template ();
     targetHighAddress = 8'bx;
 
     tb_ready = 1'b1;
-    tb_setOverflow = 1'b1;
-    tb_dataBusEnable = 1'b1;
+    tb_setOverflow = 1'b0;
     
 //--------------------------------------------------------------------------------------------
 //-----------------------------------------RESET----------------------------------------------
@@ -174,6 +157,10 @@ module tb_8227_template ();
     tb_nrst = 1'b0;
     @(negedge tb_clk);
     @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
 
     //Clk 1
     @(negedge tb_clk);
@@ -183,64 +170,141 @@ module tb_8227_template ();
 
     //Clk 2
     @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
 
     @(posedge tb_clk);
     test_name = "Boot Seq clk 2";
 
-    @(negedge tb_clk);
-    tb_ready = 1'b0;
-    @(negedge tb_clk);
+    //CLK 3
     @(negedge tb_clk);
     @(negedge tb_clk);
     @(negedge tb_clk);
-    
-
-    //Clk 3
-    @(negedge tb_clk);
-    tb_ready = 1'b1;
     @(posedge tb_clk);
     test_name = "Boot Seq clk 3";
 
     //Clk 4
     @(negedge tb_clk);
-
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 4";
 
     //Clk 5
     @(negedge tb_clk);
-    
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 5";
 
     //Clk 6
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HDD;
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 6";
 
     //Clk 7
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HCC;
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
     test_name = "Boot Seq clk 7";
 
-//--------------------------------------------------------------------------------------------
-//----------------------------------------LDA, ZPG--------------------------------------------
-//--------------------------------------------------------------------------------------------    
-
     //Clk 0
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
-    @(posedge tb_clk);
-    test_name = "Program Start";
-
-    //Clk 1
     @(negedge tb_clk);
-    //tb_dataBusInput = 8'H99;//Put goal address on ZPG
+    @(negedge tb_clk);
+    //tb_dataBusInput = 8'HA5;//Put the opcode for LDA, ZPG on the data bus
+    
+    @(posedge tb_clk);
+    test_name = "CLI";
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    
+    @(posedge tb_clk);
+    test_name = "LDA";
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
     @(posedge tb_clk);
 
-    for(int i = 0; i < 100; i++)
+    @(posedge tb_clk);
+    test_name = "LDX";
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    @(negedge tb_clk);
+    for(int i = 0; i < 10; i++)
+    begin
+      @(posedge tb_clk);
+      test_name = "CLC";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+
+      @(posedge tb_clk);
+      test_name = "ADC";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      
+      @(posedge tb_clk);
+      test_name = "INX";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      
+      @(posedge tb_clk);
+      test_name = "CPX";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      
+      @(posedge tb_clk);
+      test_name = "BNE";
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(negedge tb_clk);
+      @(posedge tb_clk);
+    end
+    test_name = "BYE,BYE";
+    
+    
+    
+    for(int i = 0; i < 300; i++)
     begin
       //Clk 1
       @(negedge tb_clk);
@@ -248,34 +312,6 @@ module tb_8227_template ();
       @(posedge tb_clk);
     end
 
-    tb_interruptRequest = 1'b0;
-    for(int i = 0; i < 25; i++)
-    begin
-      //Clk 1
-      @(negedge tb_clk);
-      //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
-      @(posedge tb_clk);
-    end
-    tb_interruptRequest = 1'b1;
-
-    tb_nonMaskableInterrupt = 1'b0;
-    for(int i = 0; i < 5; i++)
-    begin
-      //Clk 1
-      @(negedge tb_clk);
-      //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
-      @(posedge tb_clk);
-    end
-    tb_nonMaskableInterrupt = 1'b1;
-
-
-    for(int i = 0; i < 200; i++)
-    begin
-      //Clk 1
-      @(negedge tb_clk);
-      //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
-      @(posedge tb_clk);
-    end
 //--------------------------------------------------------------------------------------------
 //----------------------------------------Next Instruction------------------------------------
 //--------------------------------------------------------------------------------------------

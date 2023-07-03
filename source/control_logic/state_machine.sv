@@ -1,3 +1,6 @@
+`ifndef NUMFLAGS
+`include "source/param_file.sv"
+`endif
 module state_machine(
     input logic clk, nrst, noAddressing, getInstruction, endAddressing,
     input logic [5:0] decodedInstruction,
@@ -6,36 +9,36 @@ module state_machine(
     output logic [3:0] currentAddress,
     output logic [2:0] timeState,
     output logic mode,
-    input logic enableFFs,
-    output logic [7:0] debug
+    input logic enableFFs
 );
 
 logic nextMode;
 logic [2:0] nextTime;
 always_comb begin : comb_timingGeneration
     if(endAddressing) begin // it is on the last stage of addressing
-        nextMode = INSTRUCTION;
-        nextTime = T0;
+        nextMode = `INSTRUCTION;
+        nextTime = `T0;
     end
     else if(getInstruction) begin // it is on the last stage of the instruction
-        nextMode = ADDRESS;
-        nextTime = T0;
+        nextMode = `ADDRESS;
+        nextTime = `T0;
     end
     else begin
         nextMode = mode; // default behavior, remains in the loop
 
         case(timeState) // state machine proper, increases until it hits the max time in the instruction then resets
-        T0: nextTime = T1;
-        T1: nextTime = T2;
-        T2: nextTime = T3;
-        T3: nextTime = T4;
-        T4: nextTime = T5;
-        T5: nextTime = T6;
-        default: nextTime = T0;
+        `T0: nextTime = `T1;
+        `T1: nextTime = `T2;
+        `T2: nextTime = `T3;
+        `T3: nextTime = `T4;
+        `T4: nextTime = `T5;
+        `T5: nextTime = `T6;
+        default: nextTime = `T0;
         endcase
     end
-    if((mode == ADDRESS) & noAddressing) //Go to the second instruction cycle and fix mode if noAddressing
-        nextMode = INSTRUCTION;
+    if((mode == `ADDRESS) & noAddressing) begin
+        nextMode = `INSTRUCTION;
+    end
     if(~enableFFs)
     begin
         nextTime = timeState;
@@ -67,14 +70,14 @@ end
 
 always_ff @( posedge clk, negedge nrst) begin : ff_timingGeneration_mode
     if(nrst == 1'b0)
-        mode <= ADDRESS;
+        mode <= `ADDRESS;
     else
         mode <= nextMode;
 end
 
 always_ff @( posedge clk, negedge nrst) begin : ff_timingGeneration_timeState
     if(nrst == 1'b0)
-        timeState <= T0;
+        timeState <= `T0;
     else
         timeState <= nextTime;
 end
