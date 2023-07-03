@@ -10,7 +10,8 @@ module top8227 (
     output logic [7:0] addressBusLow,
     output logic sync, readNotWrite,
     output logic functionalClockOut,
-    output logic dataBusSelect
+    output logic dataBusSelect,
+    output logic M10ClkOut
 );
     logic [7:0] PSRCurrentValue;
     logic [7:0] opcodeCurrentValue;
@@ -28,6 +29,8 @@ module top8227 (
     logic load_psr_I, psr_data_to_load;
     logic initiateInterruptWithPCDecrement;
     logic setOverflowEdge;
+
+    assign M10ClkOut = clk; //10MHz ClockOut
 
     assign dataBusSelect = readNotWrite | ~dataBusEnable; //High if supposed to be reading or if dbe is low (disabling the drivers)
 
