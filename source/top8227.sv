@@ -8,7 +8,9 @@ module top8227 (
     output logic [7:0] dataBusOutput,
     output logic [7:0] addressBusHigh,
     output logic [7:0] addressBusLow,
-    output logic sync, readNotWrite
+    output logic sync, readNotWrite,
+    output logic functionalClockOut,
+    output logic dataBusSelect
 );
     logic [7:0] PSRCurrentValue;
     logic [7:0] opcodeCurrentValue;
@@ -25,6 +27,11 @@ module top8227 (
     logic branchBackward, branchForward;
     logic load_psr_I, psr_data_to_load;
     logic initiateInterruptWithPCDecrement;
+    logic setOverflowEdge;
+
+    assign dataBusSelect = readNotWrite | ~dataBusEnable; //High if supposed to be reading or if dbe is low (disabling the drivers)
+
+    assign functionalClockOut = slow_pulse & clk;
 
     assign enableFFs = (ready | ~readNotWrite) & slow_pulse;
     
@@ -40,11 +47,19 @@ module top8227 (
             flags = 0;
     end
 
- pulse_slower pulse_slower(
-.clk(clk), 
-.nrst(nrst), 
-.slow_pulse(slow_pulse)
-);
+    negEdgeDetector negEdgeDetector (
+        .clk(clk),
+        .nrst(nrst),
+        .enableFFs(enableFFs),
+        .in(setOverflow),
+        .out(setOverflowEdge)
+    );
+
+    pulse_slower pulse_slower(
+        .clk(clk), 
+        .nrst(nrst), 
+        .slow_pulse(slow_pulse)
+    );
 
     internalDataflow internalDataflow(
         .nrst(nrst),
@@ -59,18 +74,20 @@ module top8227 (
         .psrRegToLogicController(PSRCurrentValue),
         .aluCarryOut(aluCarryOut),
         .pclMSB(pclMSB),
-        .setOverflow(setOverflow & enableFFs),//Only set when enableFFs is true
+        .setOverflow(setOverflowEdge & enableFFs),//Only set when enableFFs is true
         .load_psr_I(load_psr_I), 
         .psr_data_to_load(psr_data_to_load),
         .initiateInterruptWithPCDecrement(initiateInterruptWithPCDecrement)
     );
 
+    
+
     instructionLoader instructionLoader(
         .clk(clk), 
         .nrst(nrst),
         .enableFFs(enableFFs),
-        .nonMaskableInterrupt(nonMaskableInterrupt), 
-        .interruptRequest(interruptRequest), 
+        .nonMaskableInterrupt(~nonMaskableInterrupt), 
+        .interruptRequest(~interruptRequest), 
         .processStatusRegIFlag(PSRCurrentValue[2]), 
         .loadNextInstruction(getInstructionPreInjection),
         .externalDB(dataBusInput),

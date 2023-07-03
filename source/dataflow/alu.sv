@@ -38,8 +38,6 @@ module alu(
     logic [3:0] lo_nib_b, hi_nib_b;                         //for bcd ops
     logic [3:0] lo_nib_c, hi_nib_c;                         //for bcd ops
     logic half_carry;
-
-    logic temp;
     //NOTE: ALU is only directly responsible for outputting carry and overflow
     
     //Set the overflow flag (right now it is only set in sum, it might need to be selected later)
@@ -57,8 +55,8 @@ module alu(
         hi_nib_c = 0;                         //for bcd ops
         half_carry = 0;
 
-        {temp, sum} = {1'b0, a} + {1'b0, b} + {8'b0000000, carry_in};
-        sum_carry_out = ({1'b0, a} + {1'b0, b} + {8'b0000000, carry_in} > {9'b011111111});
+        {sum_carry_out, sum} = {1'b0, a} + {1'b0, b} + {8'b0000000, carry_in};
+        //sum_carry_out = ({1'b0, a} + {1'b0, b} + {8'b0000000, carry_in} > {9'b011111111});
 
         if(enable_dec && e_sum) begin                            //handle add/subtract in bcd
             {hi_nib_a, lo_nib_a} = a;

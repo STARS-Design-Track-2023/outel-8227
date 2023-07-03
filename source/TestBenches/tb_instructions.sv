@@ -63,12 +63,12 @@ module tb_8227_template ();
 
     //Normal Reset procedure
     memory[8*16'HCCF0+:8] = 8'H58;//CLI
-    memory[8*16'HCCF1+:8] = 8'H38;//SEC
-    memory[8*16'HCCF2+:8] = 8'HF8;//SED
-    memory[8*16'HCCF3+:8] = 8'HA9;//Loop
-    memory[8*16'HCCF4+:8] = 8'H22;//Loop
-    memory[8*16'HCCF5+:8] = 8'H4C;//Loop
-    memory[8*16'HCCF6+:8] = 8'HF3;//Loop
+    memory[8*16'HCCF1+:8] = 8'HA9;//SEC
+    memory[8*16'HCCF2+:8] = 8'H80;//SED
+    memory[8*16'HCCF3+:8] = 8'H69;//Loop
+    memory[8*16'HCCF4+:8] = 8'H80;//Set Overflow
+    memory[8*16'HCCF5+:8] = 8'HEA;//Loop
+    memory[8*16'HCCF6+:8] = 8'HB8;//Loop
     memory[8*16'HCCF7+:8] = 8'HCC;//Loop
 
 
@@ -141,8 +141,8 @@ module tb_8227_template ();
   // Test Cases
   initial begin
     test_name = "Reset";
-    tb_interruptRequest = 1'b0;
-    tb_nonMaskableInterrupt = 1'b0;
+    tb_interruptRequest = 1'b1;
+    tb_nonMaskableInterrupt = 1'b1;
     reset_dut();
 
     // Initialize all of the test inputs
@@ -155,7 +155,7 @@ module tb_8227_template ();
     targetHighAddress = 8'bx;
 
     tb_ready = 1'b1;
-    tb_setOverflow = 1'b0;
+    tb_setOverflow = 1'b1;
     
 //--------------------------------------------------------------------------------------------
 //-----------------------------------------RESET----------------------------------------------
