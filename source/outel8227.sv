@@ -4,7 +4,7 @@ module outel8227 (
     input logic clk, nrst,
     
     // Wrapper
-    input logic cs, // Chip Select (Active Low)
+    input logic cs, // Chip Select (Active Low) NOT USED
     input logic [7:0] dataBusIn,
     output logic [7:0] dataBusOut,
     output logic dataBusSelect, //The databus should be writing when this is low INTERNAL SIGNAL TO BE USED BY TAs

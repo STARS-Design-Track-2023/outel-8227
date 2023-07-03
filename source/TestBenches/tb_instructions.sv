@@ -21,6 +21,9 @@ module tb_8227_template ();
   logic                tb_sync; 
   logic                tb_readNotWrite;
   logic                tb_setOverflow;
+  logic                tb_functionalClockOut;
+  logic                tb_dataBusSelect;
+  logic                tb_M10ClkOut;
 
   logic [7:0]          targetLowAddress;
   logic [7:0]          targetHighAddress;
@@ -125,11 +128,14 @@ module tb_8227_template ();
     .dataBusOutput(tb_dataBusOutput),
     .addressBusHigh(tb_AddressBusHigh),
     .addressBusLow(tb_AddressBusLow),
-    .dataBusEnable(tb_dataBusEnable), 
+    .dataBusEnable(tb_dataBusEnable),
     .ready(tb_ready),
     .sync(tb_sync), 
     .readNotWrite(tb_readNotWrite),
-    .setOverflow(tb_setOverflow)
+    .setOverflow(tb_setOverflow),
+    .functionalClockOut(tb_functionalClockOut),
+    .dataBusSelect(tb_dataBusSelect),
+    .M10ClkOut(tb_M10ClkOut)
   );
 
   // Signal Dump
@@ -156,6 +162,7 @@ module tb_8227_template ();
 
     tb_ready = 1'b1;
     tb_setOverflow = 1'b1;
+    tb_dataBusEnable = 1'b1;
     
 //--------------------------------------------------------------------------------------------
 //-----------------------------------------RESET----------------------------------------------
@@ -241,7 +248,7 @@ module tb_8227_template ();
       @(posedge tb_clk);
     end
 
-    tb_interruptRequest = 1'b1;
+    tb_interruptRequest = 1'b0;
     for(int i = 0; i < 25; i++)
     begin
       //Clk 1
@@ -249,9 +256,9 @@ module tb_8227_template ();
       //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
       @(posedge tb_clk);
     end
-    tb_interruptRequest = 1'b0;
+    tb_interruptRequest = 1'b1;
 
-    tb_nonMaskableInterrupt = 1'b1;
+    tb_nonMaskableInterrupt = 1'b0;
     for(int i = 0; i < 5; i++)
     begin
       //Clk 1
@@ -259,7 +266,7 @@ module tb_8227_template ();
       //tb_dataBusInput = 8'H88;//Put the value at in memory @ 0099
       @(posedge tb_clk);
     end
-    tb_nonMaskableInterrupt = 1'b0;
+    tb_nonMaskableInterrupt = 1'b1;
 
 
     for(int i = 0; i < 200; i++)
