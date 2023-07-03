@@ -35,7 +35,7 @@ module top
   input  logic txready, rxready
 );
 
-  logic clk, nrst, nmi, irq, dbe, rdy, sv, sync, rnw;
+  logic clk, nrst, nmi, irq, irqNot, dbe, rdy, sv, sync, rnw;
   logic [7:0] addressBusHigh, addressBusLow, dataBusOut, dataBusIn;
   logic [7:0] romOut, ramOut;
 
@@ -44,25 +44,27 @@ module top
 
   assign clk = hwclk; 
   assign nrst = ~reset;
-  assign nmi = 1'b0;
+  assign nmi = 1'b1;
   //assign irq = |pb[15:0]; 
-  assign dbe = 1'b0;
+  assign dbe = 1'b1;
   assign rdy = 1'b1;
-  assign sv = 1'b0;
+  assign sv = ~pb[16];
   assign red = sync;
 
-  edgeDetector edgeDetector (
+  posEdgeDetector posEdgeDetector (
     .clk(clk),
     .nrst(nrst),
     .in(|pb[15:0]),
     .out(irq)
   );
 
+  assign irqNot = ~irq;
+
   top8227 top8227 (
     .clk(clk),
     .nrst(nrst),
     .nonMaskableInterrupt(nmi),
-    .interruptRequest(irq),
+    .interruptRequest(irqNot),
     .dataBusEnable(dbe),
     .ready(rdy),
     .setOverflow(sv),
@@ -71,7 +73,9 @@ module top
     .addressBusHigh(addressBusHigh),
     .addressBusLow(addressBusLow),
     .sync(sync),
-    .readNotWrite(rnw)
+    .readNotWrite(rnw),
+    .functionalClockOut(),
+    .dataBusSelect()
   );
 
   demo_mapped_io demo_mapped_io (
@@ -94,32 +98,4 @@ module top
     .right() 
 );
     
-endmodule
-
-module edgeDetector (
-  input logic clk, nrst,
-  input logic in,
-  output logic out
-);
-
-  logic q1, nextQ1;
-
-  always_comb begin : nextStateLogic
-    nextQ1 = in;
-  end
-
-  always_ff @( posedge clk, negedge nrst ) begin : nextStateAssignment
-    if(~nrst)
-    begin
-      q1 <= 1'b0;
-    end
-    else
-    begin
-      q1 <= nextQ1;
-
-    end
-  end
-
-  assign out = ~q1 & in;
-
 endmodule
