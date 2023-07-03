@@ -30,3 +30,12 @@
 
 
 # Things that are good to know about the 8227 processor
+
+1. There are two signals in the chip used to handle timing, the regular clock, and slow pulse. Slow pulse makes it easier to interface with slow outside memory devices, and it is run at a third of the original clock speed of 10 MHz. Both timing signals have a corresponding output pin.
+
+2. There are external input pins for maskable and non-maskable interrupts. These can be used to interface other sorts of peripherals with the 8227.
+
+3. As a catch all, read the programming manual and datasheet for the original MOS 6502. The 8227 is close enough to the original that most things in the sheets still apply. 
+
+Programming Manual: http://archive.6502.org/books/mcs6500_family_programming_manual.pdf
+Datasheet: https://www.princeton.edu/~mae412/HANDOUTS/Datasheets/6502.pdf
