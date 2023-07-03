@@ -48,7 +48,7 @@ module top
   //assign irq = |pb[15:0]; 
   assign dbe = 1'b0;
   assign rdy = 1'b1;
-  assign sv = 1'b0;
+  assign sv = pb[16];
   assign red = sync;
 
   edgeDetector edgeDetector (

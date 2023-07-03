@@ -157,7 +157,7 @@ module byteTo7Seg(
 );
   always_comb begin
     case(num) 
-      8'd0:    disp = 8'b00111111;
+      8'd0:    disp = 8'b10111111;
       8'd1:    disp = 8'b00000110;
       8'd2:    disp = 8'b01011011;
       8'd3:    disp = 8'b01001111;
@@ -177,8 +177,11 @@ module byteTo7Seg(
       8'd17:   disp = 8'b00111110; // w-ish
       8'd18:   disp = 8'b01011100; // small o
       8'd19:   disp = 8'b01010000; // r
-      8'd21:   disp = 8'b11010000; // r
-      default: disp = 8'b10000000; // defaults to 0
+      8'H22:   disp = 8'b11111100; // r|.
+      8'H24:   disp = 8'b11111000; // r|.
+      8'H23:   disp = 8'b11110000; // r|.
+      8'H46:   disp = 8'b11010000; // r.
+      default: disp = 8'b11111111; // defaults to 0
     endcase
   end
 endmodule

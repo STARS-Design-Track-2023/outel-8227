@@ -111,12 +111,12 @@ module tb_8227_template ();
   top8227 top8227 (
     .clk(tb_clk), 
     .nrst(tb_nrst), 
-    .nonMaskableInterrupt(tb_nonMaskableInterrupt), 
-    .interruptRequest(tb_interruptRequest),
+    .nonMaskableInterrupt(0), 
+    .interruptRequest(0),
     .dataBusInput(tb_dataBusInput),
     .dataBusOutput(tb_dataBusOutput),
-    .AddressBusHigh(tb_addressBusHigh),
-    .AddressBusLow(tb_addressBusLow)
+    .addressBusHigh(tb_addressBusHigh),
+    .addressBusLow(tb_addressBusLow)
   );
 
   // Signal Dump
